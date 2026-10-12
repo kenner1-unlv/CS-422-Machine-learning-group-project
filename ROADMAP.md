@@ -108,10 +108,13 @@ reproduce the reported test metrics.
 - `documentation`
 - `decision`
 
-## GitHub setup note
+## GitHub tracking
 
-The GitHub repository was empty when this roadmap was prepared and had no
-branches or issues. The local project folder is not currently a Git repository,
-so these issue-ready phases have not been published to GitHub. Create or connect
-the local repository, push the specification and roadmap, then create GitHub
-Issues from the phase tasks (or import them into a GitHub Project).
+The project specification and roadmap are published on the `main` branch.
+Work is tracked in [GitHub Issues](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/issues)
+and grouped by these milestones:
+
+- [Phase 1 — Coverage and evaluation plan](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/milestone/1)
+- [Phase 2 — Modeling table and pipeline](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/milestone/2)
+- [Phase 3 — Baselines and model comparison](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/milestone/3)
+- [Phase 4 — Analysis and final report](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/milestone/4)
