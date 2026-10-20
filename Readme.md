@@ -1,5 +1,57 @@
 # Early-Season County-Level Corn Yield Forecasting
 
+## Initial Linear and Ridge results: 393 complete counties
+
+These are the first completed model runs, using train 2000-2016, validation
+2017-2020, and final test 2021-2025. Every cutoff has 1,965 test county-years.
+Scaling and model fitting use training years only. Ridge alpha is selected
+by validation MAE; there is no refit on validation years.
+
+**Test MAE in bushels per acre (lower is better):**
+
+| Forecast cutoff | Linear: weather only | Ridge: weather only | Linear: weather + trend | Ridge: weather + trend |
+|---|---:|---:|---:|---:|
+| May | 40.28 | 40.28 | 27.00 | 26.99 |
+| June | 40.02 | 40.01 | 26.05 | 26.18 |
+| July | 37.04 | 37.19 | 24.75 | 24.77 |
+| August | 37.40 | 37.53 | 24.82 | 25.01 |
+
+The training-mean reference has test MAE **42.29** and RMSE **48.02** at
+every cutoff. Linear and Ridge produce very similar errors. The time-trend
+variant improves these forecasts substantially, while later cutoffs do not
+uniformly improve accuracy. The year trend does not establish a causal climate
+effect or isolate weather from changes in farming practices. These are overall
+errors; extreme-weather subgroup evaluation has not been completed.
+
+See the [full results](results/primary_100_baselines/README.md) for validation
+scores, selected Ridge alphas, test RMSE, and sample counts. The result folder
+also includes annual metrics, row-level predictions, coefficients, scaling
+parameters, recorded validation decisions, input hashes, and fitted pipelines.
+
+### Reproduce the regression run
+
+Use Python 3.12 and install the recorded modeling dependencies:
+
+```powershell
+python -m pip install -r requirements-modeling.txt
+python scripts/build_study_sets.py
+python scripts/build_splits.py
+python scripts/build_features.py
+python scripts/run_baselines.py
+python -m unittest discover -s tests -v
+```
+
+The run is configured by [config/baselines.json](config/baselines.json).
+See [BASELINE_RUN.md](BASELINE_RUN.md) for scaling, tuning, and output details.
+The modeling dependencies are required for the full test suite; data-preparation
+scripts themselves still use only the standard library.
+
+**The final test results have now been inspected.** Keep this run as the initial
+baseline. Do not tune against these scores and subsequently describe these test
+years as untouched. Further experimental changes must be labeled and reported
+transparently. Other algorithms and larger coverage-set runs are still pending.
+
+
 ## Shared chronological split
 
 The same harvest-year boundaries apply to all four coverage sets and all models:
@@ -120,8 +172,8 @@ Report each set's sample sizes and results, plus a comparison on shared held-out
 county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
 
-These experiments are planned; models and performance comparisons have not yet
-been implemented. Larger sample size does not by itself guarantee better results.
+The initial Linear and Ridge runs on the primary cohort are complete;
+secondary coverage runs and other team models are still planned. Larger sample size does not by itself guarantee better results.
 See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
 separate future experiment for predicting eligible missing-year yields.
 
@@ -277,7 +329,7 @@ coverage set and cutoff.
 Temperature averages are weighted by calendar days. The tests verify future
 weather cannot change earlier-cutoff features; the builder checks that shared
 primary-cohort rows have identical features across the larger coverage sets.
-Run `python -m unittest discover -s tests -v` to check the shared pipeline.
+After installing `requirements-modeling.txt`, run `python -m unittest discover -s tests -v` to check the shared pipeline.
 
 ### Preparation status and remaining work
 
@@ -292,6 +344,6 @@ Before reporting extreme-weather reliability, define hot/dry/wet groups and
 any thresholds from training information, then apply those fixed rules to
 validation and test examples. That evaluation definition remains unfinished.
 Daily heat-day counts, growing-degree days, and prior yields are future
-feature extensions, not prerequisites for the first baseline. Training,
-metrics, simple baselines, and shared-row comparisons remain to implement.
-The published scripts prepare data; they do not yet train or score models.
+feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
+for the primary cohort. Shared-row comparisons across broader coverage sets
+and the other team models remain to implement.

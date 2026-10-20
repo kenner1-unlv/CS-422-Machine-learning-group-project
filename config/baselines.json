@@ -1,0 +1,7 @@
+{
+  "coverage_set": "primary_100",
+  "variants": ["weather_only", "weather_plus_trend"],
+  "ridge_alphas": [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000],
+  "selection_metric": "validation_MAE",
+  "refit_on_validation": false
+}
