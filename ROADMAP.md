@@ -1,5 +1,14 @@
 # Project Roadmap
 
+## Status as of October 20, 2026
+
+- Completed: validated sources, coverage audit, four staged datasets, fixed splits, cutoff features, Linear/Ridge and training-mean runs, shared-population comparisons, and exploratory hot/dry/wet evaluation.
+- Results: [regression coverage comparison](results/coverage_comparison/README.md) and [weather groups](results/weather_groups/README.md).
+- Remaining core work: Random Forest, Gradient Boosting, Neural Network, their shared-protocol comparisons and subgroup evaluation, uncertainty discussion/analysis, final figures and report.
+- Optional extensions: daily heat metrics, prior-yield predictors, calibrated prediction intervals and missing-year reconstruction.
+- Overall test results are already visible. Preserve the baseline and label subsequent changes transparently. No inference of statistical significance has been completed.
+
+
 ## Shared chronological split
 
 The same harvest-year boundaries apply to all four coverage sets and all models:
@@ -41,7 +50,7 @@ Secondary experiments use the nested 90%, 80%, and largest-available sets under
 the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
 and the README for counts and reproduction commands. This decision supersedes
 references below to geographic scope and modeling period being undecided.
-Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); model results and extreme-weather subgroup definitions remain pending. Coverage experiments must report both their own evaluation populations
+Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); Linear/Ridge results and exploratory weather-group definitions/results are complete; other team models, formal uncertainty and final reporting remain pending. Coverage experiments must report both their own evaluation populations
 and comparable shared held-out county-years.
 
 
@@ -53,8 +62,8 @@ choices. Geographic scope and split years are decision gates, not assumptions.
 
 ### Profile county-year coverage
 
-- [ ] Summarize yield and NOAA-match counts by year, state, and county.
-- [ ] Identify counties with short/intermittent histories and quantify the
+- [x] Summarize yield and NOAA-match counts by year, state, and county.
+- [x] Identify counties with short/intermittent histories and quantify the
   impact of candidate inclusion rules.
 - [x] Recommend and document the geographic scope and minimum coverage rule: primary complete-county cohort plus staged secondary sets.
 
@@ -64,9 +73,9 @@ Washabaugh exclusion, and records the number of eligible county-years by year.
 ### Set chronological splits and forecasting protocol
 
 - [x] Select shared year ranges: train 2000-2016, validation 2017-2020, test 2021-2025.
-- [ ] Confirm that every cutoff uses only weather available on or before that
+- [x] Confirm that every cutoff uses only weather dated on or before that
   cutoff.
-- [ ] Define how each cutoff's examples and aggregate scores will be counted.
+- [x] Define cutoff-specific county-year counts, equal-row MAE/RMSE, and yearly scores.
 
 **Acceptance:** The year boundaries, cutoff definitions, sample rules, and
 primary/secondary metrics are documented before test scores are generated.
@@ -75,8 +84,8 @@ primary/secondary metrics are documented before test scores are generated.
 
 ### Create cutoff-specific features
 
-- [ ] Generate one row per eligible county-year-cutoff.
-- [ ] Define precipitation and temperature summaries for each cutoff.
+- [x] Generate one row per eligible county-year-cutoff for all four coverage sets.
+- [x] Define precipitation and temperature summaries for each cutoff.
 - [ ] Add heat/cold or anomaly features only with documented definitions.
 - [ ] Optionally build a separate weather-plus-prior-yield feature set with
   strictly lagged yield values.
@@ -87,10 +96,10 @@ and target leakage risks.
 
 ### Add reproducible modeling and preprocessing
 
-- [ ] Implement chronological train/validation/test selection.
-- [ ] Fit imputation, scaling, feature selection, and other learned
-  preprocessing on training data only.
-- [ ] Save the feature-generation and split configuration with results.
+- [x] Implement chronological train/validation/test selection.
+- [x] Fit Linear/Ridge scaling on training data only; no imputation is needed for this feature version.
+- [ ] Verify training-only preprocessing in the remaining team model pipelines.
+- [x] Save feature/split configuration and baseline input hashes with results.
 
 **Acceptance:** The process reruns deterministically and validation/test data
 do not affect training transformations.
@@ -99,21 +108,22 @@ do not affect training transformations.
 
 ### Evaluate simple baselines
 
-- [ ] Implement the training-mean baseline.
+- [x] Implement the training-mean baseline on every coverage set and cutoff.
 - [ ] Evaluate a previous-yield baseline if prior yield is available under the
   selected split design.
-- [ ] Report baseline MAE, RMSE, sample counts, and cutoff.
+- [x] Report baseline MAE, RMSE, sample counts, and cutoff.
 
 **Acceptance:** Baselines use precisely the same test rows as the candidate
 models where applicable.
 
 ### Train and compare assigned models
 
-- [ ] Linear and Ridge Regression — Russell Kennedy.
+- [x] Linear and Ridge Regression — Russell Kennedy: all four coverage sets, both feature variants, all cutoffs.
 - [ ] Random Forest Regression — Tylie Anderson.
 - [ ] Gradient Boosting Regression — Alexander Aquiningoc.
 - [ ] Neural Network Regression — Lester Iwuajoku.
-- [ ] Tune only against training/validation data, not the final test set.
+- [x] Select Ridge alpha using validation MAE; preserve training-only fits.
+- [ ] Apply the same no-test-tuning rule to the remaining team algorithms.
 
 **Acceptance:** All feasible models are evaluated on identical test examples
 for each cutoff, with model settings and random seeds recorded.
@@ -122,10 +132,14 @@ for each cutoff, with model settings and random seeds recorded.
 
 ### Evaluate errors and weather subgroups
 
-- [ ] Report MAE and RMSE by cutoff, with sample counts.
-- [ ] Compare cutoff performance and explain any changes.
-- [ ] Define unusual hot, dry, or wet conditions before subgroup comparison;
-  report subgroup sizes and uncertainty.
+- [x] Report Linear/Ridge MAE and RMSE by cutoff and year, with sample counts.
+- [x] Compare Linear/Ridge cutoffs and coverage sets, including shared-primary test rows.
+- [ ] Integrate other model results and develop final explanations.
+- [x] Define training-only county hot/dry/wet thresholds before computing subgroup errors.
+- [x] Evaluate frozen Linear/Ridge predictions for every cutoff and coverage set; report sample sizes, bias, MAE/RMSE and yearly errors.
+- [x] Label the analysis exploratory: overall test scores were already visible when subgroup definitions were chosen.
+- [ ] Develop formal uncertainty estimates that account for correlated county/year observations; no significance claims yet.
+- [ ] Evaluate the other team models using the same saved weather labels.
 - [ ] Add calibrated prediction intervals only if time permits after the core
   comparison.
 
@@ -137,7 +151,8 @@ results, and sample sizes; small-sample limitations are explicit.
 - [ ] Summarize data sources, scope, preprocessing, split years, and models.
 - [ ] Discuss limitations, including non-weather influences and county-level
   averages.
-- [ ] Include commands and dependencies needed to reproduce the analysis.
+- [x] Include commands and dependencies for the completed data and regression analyses.
+- [ ] Include reproduction instructions for the remaining team algorithms and final report.
 - [ ] Confirm README and final report agree with the executed pipeline.
 
 **Acceptance:** Another team member can follow the documented steps and

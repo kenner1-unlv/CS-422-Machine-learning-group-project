@@ -1,0 +1,40 @@
+{
+  "definition": {
+    "reference_coverage_set": "largest_available",
+    "reference_partition": "train",
+    "minimum_training_years_per_county": 10,
+    "hot_quantile": 0.9,
+    "dry_quantile": 0.1,
+    "wet_quantile": 0.9,
+    "hot_feature": "season_tmax_mean_c",
+    "precipitation_feature": "season_precipitation_total_mm",
+    "quantile_method": "linear",
+    "comparison": "strict",
+    "small_sample_count": 30,
+    "small_sample_years": 3
+  },
+  "config_sha256": "5b2ff777eb86d1b1ef2ace90d82c37f3bdcbb415b28e635985d2980007418ca6",
+  "input_sha256": {
+    "data\\features\\largest_available\\cutoff_05.csv": "0a65b1e472a951ebd14a90bfcc5f6e9d67c96b7aaac9c4a2f44dc0292aba8dfb",
+    "data\\features\\largest_available\\cutoff_06.csv": "a2ee1f01f2c57ad0dc3e96f46e2d206e800bc8c8ae3594ba01a2bae7d273a16b",
+    "data\\features\\largest_available\\cutoff_07.csv": "8cd66dfb85c269679c1587b4701c315e7f625720ab7786c0ee8442ed4ff3a7b4",
+    "data\\features\\largest_available\\cutoff_08.csv": "c2c95e6e7d7dac083deda317f50e6ee0e0c7fbcbcd4a05667a461093b59ceeb1",
+    "data\\features\\primary_100\\cutoff_05.csv": "fa4b31375eeb3a6ef8f8faa30688fc9579f86e29baa208bef000bfe3ecf2248b",
+    "data\\features\\primary_100\\cutoff_06.csv": "f7389b2c6489356c93853a3e6e50c4eba984b060364a4ddd0181a79b7a5c3a75",
+    "data\\features\\primary_100\\cutoff_07.csv": "94fdec3b2294a489ba19f322cbba0ec137f5a83ce14e53a93d85c67f1bce6600",
+    "data\\features\\primary_100\\cutoff_08.csv": "4844de6694a921b972f06d5babd42064ce1b578a446023993bc133e7d0ccca31",
+    "results\\primary_100_baselines\\predictions.csv": "6fc6158f534e65460a751bd50bf294666874f3f2299f457f3afae96ff860859c",
+    "data\\features\\expanded_90\\cutoff_05.csv": "6494f925759cd07bd49775db205e2ffaaf69400f8cea2ab96df5b1b6c94b541e",
+    "data\\features\\expanded_90\\cutoff_06.csv": "91d53286f28467a1a17713fd4303fa9fbd8e1ecd5f45c587d9cf7fceaf305e3f",
+    "data\\features\\expanded_90\\cutoff_07.csv": "45b2bcdde5bf049a69315823b5e397f6487f7c60449bf767d03cf10cf725ff23",
+    "data\\features\\expanded_90\\cutoff_08.csv": "b6896e9a55c4aa1c5a92b38c1d4861324504b84aaaa71251de5b011fd6cb4dc0",
+    "results\\expanded_90_baselines\\predictions.csv": "377c8d4e75cf41e705e4a96eb2cd2de9d208d6a46a0ddc41f03d79ab09d1f11b",
+    "data\\features\\expanded_80\\cutoff_05.csv": "3bb53a30b62ce1bc22cf4cd1ee7285340a1925e63ae642086e8918fead105730",
+    "data\\features\\expanded_80\\cutoff_06.csv": "82fd1e807ad7733dbcef0e5d447a3a7da6267b9677e16318a585e14720110a3d",
+    "data\\features\\expanded_80\\cutoff_07.csv": "2748d3c10ac6857d708c8e6167363fbcbeeb78cc26ee2838017234350b61c0c4",
+    "data\\features\\expanded_80\\cutoff_08.csv": "e43991ff8204802c401cd6666f541cfeca01538ca78265ae7f12ff1ad5e7aa69",
+    "results\\expanded_80_baselines\\predictions.csv": "cbd4dd81772ffb58926040dbe7ab6e1ad4b92514a35424962af99d4af74592f4",
+    "results\\largest_available_baselines\\predictions.csv": "bac830939fe6ee47415a62b4dbfa9f4c2a1b41cd0dd45b2ffad45a0dbfa81046"
+  },
+  "status": "Exploratory follow-up specified after aggregate test results were visible. Thresholds fit only training weather; no baseline models retrained."
+}

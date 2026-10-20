@@ -1,5 +1,73 @@
 # Early-Season County-Level Corn Yield Forecasting
 
+## Hot, dry and wet conditions: regression results
+
+Weather-group evaluation is complete for Linear and Ridge across all four
+coverage sets and May/June/July/August cutoffs. Thresholds use only training
+weather (2000-2016), fitted once per county and cutoff from the largest set
+and applied consistently across the coverage stages:
+
+- **Hot:** April-to-cutoff mean daily maximum temperature above the county
+  training 90th percentile.
+- **Dry:** April-to-cutoff rainfall below the county training 10th percentile.
+- **Wet:** April-to-cutoff rainfall above the county training 90th percentile.
+- **Normal:** none of those flags. Hot can overlap dry or wet.
+- **Unclassified:** fewer than 10 available training years; kept separate.
+
+These are statistical weather flags, not official drought/flood/heat-wave
+classifications. Membership changes with the cutoff. The original models and
+predictions were not modified or retrained.
+
+**July, primary 393-county test set, weather plus year trend:**
+MAE is in bushels per acre. Groups overlap, so their counts are not additive.
+
+| Group | County-years | Linear MAE | Ridge MAE |
+|---|---:|---:|---:|
+| normal | 1261 | 24.37 | 24.41 |
+| extreme_any | 704 | 25.42 | 25.42 |
+| hot | 158 | 23.08 | 23.11 |
+| dry | 380 | 28.16 | 28.25 |
+| wet | 231 | 22.85 | 22.70 |
+| hot_dry | 53 | 26.24 | 26.37 |
+
+For the primary models with year trend, dry-group MAE exceeds normal-group
+MAE at every cutoff. The combined extreme group is not uniformly harder:
+its MAE is slightly lower than normal in May and higher in June-August.
+Hot and wet groups do not consistently have larger errors. These are
+descriptive differences; county/year composition and yield distributions
+differ across groups. No significance or causal conclusions are claimed.
+
+The [full weather-group report](results/weather_groups/README.md) includes
+primary and expanded sets, shared-393 and own-population comparisons,
+weather-only and trend variants, the mean baseline, validation/test scores,
+yearly MAE/RMSE, bias, thresholds, labels and sample counts. The largest set
+has 402 unclassified test county-years; these remain in overall scores.
+
+**Exploratory follow-up:** group definitions were fixed before subgroup
+errors were computed, but after the overall test results had been inspected.
+They are not a predeclared confirmation on an untouched test set. Thresholds
+are estimated from only 10-17 available training years, with no minimum
+consecutive-year requirement. Missing reporting years can affect the reference.
+Small groups (fewer than 30 records or three represented years) are flagged.
+County-years are not independent weather events; formal uncertainty estimates
+and the other team models remain unfinished.
+
+### Reproduce weather-group evaluation
+
+After generating features and all four baseline runs, run:
+
+```powershell
+python scripts/evaluate_weather_groups.py
+```
+
+Definitions are recorded in [config/weather_groups.json](config/weather_groups.json).
+Outputs are saved in `results/weather_groups/`. Tests check that held-out
+weather cannot affect fitted thresholds, compound labels are correct, and
+insufficient-history cases are not classified as normal. The evaluator checks
+population accounting, shared-label consistency and agreement with baseline
+overall metrics.
+
+
 ## Completed coverage comparisons: Linear and Ridge
 
 All four coverage stages have now been run using the same features, train
@@ -57,7 +125,7 @@ See [COVERAGE_BASELINE_RUNS.md](COVERAGE_BASELINE_RUNS.md) for the protocol.
 These commands preserve the primary result files. The original test period was
 already inspected before these follow-up coverage runs; the comparisons are
 not a fresh untouched holdout. No test outcomes are used for Ridge tuning.
-Extreme-weather subgroup analysis and the other team algorithms remain pending.
+Exploratory weather-group analysis is complete for these regressions; formal uncertainty analysis and the other team algorithms remain pending.
 
 
 ## Initial Linear and Ridge results: 393 complete counties
@@ -81,7 +149,7 @@ every cutoff. Linear and Ridge produce very similar errors. The time-trend
 variant improves these forecasts substantially, while later cutoffs do not
 uniformly improve accuracy. The year trend does not establish a causal climate
 effect or isolate weather from changes in farming practices. These are overall
-errors; extreme-weather subgroup evaluation has not been completed.
+errors; exploratory weather-group results are now reported above.
 
 See the [full results](results/primary_100_baselines/README.md) for validation
 scores, selected Ridge alphas, test RMSE, and sample counts. The result folder
@@ -402,7 +470,7 @@ weather feature values across algorithms, with model-appropriate scaling.
 
 Before reporting extreme-weather reliability, define hot/dry/wet groups and
 any thresholds from training information, then apply those fixed rules to
-validation and test examples. That evaluation definition remains unfinished.
+validation and test examples. The initial exploratory definitions and results are now recorded in `config/weather_groups.json` and `results/weather_groups/`; formal uncertainty remains unfinished.
 Daily heat-day counts, growing-degree days, and prior yields are future
 feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
 for the primary cohort. Shared-row comparisons across broader coverage sets are complete for Linear

@@ -41,7 +41,7 @@ Secondary experiments use the nested 90%, 80%, and largest-available sets under
 the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
 and the README for counts and reproduction commands. This decision supersedes
 references below to geographic scope and modeling period being undecided.
-Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); model results and extreme-weather subgroup definitions remain pending. Coverage experiments must report both their own evaluation populations
+Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); Linear/Ridge results and exploratory weather-group definitions/results are complete; other team models, formal uncertainty and final reporting remain pending. Coverage experiments must report both their own evaluation populations
 and comparable shared held-out county-years.
 
 
@@ -139,8 +139,10 @@ of predictive accuracy.
   bushels per acre. Report sample counts and coverage alongside every score.
 - Report results separately for each cutoff, and include an aggregate only if
   its weighting across counties/years is explicit.
-- Examine hot, dry, and wet subgroups only with a predeclared, reproducible
-  definition and their sample counts. Do not overstate conclusions for small
+- Examine hot, dry, and wet subgroups using the reproducible training-only
+  definitions in `config/weather_groups.json` and report sample counts. The
+  current analysis is exploratory because definitions followed inspection of
+  overall test scores; do not present it as a predeclared untouched test. Do not overstate conclusions for small
   groups.
 - Compare optional prediction intervals only after the core point-forecast
   evaluation is complete; report coverage and interval width if implemented.

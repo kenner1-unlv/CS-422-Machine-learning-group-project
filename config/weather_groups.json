@@ -1,0 +1,14 @@
+{
+  "reference_coverage_set": "largest_available",
+  "reference_partition": "train",
+  "minimum_training_years_per_county": 10,
+  "hot_quantile": 0.9,
+  "dry_quantile": 0.1,
+  "wet_quantile": 0.9,
+  "hot_feature": "season_tmax_mean_c",
+  "precipitation_feature": "season_precipitation_total_mm",
+  "quantile_method": "linear",
+  "comparison": "strict",
+  "small_sample_count": 30,
+  "small_sample_years": 3
+}
