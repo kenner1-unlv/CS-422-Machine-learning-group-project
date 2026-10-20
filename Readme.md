@@ -1,5 +1,96 @@
 # Early-Season County-Level Corn Yield Forecasting
 
+## What we have learned so far
+
+These are preliminary findings from Linear and Ridge Regression, evaluated on
+2021-2025 after training on 2000-2016 and tuning on 2017-2020. They describe
+forecasting performance under our current feature recipe, not causes of yield
+changes. All errors below are MAE in bushels per acre unless stated otherwise.
+
+1. **The time-trend feature materially improved the initial forecasts.** For
+   July on the primary 393 counties, Linear Regression improved from
+   **37.04 to 24.75**, a **33.2% reduction in MAE**. Weather alone
+   misses important changes over time in this experiment. Year is a proxy for
+   multiple possible influences, including agricultural practices and changing
+   conditions; this does not attribute the improvement to climate. A trend-only
+   comparator has not been run, so we cannot isolate weather's incremental
+   predictive contribution beyond the time trend from this comparison alone.
+
+2. **More training counties did not improve these regressions on the primary
+   population.** On the same 1,965 held-out county-years, July Linear Regression
+   with the trend had MAE **24.75** using primary-cohort training versus
+   **29.23** using the largest training set. The broader runs had higher
+   shared-population MAE at every cutoff for both algorithms and both feature
+   variants. This supports retaining the preselected primary experiment; it
+   does not prove that missing reporting years caused the difference. Broader
+   sets change geographic and yield distributions as well as sample size.
+
+3. **Dry conditions exposed a forecasting weakness.** The primary July Linear
+   model with trend had MAE **28.16** in the dry group (380 county-years)
+   versus **24.37** in the normal group (1261 county-years), about
+   **15.6% higher error**. Dry-group MAE exceeded normal-group MAE at
+   every cutoff for both primary trend models. Hot and wet groups did not
+   consistently have higher errors. The combined extreme group was slightly
+   easier than normal in May and harder in June-August, so the findings do not
+   support saying every unusual-weather group is harder to predict.
+
+4. **Later forecasts helped up to a point.** Primary Linear Regression with
+   trend improved from **27.00 in May** to **24.75 in July**,
+   then had **24.82 in August**. More late-season weather did not guarantee
+   lower error. These are separately fitted cutoff models with different
+   feature counts, not an isolated causal test of adding one month's weather.
+
+5. **Ridge added little over ordinary Linear Regression for this recipe.**
+   July primary trend-model MAE was **24.75 for Linear** and
+   **24.77 for Ridge**. Similar results across the cutoffs suggest
+   regularization alone did not substantially improve prediction here; this
+   is not evidence that the algorithms are generally equivalent.
+
+**Interpretation:** These baselines capture useful patterns relative to the
+training-mean reference, but their predictions retain substantial errors,
+especially in dry groups. MAE is an average absolute forecasting error, not
+crop loss or an accuracy percentage. A lower test MAE on a broader set's own
+counties is not directly comparable with a score on the primary population.
+
+### Limits on these findings
+
+- **Only five test years:** counties share weather and other influences within
+  years. Thousands of county-years are not thousands of independent weather
+  events. We have not established statistical significance or formal confidence
+  intervals; small numerical differences should not be treated as decisive.
+- **Exploratory weather subgroups:** definitions were fixed before subgroup
+  errors were computed, but after overall test scores were inspected. They
+  are statistical flags rather than official drought, flood or heat-wave
+  declarations. Thresholds use only 10-17 available training years, and groups
+  can overlap and change across forecast cutoffs. Their differences can reflect
+  county/year composition, not only weather severity. Insufficient-history
+  records are unclassified rather than silently treated as normal.
+- **Selected population:** the 393 complete counties are a retrospective
+  reporting-continuity cohort, not a representative sample of every US corn
+  county. They were selected using coverage across the full study period;
+  results should not be presented as real-time county eligibility or national
+  production forecasts. Actual county production errors require acreage data.
+- **Limited predictors:** no soil, management, irrigation, pests or seed
+  information is modeled. The first recipe uses monthly summaries and a common
+  April start, not local planting calendars or daily heat/drought-duration
+  measures. County averages hide within-county variation. Monthly/cumulative
+  predictors overlap, so individual regression coefficients may be unstable.
+- **Retrospective inputs and exposed test results:** historical weather may
+  have been revised after the forecast dates. Restricting dates prevents
+  post-cutoff observations entering features, but does not establish real-time
+  data availability. Test outcomes are now visible; subsequent changes must be
+  described transparently, rather than treated as another untouched test.
+- **Scope of completed work:** these findings concern Linear and Ridge under
+  the current protocol. Random Forest, Gradient Boosting and Neural Network
+  comparisons, formal uncertainty analysis, and the final synthesis remain
+  unfinished. No causal or statistical-significance claims are established.
+
+Supporting results: [primary regressions](results/primary_100_baselines/README.md),
+[coverage comparisons](results/coverage_comparison/README.md), and
+[weather groups](results/weather_groups/README.md). The linked folders contain
+full-precision metrics, sample counts, yearly results and reproduction details.
+
+
 ## Hot, dry and wet conditions: regression results
 
 Weather-group evaluation is complete for Linear and Ridge across all four
