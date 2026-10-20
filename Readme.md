@@ -1,5 +1,38 @@
 # Early-Season County-Level Corn Yield Forecasting
 
+## Shared chronological split
+
+The same harvest-year boundaries apply to all four coverage sets and all models:
+
+| Partition | Years (inclusive) | Purpose | Primary county-years |
+|---|---|---|---:|
+| Training | 2000-2016 | Fit models and learned preprocessing | 6,681 |
+| Validation | 2017-2020 | Select features, models, and hyperparameters | 1,572 |
+| Final test | 2021-2025 | Final evaluation after choices are frozen | 1,965 |
+
+`config/splits.json` is the authoritative split configuration. After building
+study sets, run `python scripts/build_splits.py`. It writes
+`split_assignments.csv` inside each study-set folder and a shared
+`data/study_sets/split_summary.json`. Join assignments onto features by county
+FIPS and harvest year, preserving FIPS as text. Every forecast cutoff for the
+same county-year inherits the same partition. Never randomly split rows or
+hold out every fifth year for the forecasting experiment.
+
+These 17/4/5 year blocks simulate predicting later seasons from earlier data
+and test performance under temporal changes. No model scores informed this
+choice. The initial comparison fits models and preprocessing on 2000-2016,
+selects settings on 2017-2020, then freezes that fitted pipeline for the final
+2021-2025 test. Do not refit on validation or test years for this protocol.
+Any later expanding-window or train-plus-validation refit experiment must be
+declared separately and applied consistently to every model and coverage set.
+
+Use only weather through each May/June/July/August cutoff. Report test MAE and
+RMSE both overall and by harvest year, with sample counts. Compare broader
+sets on both their own test rows and the primary cohort's shared test rows.
+Fit anomaly thresholds and other learned transformations on training years
+only. Missing-year reconstruction remains a separate future experiment.
+
+
 CS 422 machine learning group project, Fall 2026
 
 ## Project overview
@@ -58,6 +91,7 @@ From the repository root, with Python 3.10 or newer:
 ```powershell
 python scripts/audit_coverage.py
 python scripts/build_study_sets.py
+python scripts/build_splits.py
 ```
 
 These commands use only the standard library and the three processed input
@@ -80,7 +114,7 @@ The raw archive and generated study sets are excluded from Git.
 The primary set is the core model comparison. The secondary sets test whether
 results change as more counties with intermittent reporting are included.
 Every model must share chronological split years, forecast cutoffs, and test
-examples within each set; split years remain to be selected before training.
+examples within each set; the shared years are fixed below.
 Report each set's sample sizes and results, plus a comparison on shared held-out
 county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
@@ -168,7 +202,7 @@ see the [nClimGrid-Daily documentation](https://www.ncei.noaa.gov/products/land-
 Sources: [USDA Quick Stats bulk downloads](https://www.nass.usda.gov/datasets/)
 and [NOAA nClimGrid-Daily documentation](https://www.ncei.noaa.gov/metadata/geoportal/rest/metadata/item/gov.noaa.ncdc:C01589/html).
 The selected primary period is 2000-2025, with 393 complete counties.
-Chronological split boundaries remain to be selected before model evaluation.
+Chronological split boundaries are fixed below and in `config/splits.json`.
 
 ## Evaluation approach
 

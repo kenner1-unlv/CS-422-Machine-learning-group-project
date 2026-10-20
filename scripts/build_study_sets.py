@@ -64,7 +64,7 @@ def main():
         by_county[c].add(y)
     selected = {name: {k for k in usable if len(by_county[k[0]]) * 100 >= pct * len(YEARS)} for name, pct in RULES.items()}
     expected = {'primary_100': (393, 10218), 'expanded_90': (883, 22254), 'expanded_80': (1287, 31207), 'largest_available': (2321, 42750)}
-    manifest = {'period': [2000, 2025], 'primary_set': 'primary_100', 'source_sha256': before, 'common_rules': ['Observed finite nonnegative USDA yield; zero is valid.', 'Matched county and complete January-August weather in all four variables.', 'No missing targets or weather are imputed.', 'Preserve canonical and original county identifiers.', 'Thresholds measure county reporting continuity across the 26 years.', 'Same scope rules apply to every algorithm; chronological splits remain to be chosen.', 'No training or test scores were used to select these sets.'], 'sets': {}}
+    manifest = {'period': [2000, 2025], 'primary_set': 'primary_100', 'source_sha256': before, 'common_rules': ['Observed finite nonnegative USDA yield; zero is valid.', 'Matched county and complete January-August weather in all four variables.', 'No missing targets or weather are imputed.', 'Preserve canonical and original county identifiers.', 'Thresholds measure county reporting continuity across the 26 years.', 'Same scope and config/splits.json year boundaries apply to every algorithm; run scripts/build_splits.py after building these sets.', 'No training or test scores were used to select these sets.'], 'sets': {}}
     for name, keys in selected.items():
         counts = (len({c for c, y in keys}), len(keys))
         assert counts == expected[name], (name, counts)

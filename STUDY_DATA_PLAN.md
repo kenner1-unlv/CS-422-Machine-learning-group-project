@@ -1,5 +1,38 @@
 # Study datasets: 2000-2025
 
+## Shared chronological split
+
+The same harvest-year boundaries apply to all four coverage sets and all models:
+
+| Partition | Years (inclusive) | Purpose | Primary county-years |
+|---|---|---|---:|
+| Training | 2000-2016 | Fit models and learned preprocessing | 6,681 |
+| Validation | 2017-2020 | Select features, models, and hyperparameters | 1,572 |
+| Final test | 2021-2025 | Final evaluation after choices are frozen | 1,965 |
+
+`config/splits.json` is the authoritative split configuration. After building
+study sets, run `python scripts/build_splits.py`. It writes
+`split_assignments.csv` inside each study-set folder and a shared
+`data/study_sets/split_summary.json`. Join assignments onto features by county
+FIPS and harvest year, preserving FIPS as text. Every forecast cutoff for the
+same county-year inherits the same partition. Never randomly split rows or
+hold out every fifth year for the forecasting experiment.
+
+These 17/4/5 year blocks simulate predicting later seasons from earlier data
+and test performance under temporal changes. No model scores informed this
+choice. The initial comparison fits models and preprocessing on 2000-2016,
+selects settings on 2017-2020, then freezes that fitted pipeline for the final
+2021-2025 test. Do not refit on validation or test years for this protocol.
+Any later expanding-window or train-plus-validation refit experiment must be
+declared separately and applied consistently to every model and coverage set.
+
+Use only weather through each May/June/July/August cutoff. Report test MAE and
+RMSE both overall and by harvest year, with sample counts. Compare broader
+sets on both their own test rows and the primary cohort's shared test rows.
+Fit anomaly thresholds and other learned transformations on training years
+only. Missing-year reconstruction remains a separate future experiment.
+
+
 The primary experiment uses the 393 counties with complete observed yield and January-August weather in every year from 2000 through 2025. All original datasets remain unchanged.
 
 | Set | Minimum reporting continuity | Counties | Observed county-years |
@@ -15,7 +48,7 @@ Run `python scripts/build_study_sets.py` to regenerate `data/study_sets/`. Each 
 
 ## Evaluation
 
-All algorithms must share the same chronological split years, forecast cutoffs, and evaluated examples within each set. Split boundaries remain undecided. Cutoff-specific features must omit later weather; preprocessing is fitted only on training data. The monthly tables are inputs for feature generation, not model-ready cutoff tables.
+All algorithms must share the same chronological split years, forecast cutoffs, and evaluated examples within each set. Split boundaries are fixed in `config/splits.json`. Cutoff-specific features must omit later weather; preprocessing is fitted only on training data. The monthly tables are inputs for feature generation, not model-ready cutoff tables.
 
 Use the primary set for the core comparison. Broader sets are additional experiments under the same data-quality rules. Their scores are not directly equivalent because they include different counties. Also compare models on their shared held-out county-years to distinguish changes in training coverage from changes in test population. Define both views before looking at test scores. Reusing four forecast cutoffs does not create four independent annual targets.
 
