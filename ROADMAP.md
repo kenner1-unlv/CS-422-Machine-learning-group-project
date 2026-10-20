@@ -1,5 +1,18 @@
 # Project Roadmap
 
+## Selected data scope (October 20, 2026)
+
+The primary cohort is the 393 counties with complete observed yield and
+January-August weather for every year in 2000-2025 (10,218 county-years).
+Secondary experiments use the nested 90%, 80%, and largest-available sets under
+the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
+and the README for counts and reproduction commands. This decision supersedes
+references below to geographic scope and modeling period being undecided.
+Chronological split boundaries, feature definitions, and model results remain
+pending. Coverage experiments must report both their own evaluation populations
+and comparable shared held-out county-years.
+
+
 This roadmap is organized as phases that can be transferred into GitHub Issues.
 The task order protects the evaluation from data leakage and premature scope
 choices. Geographic scope and split years are decision gates, not assumptions.
@@ -11,7 +24,7 @@ choices. Geographic scope and split years are decision gates, not assumptions.
 - [ ] Summarize yield and NOAA-match counts by year, state, and county.
 - [ ] Identify counties with short/intermittent histories and quantify the
   impact of candidate inclusion rules.
-- [ ] Recommend and document the geographic scope and minimum coverage rule.
+- [x] Recommend and document the geographic scope and minimum coverage rule: primary complete-county cohort plus staged secondary sets.
 
 **Acceptance:** A coverage summary supports the chosen scope, reports the
 Washabaugh exclusion, and records the number of eligible county-years by year.

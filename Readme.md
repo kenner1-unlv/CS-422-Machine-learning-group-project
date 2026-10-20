@@ -33,6 +33,63 @@ See [PROJECT_SPEC.md](./PROJECT_SPEC.md) for the agreed project requirements
 and open decisions, and [ROADMAP.md](./ROADMAP.md) for the phased implementation
 plan.
 
+## Staged coverage experiments: team data setup
+
+Our **primary experiment uses 393 counties with complete records in every year
+from 2000 through 2025**. We will also run broader coverage sets as secondary
+robustness comparisons using the same model pipeline and data-quality rules.
+
+| Stage | Required county reporting continuity | Counties | Observed county-years |
+|---|---|---:|---:|
+| Primary: `primary_100` | All 26 years | 393 | 10,218 |
+| Secondary: `expanded_90` | At least 24 of 26 years | 883 | 22,254 |
+| Secondary: `expanded_80` | At least 21 of 26 years | 1,287 | 31,207 |
+| Secondary: `largest_available` | At least one usable year | 2,321 | 42,750 |
+
+Every retained county-year has an observed yield and complete January-August
+weather. The percentage measures reporting continuity across years, not
+measurement reliability. Original data are preserved; missing targets are not
+filled. The full 1951-2025 source period remains available for future work.
+
+### Generate the same datasets
+
+From the repository root, with Python 3.10 or newer:
+
+```powershell
+python scripts/audit_coverage.py
+python scripts/build_study_sets.py
+```
+
+These commands use only the standard library and the three processed input
+tables already tracked in this repository. They do not require the raw daily
+NOAA download. Outputs go to `reports/coverage/` and `data/study_sets/`.
+Each study set includes `observed_yields.csv`, `counties.csv`, and
+`monthly_weather.csv.gz`. The manifest checks expected counts and records source
+hashes. Use canonical county FIPS as text to preserve leading zeros.
+
+For daily heat-exposure features or a full raw-data validation, ask Russell for
+a ZIP of `data/raw/noaa/averages/` and extract it so that files appear under
+`data/raw/noaa/averages/<year>/` in your checkout. Russell can also share a ZIP of
+the complete `data/` folder for an offline handoff. After extraction, run the
+commands above to check that the study-set counts agree. Run
+`python scripts/prepare_data.py` only when all raw weather files are present.
+The raw archive and generated study sets are excluded from Git.
+
+### What the extra coverage runs establish
+
+The primary set is the core model comparison. The secondary sets test whether
+results change as more counties with intermittent reporting are included.
+Every model must share chronological split years, forecast cutoffs, and test
+examples within each set; split years remain to be selected before training.
+Report each set's sample sizes and results, plus a comparison on shared held-out
+county-years. A lower error on a different set alone does not establish a better
+model. Fit learned preprocessing on training data only.
+
+These experiments are planned; models and performance comparisons have not yet
+been implemented. Larger sample size does not by itself guarantee better results.
+See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
+separate future experiment for predicting eligible missing-year yields.
+
 ## Data sources
 
 - **USDA National Agricultural Statistics Service (NASS) Quick Stats**:
@@ -45,8 +102,8 @@ plan.
 Records will be aligned by county, year, and forecast cutoff date. Candidate
 features include cumulative rainfall, temperature summaries, heat exposure,
 weather anomalies, and past yields. The available sources overlap from 1951
-through 2025; the final modeling period and geographic scope will be selected
-after auditing usable county-year coverage.
+through 2025. The current primary study uses the complete-county 2000-2025
+cohort below, with broader coverage sets for secondary comparisons.
 
 ## Initial data feasibility check
 
@@ -110,8 +167,8 @@ see the [nClimGrid-Daily documentation](https://www.ncei.noaa.gov/products/land-
 
 Sources: [USDA Quick Stats bulk downloads](https://www.nass.usda.gov/datasets/)
 and [NOAA nClimGrid-Daily documentation](https://www.ncei.noaa.gov/metadata/geoportal/rest/metadata/item/gov.noaa.ncdc:C01589/html).
-The final modeling period and geographic scope will be selected after auditing
-year-by-year coverage and defining the evaluation sample.
+The selected primary period is 2000-2025, with 393 complete counties.
+Chronological split boundaries remain to be selected before model evaluation.
 
 ## Evaluation approach
 

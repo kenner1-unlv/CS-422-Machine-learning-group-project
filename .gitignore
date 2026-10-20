@@ -2,3 +2,7 @@
 data/raw/
 __pycache__/
 *.py[cod]
+
+# Rebuilt locally from tracked processed inputs
+data/study_sets/
+reports/coverage/

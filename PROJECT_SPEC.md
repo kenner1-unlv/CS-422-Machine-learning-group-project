@@ -1,5 +1,18 @@
 # Project Specification: Early-Season County-Level Corn Yield Forecasting
 
+## Selected data scope (October 20, 2026)
+
+The primary cohort is the 393 counties with complete observed yield and
+January-August weather for every year in 2000-2025 (10,218 county-years).
+Secondary experiments use the nested 90%, 80%, and largest-available sets under
+the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
+and the README for counts and reproduction commands. This decision supersedes
+references below to geographic scope and modeling period being undecided.
+Chronological split boundaries, feature definitions, and model results remain
+pending. Coverage experiments must report both their own evaluation populations
+and comparable shared held-out county-years.
+
+
 ## 1. Purpose
 
 Build and evaluate reproducible machine-learning models that estimate annual
