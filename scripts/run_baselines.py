@@ -1,4 +1,5 @@
 """Train on 2000-2016, select using 2017-2020, evaluate frozen models."""
+import argparse
 import csv
 import hashlib
 import json
@@ -33,13 +34,20 @@ def write_csv(path, rows):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--coverage-set', choices=['primary_100', 'expanded_90', 'expanded_80', 'largest_available'])
+    args = parser.parse_args()
     config = json.loads((ROOT / 'config/baselines.json').read_text())
-    if config['coverage_set'] != 'primary_100' or config['refit_on_validation']:
-        raise ValueError('This initial experiment requires the primary cohort and training-only fits')
+    if args.coverage_set:
+        config['coverage_set'] = args.coverage_set
+    if config['refit_on_validation']:
+        raise ValueError('This protocol requires training-only fits')
     splits = json.loads((ROOT / 'config/splits.json').read_text())
     manifest = json.loads((ROOT / 'data/features/feature_manifest.json').read_text())
     source = ROOT / 'data/features' / config['coverage_set']
-    out = ROOT / 'results' / 'primary_100_baselines'
+    out = ROOT / 'results' / (config['coverage_set'] + '_baselines')
+    split_summary = json.loads((ROOT / 'data/study_sets/split_summary.json').read_text())
+    expected_counts = {p: s['county_years'] for p, s in split_summary['sets'][config['coverage_set']].items()}
     (out / 'models').mkdir(parents=True, exist_ok=True)
     tuning, decisions, fitted, datasets, hashes = [], {}, {}, {}, {}
     # Selection stage never evaluates test predictions or test metrics.
@@ -56,8 +64,8 @@ def main():
             year = int(r['year'])
             if [p for p, (lo, hi) in splits['partitions'].items() if lo <= year <= hi] != [r['partition']]:
                 raise ValueError('Invalid partition')
-        if {p: int(m.sum()) for p, m in masks.items()} != {'train': 6681, 'validation': 1572, 'test': 1965}:
-            raise ValueError('Primary split counts changed')
+        if {p: int(m.sum()) for p, m in masks.items()} != expected_counts:
+            raise ValueError('Coverage-set split counts changed')
         y = np.array([float(r['yield_bu_per_acre']) for r in rows])
         datasets[cutoff] = (rows, masks, y)
         choices = []
@@ -112,7 +120,7 @@ def main():
                 predictions.append({'county_fips': r['county_fips'], 'year': r['year'], 'cutoff_month': cutoff, 'partition': r['partition'], 'variant': variant, 'model': model, 'observed_yield': actual, 'predicted_yield': float(pred), 'residual_observed_minus_predicted': float(actual - pred)})
     for filename, records in [('metrics.csv', scores), ('metrics_by_year.csv', annual), ('predictions.csv', predictions), ('scaling.csv', scales), ('coefficients.csv', coefficients)]:
         write_csv(out / filename, records)
-    lines = ['# Primary cohort regression baselines', '', '393 complete counties; train 2000-2016, validation 2017-2020, test 2021-2025.', '', 'Scaling and models fit only training data. Ridge alpha selected by validation MAE. No refit on validation years. Weather-only is the core comparison; time trend is a named secondary variant. MAE and RMSE are in bushels per acre.', '', '| Cutoff | Variant | Model | Alpha | Validation MAE | Test MAE | Test RMSE | Test n |', '|---|---|---|---:|---:|---:|---:|---:|']
+    lines = ['# ' + config['coverage_set'] + ' regression baselines', '', 'Train 2000-2016, validation 2017-2020, test 2021-2025.', '', 'Scaling and models fit only training data. Ridge alpha selected by validation MAE. No refit on validation years. Weather-only is the core comparison; time trend is a named secondary variant. MAE and RMSE are in bushels per acre.', '', '| Cutoff | Variant | Model | Alpha | Validation MAE | Test MAE | Test RMSE | Test n |', '|---|---|---|---:|---:|---:|---:|---:|']
     for r in scores:
         if r['partition'] == 'test':
             v = next(v for v in scores if v['partition'] == 'validation' and all(v[k] == r[k] for k in ('cutoff_month', 'variant', 'model')))

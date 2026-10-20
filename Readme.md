@@ -1,5 +1,65 @@
 # Early-Season County-Level Corn Yield Forecasting
 
+## Completed coverage comparisons: Linear and Ridge
+
+All four coverage stages have now been run using the same features, train
+2000-2016, validation 2017-2020, training-only scaling, and Ridge tuning grid.
+Each set selects its own Ridge alpha using its own validation rows. The
+published 393-county baseline is unchanged.
+
+**Shared 393-county test population, July forecasts with year trend:**
+Every row below evaluates the same 1,965 county-years from 2021-2025.
+MAE is in bushels per acre; lower is better.
+
+| Training cohort | Training county-years | Linear MAE | Ridge MAE |
+|---|---:|---:|---:|
+| Primary: 393 complete counties | 6,681 | 24.75 | 24.77 |
+| 90% coverage | 14,801 | 25.86 | 25.85 |
+| 80% coverage | 21,087 | 27.29 | 27.40 |
+| Largest available | 30,108 | 29.23 | 29.53 |
+
+On these fixed primary test rows, broader training increased MAE at every
+cutoff for both regression models and both feature variants. This observation
+does not establish statistical significance or prove why performance changed.
+More observations did not automatically improve these models on the primary
+population. The complete-county cohort remains the preselected main experiment.
+
+The [full comparison](results/coverage_comparison/README.md) reports all four
+cutoffs and both variants on two populations:
+
+- **Shared 393-county test rows:** holds the evaluated examples constant.
+- **Each set's own test rows:** describes performance across that broader
+  population; its scores are not directly comparable as evidence of a training
+  improvement because the tested counties also change.
+
+Own test counts are 1,965 (primary), 4,084 (90%), 5,517 (80%), and 6,891
+(largest), each across 2021-2025. Full-precision MAE, RMSE, deltas, yearly
+comparisons and prediction-file hashes are included in the comparison folder.
+
+Individual results, predictions, scalers and fitted models:
+
+- [90% coverage results](results/expanded_90_baselines/README.md)
+- [80% coverage results](results/expanded_80_baselines/README.md)
+- [Largest-available results](results/largest_available_baselines/README.md)
+
+### Reproduce the broader runs
+
+After generating the shared feature tables and installing modeling requirements:
+
+```powershell
+python scripts/run_baselines.py --coverage-set expanded_90
+python scripts/run_baselines.py --coverage-set expanded_80
+python scripts/run_baselines.py --coverage-set largest_available
+python scripts/compare_coverage_baselines.py
+```
+
+See [COVERAGE_BASELINE_RUNS.md](COVERAGE_BASELINE_RUNS.md) for the protocol.
+These commands preserve the primary result files. The original test period was
+already inspected before these follow-up coverage runs; the comparisons are
+not a fresh untouched holdout. No test outcomes are used for Ridge tuning.
+Extreme-weather subgroup analysis and the other team algorithms remain pending.
+
+
 ## Initial Linear and Ridge results: 393 complete counties
 
 These are the first completed model runs, using train 2000-2016, validation
@@ -49,7 +109,7 @@ scripts themselves still use only the standard library.
 **The final test results have now been inspected.** Keep this run as the initial
 baseline. Do not tune against these scores and subsequently describe these test
 years as untouched. Further experimental changes must be labeled and reported
-transparently. Other algorithms and larger coverage-set runs are still pending.
+transparently. Larger coverage-set regression runs are complete; other team algorithms are still pending.
 
 
 ## Shared chronological split
@@ -173,7 +233,7 @@ county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
 
 The initial Linear and Ridge runs on the primary cohort are complete;
-secondary coverage runs and other team models are still planned. Larger sample size does not by itself guarantee better results.
+secondary coverage regression runs are also complete; other team models are still planned. Larger sample size does not by itself guarantee better results.
 See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
 separate future experiment for predicting eligible missing-year yields.
 
@@ -345,5 +405,5 @@ any thresholds from training information, then apply those fixed rules to
 validation and test examples. That evaluation definition remains unfinished.
 Daily heat-day counts, growing-degree days, and prior yields are future
 feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
-for the primary cohort. Shared-row comparisons across broader coverage sets
-and the other team models remain to implement.
+for the primary cohort. Shared-row comparisons across broader coverage sets are complete for Linear
+and Ridge; the other team models remain to implement.

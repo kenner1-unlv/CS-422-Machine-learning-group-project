@@ -1,0 +1,14 @@
+{
+  "predictions_sha256": {
+    "results\\primary_100_baselines\\predictions.csv": "6fc6158f534e65460a751bd50bf294666874f3f2299f457f3afae96ff860859c",
+    "results\\expanded_90_baselines\\predictions.csv": "377c8d4e75cf41e705e4a96eb2cd2de9d208d6a46a0ddc41f03d79ab09d1f11b",
+    "results\\expanded_80_baselines\\predictions.csv": "cbd4dd81772ffb58926040dbe7ab6e1ad4b92514a35424962af99d4af74592f4",
+    "results\\largest_available_baselines\\predictions.csv": "bac830939fe6ee47415a62b4dbfa9f4c2a1b41cd0dd45b2ffad45a0dbfa81046"
+  },
+  "years": [
+    2021,
+    2025
+  ],
+  "shared_county_years": 1965,
+  "note": "Same feature recipe, years, scaling procedure and tuning grid; scalers and coefficients fit separately to each training population. Ridge alpha selected within each set using its validation rows. Existing primary results are read-only."
+}

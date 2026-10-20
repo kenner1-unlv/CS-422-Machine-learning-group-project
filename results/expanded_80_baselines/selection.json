@@ -1,0 +1,283 @@
+{
+  "config": {
+    "coverage_set": "expanded_80",
+    "variants": [
+      "weather_only",
+      "weather_plus_trend"
+    ],
+    "ridge_alphas": [
+      0.001,
+      0.01,
+      0.1,
+      1,
+      10,
+      100,
+      1000,
+      10000,
+      100000
+    ],
+    "selection_metric": "validation_MAE",
+    "refit_on_validation": false
+  },
+  "ridge_tie_break": "validation MAE, validation RMSE, then smaller alpha",
+  "decisions": {
+    "5": {
+      "ridge_by_variant": {
+        "weather_only": {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 0.1,
+          "mae": 33.12959937518694,
+          "rmse": 39.48681751832152,
+          "n": 4603
+        },
+        "weather_plus_trend": {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 0.001,
+          "mae": 26.684741975998953,
+          "rmse": 32.734079229767595,
+          "n": 4603
+        }
+      },
+      "preferred_regression_by_validation": {
+        "variant": "weather_plus_trend",
+        "model": "linear",
+        "alpha": null,
+        "mae": 26.68040626461743,
+        "rmse": 32.73192895315105,
+        "n": 4603
+      },
+      "all_candidates": [
+        {
+          "variant": "weather_only",
+          "model": "linear",
+          "alpha": null,
+          "mae": 33.13174446710845,
+          "rmse": 39.490067335233626,
+          "n": 4603
+        },
+        {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 0.1,
+          "mae": 33.12959937518694,
+          "rmse": 39.48681751832152,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "linear",
+          "alpha": null,
+          "mae": 26.68040626461743,
+          "rmse": 32.73192895315105,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 0.001,
+          "mae": 26.684741975998953,
+          "rmse": 32.734079229767595,
+          "n": 4603
+        }
+      ]
+    },
+    "6": {
+      "ridge_by_variant": {
+        "weather_only": {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 32.11574336339198,
+          "rmse": 38.93359689750063,
+          "n": 4603
+        },
+        "weather_plus_trend": {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 26.331939020824464,
+          "rmse": 32.59581841272249,
+          "n": 4603
+        }
+      },
+      "preferred_regression_by_validation": {
+        "variant": "weather_plus_trend",
+        "model": "ridge",
+        "alpha": 100,
+        "mae": 26.331939020824464,
+        "rmse": 32.59581841272249,
+        "n": 4603
+      },
+      "all_candidates": [
+        {
+          "variant": "weather_only",
+          "model": "linear",
+          "alpha": null,
+          "mae": 32.12473950547149,
+          "rmse": 38.956900350396836,
+          "n": 4603
+        },
+        {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 32.11574336339198,
+          "rmse": 38.93359689750063,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "linear",
+          "alpha": null,
+          "mae": 26.38822642691801,
+          "rmse": 32.76878309391261,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 26.331939020824464,
+          "rmse": 32.59581841272249,
+          "n": 4603
+        }
+      ]
+    },
+    "7": {
+      "ridge_by_variant": {
+        "weather_only": {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 33.78894000274258,
+          "rmse": 40.23892075930895,
+          "n": 4603
+        },
+        "weather_plus_trend": {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 27.004241199708016,
+          "rmse": 32.96037294940606,
+          "n": 4603
+        }
+      },
+      "preferred_regression_by_validation": {
+        "variant": "weather_plus_trend",
+        "model": "ridge",
+        "alpha": 10,
+        "mae": 27.004241199708016,
+        "rmse": 32.96037294940606,
+        "n": 4603
+      },
+      "all_candidates": [
+        {
+          "variant": "weather_only",
+          "model": "linear",
+          "alpha": null,
+          "mae": 33.81289966689225,
+          "rmse": 40.27586490309601,
+          "n": 4603
+        },
+        {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 33.78894000274258,
+          "rmse": 40.23892075930895,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "linear",
+          "alpha": null,
+          "mae": 27.004250782365478,
+          "rmse": 32.97972807594255,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 10,
+          "mae": 27.004241199708016,
+          "rmse": 32.96037294940606,
+          "n": 4603
+        }
+      ]
+    },
+    "8": {
+      "ridge_by_variant": {
+        "weather_only": {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 32.54209160647096,
+          "rmse": 38.98326546338593,
+          "n": 4603
+        },
+        "weather_plus_trend": {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 26.920282015427837,
+          "rmse": 32.96814647397579,
+          "n": 4603
+        }
+      },
+      "preferred_regression_by_validation": {
+        "variant": "weather_plus_trend",
+        "model": "ridge",
+        "alpha": 100,
+        "mae": 26.920282015427837,
+        "rmse": 32.96814647397579,
+        "n": 4603
+      },
+      "all_candidates": [
+        {
+          "variant": "weather_only",
+          "model": "linear",
+          "alpha": null,
+          "mae": 32.63836690882724,
+          "rmse": 39.18136755194082,
+          "n": 4603
+        },
+        {
+          "variant": "weather_only",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 32.54209160647096,
+          "rmse": 38.98326546338593,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "linear",
+          "alpha": null,
+          "mae": 26.996553759394637,
+          "rmse": 33.17224087002694,
+          "n": 4603
+        },
+        {
+          "variant": "weather_plus_trend",
+          "model": "ridge",
+          "alpha": 100,
+          "mae": 26.920282015427837,
+          "rmse": 32.96814647397579,
+          "n": 4603
+        }
+      ]
+    }
+  },
+  "input_sha256": {
+    "cutoff_05.csv": "3bb53a30b62ce1bc22cf4cd1ee7285340a1925e63ae642086e8918fead105730",
+    "cutoff_06.csv": "82fd1e807ad7733dbcef0e5d447a3a7da6267b9677e16318a585e14720110a3d",
+    "cutoff_07.csv": "2748d3c10ac6857d708c8e6167363fbcbeeb78cc26ee2838017234350b61c0c4",
+    "cutoff_08.csv": "e43991ff8204802c401cd6666f541cfeca01538ca78265ae7f12ff1ad5e7aa69"
+  },
+  "python": "3.12.14",
+  "numpy": "2.5.4",
+  "sklearn": "1.9.1",
+  "note": "All fits and scalers use training years only. Choices fixed before any test metrics are computed."
+}

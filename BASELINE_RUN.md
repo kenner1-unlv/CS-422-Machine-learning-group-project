@@ -10,6 +10,6 @@ Use the feature manifest's predictor allowlists. A saved pipeline expects its se
 
 All held-out results from this run are now visible. Preserve them as the initial baseline. Any later feature changes or tuning must be labeled as a subsequent exploratory experiment; do not repeatedly inspect these same test years while claiming they remain untouched.
 
-Time trend is not a causal measure of climate change. These runs do not yet evaluate extreme-weather groups, other team models, or larger coverage sets. Monthly/cumulative feature redundancy can destabilize ordinary-regression coefficients; prediction metrics do not establish meaningful individual coefficients. Save and report both feature variants rather than selecting a winner from test error.
+Time trend is not a causal measure of climate change. These initial primary-cohort runs do not evaluate extreme-weather groups or other team models. Broader coverage regression runs are now documented in COVERAGE_BASELINE_RUNS.md and results/coverage_comparison/README.md. Monthly/cumulative feature redundancy can destabilize ordinary-regression coefficients; prediction metrics do not establish meaningful individual coefficients. Save and report both feature variants rather than selecting a winner from test error.
 
 The fixed dependency versions record this run's environment; environment metadata and input hashes are also in selection.json. Tests can be run with `python -m unittest discover -s tests -v` after installing the modeling requirements.
