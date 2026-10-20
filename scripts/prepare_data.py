@@ -167,7 +167,7 @@ def read_yield_panel(path: Path) -> tuple[list[dict[str, str]], dict[str, int]]:
                 for key, value in original.items()
                 if key is not None
             }
-            source_county_fips = row["county_fips"]
+            source_county_fips = row.get("source_county_fips") or row["county_fips"]
             county_ansi = row["county_ansi"].zfill(3)
             state_fips = row["state_fips"].zfill(2)
             county_fips = COUNTY_FIPS_ALIASES.get(
