@@ -41,7 +41,7 @@ Secondary experiments use the nested 90%, 80%, and largest-available sets under
 the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
 and the README for counts and reproduction commands. This decision supersedes
 references below to geographic scope and modeling period being undecided.
-Chronological split boundaries are fixed below; feature definitions and model results remain pending. Coverage experiments must report both their own evaluation populations
+Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); model results and extreme-weather subgroup definitions remain pending. Coverage experiments must report both their own evaluation populations
 and comparable shared held-out county-years.
 
 

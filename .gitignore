@@ -6,3 +6,4 @@ __pycache__/
 # Rebuilt locally from tracked processed inputs
 data/study_sets/
 reports/coverage/
+data/features/

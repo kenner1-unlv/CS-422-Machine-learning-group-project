@@ -92,6 +92,7 @@ From the repository root, with Python 3.10 or newer:
 python scripts/audit_coverage.py
 python scripts/build_study_sets.py
 python scripts/build_splits.py
+python scripts/build_features.py
 ```
 
 These commands use only the standard library and the three processed input
@@ -240,3 +241,57 @@ splits, and evaluation protocol.
 
 We will document these limitations and avoid interpreting predictive
 relationships as causal effects.
+
+## Cutoff feature tables
+
+The initial shared feature recipe is documented in [FEATURE_PLAN.md](FEATURE_PLAN.md).
+After building study sets and splits, run `python scripts/build_features.py`.
+Use the predictor allowlists in `data/features/feature_manifest.json`; targets and
+county/year/split metadata must not be passed as model predictors. Weather-only
+and weather-plus-time-trend variants are available for validation comparison.
+
+
+### Shared feature contract
+
+All models and coverage sets use [config/features.json](config/features.json)
+and the same feature builder. January-March contributes three preseason
+features; each month from April through the cutoff contributes six weather
+features; April-to-cutoff contributes six cumulative features.
+
+| Cutoff | Weather-only predictors | Weather plus year trend |
+|---|---:|---:|
+| May | 21 | 22 |
+| June | 27 | 28 |
+| July | 33 | 34 |
+| August | 39 | 40 |
+
+Start with the weather-only variant as the shared core comparison. Evaluate
+weather-plus-trend as a named secondary variant consistently across models.
+Use training/validation data for all feature and model choices; the final
+2021-2025 test remains untouched. Report the feature variant with every score.
+Only use the manifest's explicit predictor list. Do not pass target, county ID,
+raw year, cutoff month, or partition metadata into a model. Train a separate
+model for each cutoff. All models must use identical evaluation rows within a
+coverage set and cutoff.
+
+Temperature averages are weighted by calendar days. The tests verify future
+weather cannot change earlier-cutoff features; the builder checks that shared
+primary-cohort rows have identical features across the larger coverage sets.
+Run `python -m unittest discover -s tests -v` to check the shared pipeline.
+
+### Preparation status and remaining work
+
+Source validation, coverage filtering, chronological assignments, and the
+initial feature tables are ready for baseline training. No missing-value
+imputation is needed in this complete-weather version. Fit any scaling or
+other learned preprocessing on training data only inside each model pipeline;
+never standardize using the entire table before splitting. Use the same
+weather feature values across algorithms, with model-appropriate scaling.
+
+Before reporting extreme-weather reliability, define hot/dry/wet groups and
+any thresholds from training information, then apply those fixed rules to
+validation and test examples. That evaluation definition remains unfinished.
+Daily heat-day counts, growing-degree days, and prior yields are future
+feature extensions, not prerequisites for the first baseline. Training,
+metrics, simple baselines, and shared-row comparisons remain to implement.
+The published scripts prepare data; they do not yet train or score models.
