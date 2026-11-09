@@ -120,7 +120,7 @@ models where applicable.
 
 - [x] Linear and Ridge Regression — Russell Kennedy: all four coverage sets, both feature variants, all cutoffs.
 - [ ] Random Forest Regression — Tylie Anderson.
-- [ ] Gradient Boosting Regression — Alexander Aquiningoc.
+- [ ] Gradient Boosting Regression — Alexander Aquiningoc: starting
 - [ ] Neural Network Regression — Lester Iwuajoku.
 - [x] Select Ridge alpha using validation MAE; preserve training-only fits.
 - [ ] Apply the same no-test-tuning rule to the remaining team algorithms.
