@@ -1,10 +1,10 @@
 # Project Roadmap
 
-## Status as of October 20, 2026
+## Status as of November 11, 2026
 
-- Completed: validated sources, coverage audit, four staged datasets, fixed splits, cutoff features, Linear/Ridge and training-mean runs, shared-population comparisons, and exploratory hot/dry/wet evaluation.
-- Results: [regression coverage comparison](results/coverage_comparison/README.md) and [weather groups](results/weather_groups/README.md).
-- Remaining core work: Random Forest, Gradient Boosting, Neural Network, their shared-protocol comparisons and subgroup evaluation, uncertainty discussion/analysis, final figures and report.
+- Completed: validated sources, coverage audit, four staged datasets, fixed splits, cutoff features, Linear/Ridge and training-mean runs, shared-population comparisons, exploratory hot/dry/wet evaluation, and primary-cohort Gradient Boosting with Linear comparison and weather groups.
+- Results: [regression coverage comparison](results/coverage_comparison/README.md), [weather groups](results/weather_groups/README.md), and [Gradient Boosting vs Linear](results/gradient_boosting_comparison/README.md).
+- Remaining core work: Random Forest and Neural Network, their shared-protocol comparisons and subgroup evaluation, uncertainty discussion/analysis, final figures and report.
 - Optional extensions: daily heat metrics, prior-yield predictors, calibrated prediction intervals and missing-year reconstruction.
 - Overall test results are already visible. Preserve the baseline and label subsequent changes transparently. No inference of statistical significance has been completed.
 
@@ -120,7 +120,7 @@ models where applicable.
 
 - [x] Linear and Ridge Regression — Russell Kennedy: all four coverage sets, both feature variants, all cutoffs.
 - [ ] Random Forest Regression — Tylie Anderson.
-- [ ] Gradient Boosting Regression — Alexander Aquiningoc: starting
+- [x] Gradient Boosting Regression — Alexander Aquiningoc: primary cohort, both shared variants plus an exploratory trend-residual variant, all cutoffs.
 - [ ] Neural Network Regression — Lester Iwuajoku.
 - [x] Select Ridge alpha using validation MAE; preserve training-only fits.
 - [ ] Apply the same no-test-tuning rule to the remaining team algorithms.
