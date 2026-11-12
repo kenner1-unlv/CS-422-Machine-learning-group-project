@@ -46,6 +46,16 @@ changes. All errors below are MAE in bushels per acre unless stated otherwise.
    regularization alone did not substantially improve prediction here; this
    is not evidence that the algorithms are generally equivalent.
 
+6. **Gradient Boosting helped most with weather alone, and less with the trend.**
+   On weather-only features, tuned Gradient Boosting lowered July test MAE from
+   **37.04 (Linear) to 33.87**, and beat Linear at every cutoff. With the year
+   trend it won May/June but lost July (**25.26 vs 24.75**) and August.
+   Trees cannot extrapolate the trend past 2016; the year feature had zero
+   validation permutation importance. An exploratory Gradient Boosting-only
+   variant (training-only linear trend plus boosted weather residuals) reached
+   **21.79** in July. It is outside the shared protocol and should not be read
+   as a shared-model ranking. Gradient Boosting was **worse in dry seasons**
+   (July dry MAE **36.02 vs 28.16** for Linear), driven mostly by 2023.
 **Interpretation:** These baselines capture useful patterns relative to the
 training-mean reference, but their predictions retain substantial errors,
 especially in dry groups. MAE is an average absolute forecasting error, not
@@ -80,10 +90,10 @@ counties is not directly comparable with a score on the primary population.
   post-cutoff observations entering features, but does not establish real-time
   data availability. Test outcomes are now visible; subsequent changes must be
   described transparently, rather than treated as another untouched test.
-- **Scope of completed work:** these findings concern Linear and Ridge under
-  the current protocol. Random Forest, Gradient Boosting and Neural Network
-  comparisons, formal uncertainty analysis, and the final synthesis remain
-  unfinished. No causal or statistical-significance claims are established.
+- **Scope of completed work:** findings 1-5 concern Linear and Ridge, and
+  finding 6 concerns Gradient Boosting, under the current protocol. Random
+  Forest and Neural Network comparisons, formal uncertainty analysis, and the
+  final synthesis remain unfinished. No causal or statistical-significance claims are established.
 
 Supporting results: [primary regressions](results/primary_100_baselines/README.md),
 [coverage comparisons](results/coverage_comparison/README.md), and
@@ -141,7 +151,7 @@ are estimated from only 10-17 available training years, with no minimum
 consecutive-year requirement. Missing reporting years can affect the reference.
 Small groups (fewer than 30 records or three represented years) are flagged.
 County-years are not independent weather events; formal uncertainty estimates
-and the other team models remain unfinished.
+and the remaining team models remain unfinished.
 
 ### Reproduce weather-group evaluation
 
@@ -269,6 +279,51 @@ scripts themselves still use only the standard library.
 baseline. Do not tune against these scores and subsequently describe these test
 years as untouched. Further experimental changes must be labeled and reported
 transparently. Larger coverage-set regression runs are complete; other team algorithms are still pending.
+
+
+## Gradient Boosting results: 393 complete counties
+
+Gradient Boosting uses the same features, split years, cutoffs and test rows as
+the Linear/Ridge baselines. Hyperparameters (trees, learning rate, depth,
+subsample, minimum leaf size) were chosen by validation MAE on 2017-2020, with
+`random_state=42`. `selection.json` was written before any test prediction,
+and test scores were computed once. No refit on validation years.
+
+**Test MAE in bushels per acre (lower is better), 1,965 county-years:**
+
+| Forecast cutoff | Linear: weather only | GB: weather only | Linear: weather + trend | GB: weather + trend | GB trend residual (exploratory) |
+|---|---:|---:|---:|---:|---:|
+| May | 40.28 | 37.75 | 27.00 | 25.90 | 23.27 |
+| June | 40.02 | 36.31 | 26.05 | 25.46 | 22.37 |
+| July | 37.04 | 33.87 | 24.75 | 25.26 | 21.79 |
+| August | 37.40 | 33.69 | 24.82 | 25.26 | 21.53 |
+
+**July test MAE by weather group (weather + trend):** normal 24.37 Linear /
+23.30 GB, dry 28.16 / 36.02, hot 23.08 / 19.93, wet 22.85 / 20.89.
+246 of 380 dry test county-years are from 2023, when many counties were drier
+than in any training season but yields stayed high. Gradient Boosting
+under-predicted those rows more than Linear did. One dry year dominates this
+group, so this is not a general drought conclusion.
+
+Caveats: the test period had already been inspected for Linear/Ridge.
+Training MAE (about 10) is far below test MAE (about 25), and four validation
+years are a small tuning sample. The trend-residual variant is exploratory and
+Gradient Boosting-only. Primary cohort only.
+
+Method, selected settings, figures, limitations and reproduction steps:
+[GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md). Results:
+[results/primary_100_gradient_boosting/](results/primary_100_gradient_boosting/README.md)
+and [results/gradient_boosting_comparison/](results/gradient_boosting_comparison/README.md).
+
+### Reproduce the Gradient Boosting run
+
+After generating features:
+
+```powershell
+python -m pip install -r requirements-gradient-boosting.txt
+python scripts/run_gradient_boosting.py
+python scripts/compare_gradient_boosting.py
+```
 
 
 ## Shared chronological split
