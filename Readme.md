@@ -1,330 +1,146 @@
 # Early-Season County-Level Corn Yield Forecasting
 
-## What we have learned so far
+CS 422 machine-learning group project, Fall 2026. Predict county corn yield
+before the season ends, and compare reliability across forecast dates and
+weather conditions. This README is the shared results hub; detailed model
+methods and findings live in the linked reports.
 
-These are preliminary findings from Linear and Ridge Regression, evaluated on
-2021-2025 after training on 2000-2016 and tuning on 2017-2020. They describe
-forecasting performance under our current feature recipe, not causes of yield
-changes. All errors below are MAE in bushels per acre unless stated otherwise.
+## Model reports and completion status
 
-1. **The time-trend feature materially improved the initial forecasts.** For
-   July on the primary 393 counties, Linear Regression improved from
-   **37.04 to 24.75**, a **33.2% reduction in MAE**. Weather alone
-   misses important changes over time in this experiment. Year is a proxy for
-   multiple possible influences, including agricultural practices and changing
-   conditions; this does not attribute the improvement to climate. A trend-only
-   comparator has not been run, so we cannot isolate weather's incremental
-   predictive contribution beyond the time trend from this comparison alone.
+| Contribution | Owner | Report | Current scope |
+|---|---|---|---|
+| Linear and Ridge Regression | Russell Kennedy | [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md) | Primary + three broader coverage sets; weather-group evaluation |
+| Gradient Boosting Regression | Alexander Aquiningoc | [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md) | Primary cohort; shared variants + separate exploratory trend-residual variant |
+| Random Forest Regression | Tylie Anderson | [Submission slot below](#random-forest-regression-pending) | Results pending; not included in a ranking |
+| Neural Network Regression | Lester Iwuajoku | [Submission slot below](#neural-network-regression-pending) | Results pending; not included in a ranking |
 
-2. **More training counties did not improve these regressions on the primary
-   population.** On the same 1,965 held-out county-years, July Linear Regression
-   with the trend had MAE **24.75** using primary-cohort training versus
-   **29.23** using the largest training set. The broader runs had higher
-   shared-population MAE at every cutoff for both algorithms and both feature
-   variants. This supports retaining the preselected primary experiment; it
-   does not prove that missing reporting years caused the difference. Broader
-   sets change geographic and yield distributions as well as sample size.
+## Shared comparison: Linear/Ridge versus Gradient Boosting
 
-3. **Dry conditions exposed a forecasting weakness.** The primary July Linear
-   model with trend had MAE **28.16** in the dry group (380 county-years)
-   versus **24.37** in the normal group (1261 county-years), about
-   **15.6% higher error**. Dry-group MAE exceeded normal-group MAE at
-   every cutoff for both primary trend models. Hot and wet groups did not
-   consistently have higher errors. The combined extreme group was slightly
-   easier than normal in May and harder in June-August, so the findings do not
-   support saying every unusual-weather group is harder to predict.
+**Same evaluation population:** 393 complete counties, train 2000-2016
+(6,681 county-years), validation 2017-2020 (1,572), test 2021-2025 (1,965 per
+cutoff). Models share cutoff feature values and observed targets. Learned
+preprocessing is fitted on training data only; Ridge and Gradient Boosting
+settings are selected by validation MAE, with no refit on validation years.
+Gradient Boosting here means Alex's validation-tuned `gbr_tuned`, not the
+default model. MAE and RMSE are in bushels per acre; lower is better.
 
-4. **Later forecasts helped up to a point.** Primary Linear Regression with
-   trend improved from **27.00 in May** to **24.75 in July**,
-   then had **24.82 in August**. More late-season weather did not guarantee
-   lower error. These are separately fitted cutoff models with different
-   feature counts, not an isolated causal test of adding one month's weather.
+### Core comparison: weather-only test MAE
 
-5. **Ridge added little over ordinary Linear Regression for this recipe.**
-   July primary trend-model MAE was **24.75 for Linear** and
-   **24.77 for Ridge**. Similar results across the cutoffs suggest
-   regularization alone did not substantially improve prediction here; this
-   is not evidence that the algorithms are generally equivalent.
+| Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
+|---|---:|---:|---:|---|---|
+| May | 40.28 | 40.28 | 37.75 | Pending | Pending |
+| June | 40.02 | 40.01 | 36.31 | Pending | Pending |
+| July | 37.04 | 37.19 | 33.87 | Pending | Pending |
+| August | 37.40 | 37.53 | 33.69 | Pending | Pending |
 
-6. **Gradient Boosting helped most with weather alone, and less with the trend.**
-   On weather-only features, tuned Gradient Boosting lowered July test MAE from
-   **37.04 (Linear) to 33.87**, and beat Linear at every cutoff. With the year
-   trend it won May/June but lost July (**25.26 vs 24.75**) and August.
-   Trees cannot extrapolate the trend past 2016; the year feature had zero
-   validation permutation importance. An exploratory Gradient Boosting-only
-   variant (training-only linear trend plus boosted weather residuals) reached
-   **21.79** in July. It is outside the shared protocol and should not be read
-   as a shared-model ranking. Gradient Boosting was **worse in dry seasons**
-   (July dry MAE **36.02 vs 28.16** for Linear), driven mostly by 2023.
-**Interpretation:** These baselines capture useful patterns relative to the
-training-mean reference, but their predictions retain substantial errors,
-especially in dry groups. MAE is an average absolute forecasting error, not
-crop loss or an accuracy percentage. A lower test MAE on a broader set's own
-counties is not directly comparable with a score on the primary population.
+### Shared secondary comparison: weather plus year-trend test MAE
 
-### Limits on these findings
+| Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
+|---|---:|---:|---:|---|---|
+| May | 27.00 | 26.99 | 25.90 | Pending | Pending |
+| June | 26.05 | 26.18 | 25.46 | Pending | Pending |
+| July | 24.75 | 24.77 | 25.26 | Pending | Pending |
+| August | 24.82 | 25.01 | 25.26 | Pending | Pending |
 
-- **Only five test years:** counties share weather and other influences within
-  years. Thousands of county-years are not thousands of independent weather
-  events. We have not established statistical significance or formal confidence
-  intervals; small numerical differences should not be treated as decisive.
-- **Exploratory weather subgroups:** definitions were fixed before subgroup
-  errors were computed, but after overall test scores were inspected. They
-  are statistical flags rather than official drought, flood or heat-wave
-  declarations. Thresholds use only 10-17 available training years, and groups
-  can overlap and change across forecast cutoffs. Their differences can reflect
-  county/year composition, not only weather severity. Insufficient-history
-  records are unclassified rather than silently treated as normal.
-- **Selected population:** the 393 complete counties are a retrospective
-  reporting-continuity cohort, not a representative sample of every US corn
-  county. They were selected using coverage across the full study period;
-  results should not be presented as real-time county eligibility or national
-  production forecasts. Actual county production errors require acreage data.
-- **Limited predictors:** no soil, management, irrigation, pests or seed
-  information is modeled. The first recipe uses monthly summaries and a common
-  April start, not local planting calendars or daily heat/drought-duration
-  measures. County averages hide within-county variation. Monthly/cumulative
-  predictors overlap, so individual regression coefficients may be unstable.
-- **Retrospective inputs and exposed test results:** historical weather may
-  have been revised after the forecast dates. Restricting dates prevents
-  post-cutoff observations entering features, but does not establish real-time
-  data availability. Test outcomes are now visible; subsequent changes must be
-  described transparently, rather than treated as another untouched test.
-- **Scope of completed work:** findings 1-5 concern Linear and Ridge, and
-  finding 6 concerns Gradient Boosting, under the current protocol. Random
-  Forest and Neural Network comparisons, formal uncertainty analysis, and the
-  final synthesis remain unfinished. No causal or statistical-significance claims are established.
+The training-mean reference is **42.29 MAE / 48.02 RMSE** at every cutoff.
+Full validation/test MAE, RMSE, yearly and subgroup results:
+[comparison report](results/gradient_boosting_comparison/README.md),
+[full-precision comparison CSV](results/gradient_boosting_comparison/comparison.csv).
 
-Supporting results: [primary regressions](results/primary_100_baselines/README.md),
-[coverage comparisons](results/coverage_comparison/README.md), and
-[weather groups](results/weather_groups/README.md). The linked folders contain
-full-precision metrics, sample counts, yearly results and reproduction details.
+### What the comparison actually shows
 
+- **Weather alone:** Gradient Boosting has lower test MAE at all four cutoffs.
+  July improves from 37.04 to 33.87 (8.6% lower MAE). Trees can represent
+  nonlinear thresholds and interactions that the additive baseline cannot;
+  the observed gain does not isolate which mechanism caused it.
+- **With the year trend:** neither method wins every cutoff. Gradient Boosting
+  has lower MAE in May/June; Linear has lower MAE in July/August. July RMSE is
+  **31.20 Linear versus 32.69 GB**. Even the metric matters: in June GB has
+  lower MAE but higher RMSE (**32.10 versus 31.74 Linear**).
+- **Trend handling matters more than the small Linear/Ridge difference.**
+  Linear's July MAE drops from 37.04 to 24.75 with the year term. Linear can
+  extrapolate that term; tree year splits cannot continue a trend beyond the
+  training range. This does not establish a causal climate effect. A common
+  trend-only comparator is still needed to isolate weather's added value.
+- **Dry-group performance reverses the overall impression.** For July with
+  trend, normal-group MAE is **24.37 Linear / 23.30 GB** (1,261 rows), while
+  dry-group MAE is **28.16 / 36.02** (380 rows). Of those dry rows, 246 are
+  from 2023. These overlapping, exploratory groups do not establish general
+  drought performance or statistical significance.
+- **Coverage is a separate experiment.** Broader regression training did not
+  improve error on the fixed primary test rows. GB has not run those broader
+  cohorts, so this is not a cross-model coverage conclusion.
 
-## Hot, dry and wet conditions: regression results
+### Exploratory result, outside the shared model ranking
 
-Weather-group evaluation is complete for Linear and Ridge across all four
-coverage sets and May/June/July/August cutoffs. Thresholds use only training
-weather (2000-2016), fitted once per county and cutoff from the largest set
-and applied consistently across the coverage stages:
+Alex also fitted a training-only linear trend, then boosted its weather
+residuals. Test MAE is **23.27 / 22.37 / 21.79 / 21.53** for May through
+August. That hybrid is promising, but it changes how the trend is handled and
+has not been applied consistently to the other methods. Keep it separate from
+the two shared tables; do not call it the confirmed best team model.
 
-- **Hot:** April-to-cutoff mean daily maximum temperature above the county
-  training 90th percentile.
-- **Dry:** April-to-cutoff rainfall below the county training 10th percentile.
-- **Wet:** April-to-cutoff rainfall above the county training 90th percentile.
-- **Normal:** none of those flags. Hot can overlap dry or wet.
-- **Unclassified:** fewer than 10 available training years; kept separate.
+### Evidence and limitations
 
-These are statistical weather flags, not official drought/flood/heat-wave
-classifications. Membership changes with the cutoff. The original models and
-predictions were not modified or retrained.
+For this documentation comparison, all **132 model/variant/cutoff/partition
+metric groups** were recomputed from the frozen prediction CSVs: counts, MAE
+and RMSE match their published metrics; there are no duplicate county-year
+keys per group, and all models/variants have identical county-year keys and
+observed targets within each cutoff and partition. The existing comparison
+script also ran successfully, including its baseline and weather-group checks.
+This checks saved-result consistency, not an independent retraining or proof
+that the original run was leakage-free. No saved predictions or models changed.
 
-**July, primary 393-county test set, weather plus year trend:**
-MAE is in bushels per acre. Groups overlap, so their counts are not additive.
+Only five test years are available, and counties within a year are correlated.
+No confidence intervals or significance tests establish a winner. The test
+results are already visible; subsequent design changes are exploratory. The
+complete-county cohort is retrospectively selected, not a national sample.
+Historical input revisions, missing soil/management predictors and correlated
+weather features also limit interpretation. See the method reports for details.
 
-| Group | County-years | Linear MAE | Ridge MAE |
-|---|---:|---:|---:|
-| normal | 1261 | 24.37 | 24.41 |
-| extreme_any | 704 | 25.42 | 25.42 |
-| hot | 158 | 23.08 | 23.11 |
-| dry | 380 | 28.16 | 28.25 |
-| wet | 231 | 22.85 | 22.70 |
-| hot_dry | 53 | 26.24 | 26.37 |
+The original environments are recorded in each `selection.json`; GB records
+scikit-learn 1.9.0 whereas the shared requirements pin 1.9.1. Do not assume a
+fresh fit or loading a saved estimator under different versions is identical.
+The comparison above uses saved predictions, not deserialized estimators.
 
-For the primary models with year trend, dry-group MAE exceeds normal-group
-MAE at every cutoff. The combined extreme group is not uniformly harder:
-its MAE is slightly lower than normal in May and higher in June-August.
-Hot and wet groups do not consistently have larger errors. These are
-descriptive differences; county/year composition and yield distributions
-differ across groups. No significance or causal conclusions are claimed.
+## Remaining model submission slots
 
-The [full weather-group report](results/weather_groups/README.md) includes
-primary and expanded sets, shared-393 and own-population comparisons,
-weather-only and trend variants, the mean baseline, validation/test scores,
-yearly MAE/RMSE, bias, thresholds, labels and sample counts. The largest set
-has 402 unclassified test county-years; these remain in overall scores.
+### Random Forest Regression (pending)
 
-**Exploratory follow-up:** group definitions were fixed before subgroup
-errors were computed, but after the overall test results had been inspected.
-They are not a predeclared confirmation on an untouched test set. Thresholds
-are estimated from only 10-17 available training years, with no minimum
-consecutive-year requirement. Missing reporting years can affect the reference.
-Small groups (fewer than 30 records or three represented years) are flagged.
-County-years are not independent weather events; formal uncertainty estimates
-and the remaining team models remain unfinished.
+**Owner: Tylie Anderson.** Add `RANDOM_FOREST.md` following the method-report
+structure used by Linear and Gradient Boosting: model rationale, features,
+training/validation selection, reproduction, results and limitations. Link the
+report here and fill both shared tables only once its held-out rows and metrics
+have been verified. No scores are currently claimed.
 
-### Reproduce weather-group evaluation
+### Neural Network Regression (pending)
 
-After generating features and all four baseline runs, run:
+**Owner: Lester Iwuajoku.** Add `NEURAL_NETWORK.md` with the same structure,
+including training-only scaling, architecture, seed and stopping/selection
+rule. Link the report here and fill both shared tables only after verification.
+No scores are currently claimed.
 
-```powershell
-python scripts/evaluate_weather_groups.py
-```
+### Common acceptance checklist for both remaining models
 
-Definitions are recorded in [config/weather_groups.json](config/weather_groups.json).
-Outputs are saved in `results/weather_groups/`. Tests check that held-out
-weather cannot affect fitted thresholds, compound labels are correct, and
-insufficient-history cases are not classified as normal. The evaluator checks
-population accounting, shared-label consistency and agreement with baseline
-overall metrics.
+- [ ] Use the shared primary cohort, chronological split, feature allowlists
+  and a separate model for each cutoff; label weather-only and trend variants.
+- [ ] Record training-only preprocessing, validation-only model selection,
+  seed, input hashes and package versions; declare any protocol deviation.
+- [ ] Save row-level predictions and MAE/RMSE/counts by partition and cutoff;
+  check exact county/year keys and observed targets against the baselines.
+- [ ] Report yearly and shared weather-group results with sample counts.
+- [ ] Keep exploratory variants separate; do not choose or tune from test
+  results and call the same years an untouched holdout.
+- [ ] Add the method report, reproducible commands and verified summary scores
+  to this README. Formal uncertainty analysis and final synthesis remain open.
 
+## Reproducing the completed contributions
 
-## Completed coverage comparisons: Linear and Ridge
-
-All four coverage stages have now been run using the same features, train
-2000-2016, validation 2017-2020, training-only scaling, and Ridge tuning grid.
-Each set selects its own Ridge alpha using its own validation rows. The
-published 393-county baseline is unchanged.
-
-**Shared 393-county test population, July forecasts with year trend:**
-Every row below evaluates the same 1,965 county-years from 2021-2025.
-MAE is in bushels per acre; lower is better.
-
-| Training cohort | Training county-years | Linear MAE | Ridge MAE |
-|---|---:|---:|---:|
-| Primary: 393 complete counties | 6,681 | 24.75 | 24.77 |
-| 90% coverage | 14,801 | 25.86 | 25.85 |
-| 80% coverage | 21,087 | 27.29 | 27.40 |
-| Largest available | 30,108 | 29.23 | 29.53 |
-
-On these fixed primary test rows, broader training increased MAE at every
-cutoff for both regression models and both feature variants. This observation
-does not establish statistical significance or prove why performance changed.
-More observations did not automatically improve these models on the primary
-population. The complete-county cohort remains the preselected main experiment.
-
-The [full comparison](results/coverage_comparison/README.md) reports all four
-cutoffs and both variants on two populations:
-
-- **Shared 393-county test rows:** holds the evaluated examples constant.
-- **Each set's own test rows:** describes performance across that broader
-  population; its scores are not directly comparable as evidence of a training
-  improvement because the tested counties also change.
-
-Own test counts are 1,965 (primary), 4,084 (90%), 5,517 (80%), and 6,891
-(largest), each across 2021-2025. Full-precision MAE, RMSE, deltas, yearly
-comparisons and prediction-file hashes are included in the comparison folder.
-
-Individual results, predictions, scalers and fitted models:
-
-- [90% coverage results](results/expanded_90_baselines/README.md)
-- [80% coverage results](results/expanded_80_baselines/README.md)
-- [Largest-available results](results/largest_available_baselines/README.md)
-
-### Reproduce the broader runs
-
-After generating the shared feature tables and installing modeling requirements:
-
-```powershell
-python scripts/run_baselines.py --coverage-set expanded_90
-python scripts/run_baselines.py --coverage-set expanded_80
-python scripts/run_baselines.py --coverage-set largest_available
-python scripts/compare_coverage_baselines.py
-```
-
-See [COVERAGE_BASELINE_RUNS.md](COVERAGE_BASELINE_RUNS.md) for the protocol.
-These commands preserve the primary result files. The original test period was
-already inspected before these follow-up coverage runs; the comparisons are
-not a fresh untouched holdout. No test outcomes are used for Ridge tuning.
-Exploratory weather-group analysis is complete for these regressions; formal uncertainty analysis and the other team algorithms remain pending.
-
-
-## Initial Linear and Ridge results: 393 complete counties
-
-These are the first completed model runs, using train 2000-2016, validation
-2017-2020, and final test 2021-2025. Every cutoff has 1,965 test county-years.
-Scaling and model fitting use training years only. Ridge alpha is selected
-by validation MAE; there is no refit on validation years.
-
-**Test MAE in bushels per acre (lower is better):**
-
-| Forecast cutoff | Linear: weather only | Ridge: weather only | Linear: weather + trend | Ridge: weather + trend |
-|---|---:|---:|---:|---:|
-| May | 40.28 | 40.28 | 27.00 | 26.99 |
-| June | 40.02 | 40.01 | 26.05 | 26.18 |
-| July | 37.04 | 37.19 | 24.75 | 24.77 |
-| August | 37.40 | 37.53 | 24.82 | 25.01 |
-
-The training-mean reference has test MAE **42.29** and RMSE **48.02** at
-every cutoff. Linear and Ridge produce very similar errors. The time-trend
-variant improves these forecasts substantially, while later cutoffs do not
-uniformly improve accuracy. The year trend does not establish a causal climate
-effect or isolate weather from changes in farming practices. These are overall
-errors; exploratory weather-group results are now reported above.
-
-See the [full results](results/primary_100_baselines/README.md) for validation
-scores, selected Ridge alphas, test RMSE, and sample counts. The result folder
-also includes annual metrics, row-level predictions, coefficients, scaling
-parameters, recorded validation decisions, input hashes, and fitted pipelines.
-
-### Reproduce the regression run
-
-Use Python 3.12 and install the recorded modeling dependencies:
-
-```powershell
-python -m pip install -r requirements-modeling.txt
-python scripts/build_study_sets.py
-python scripts/build_splits.py
-python scripts/build_features.py
-python scripts/run_baselines.py
-python -m unittest discover -s tests -v
-```
-
-The run is configured by [config/baselines.json](config/baselines.json).
-See [BASELINE_RUN.md](BASELINE_RUN.md) for scaling, tuning, and output details.
-The modeling dependencies are required for the full test suite; data-preparation
-scripts themselves still use only the standard library.
-
-**The final test results have now been inspected.** Keep this run as the initial
-baseline. Do not tune against these scores and subsequently describe these test
-years as untouched. Further experimental changes must be labeled and reported
-transparently. Larger coverage-set regression runs are complete; other team algorithms are still pending.
-
-
-## Gradient Boosting results: 393 complete counties
-
-Gradient Boosting uses the same features, split years, cutoffs and test rows as
-the Linear/Ridge baselines. Hyperparameters (trees, learning rate, depth,
-subsample, minimum leaf size) were chosen by validation MAE on 2017-2020, with
-`random_state=42`. `selection.json` was written before any test prediction,
-and test scores were computed once. No refit on validation years.
-
-**Test MAE in bushels per acre (lower is better), 1,965 county-years:**
-
-| Forecast cutoff | Linear: weather only | GB: weather only | Linear: weather + trend | GB: weather + trend | GB trend residual (exploratory) |
-|---|---:|---:|---:|---:|---:|
-| May | 40.28 | 37.75 | 27.00 | 25.90 | 23.27 |
-| June | 40.02 | 36.31 | 26.05 | 25.46 | 22.37 |
-| July | 37.04 | 33.87 | 24.75 | 25.26 | 21.79 |
-| August | 37.40 | 33.69 | 24.82 | 25.26 | 21.53 |
-
-**July test MAE by weather group (weather + trend):** normal 24.37 Linear /
-23.30 GB, dry 28.16 / 36.02, hot 23.08 / 19.93, wet 22.85 / 20.89.
-246 of 380 dry test county-years are from 2023, when many counties were drier
-than in any training season but yields stayed high. Gradient Boosting
-under-predicted those rows more than Linear did. One dry year dominates this
-group, so this is not a general drought conclusion.
-
-Caveats: the test period had already been inspected for Linear/Ridge.
-Training MAE (about 10) is far below test MAE (about 25), and four validation
-years are a small tuning sample. The trend-residual variant is exploratory and
-Gradient Boosting-only. Primary cohort only.
-
-Method, selected settings, figures, limitations and reproduction steps:
-[GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md). Results:
-[results/primary_100_gradient_boosting/](results/primary_100_gradient_boosting/README.md)
-and [results/gradient_boosting_comparison/](results/gradient_boosting_comparison/README.md).
-
-### Reproduce the Gradient Boosting run
-
-After generating features:
-
-```powershell
-python -m pip install -r requirements-gradient-boosting.txt
-python scripts/run_gradient_boosting.py
-python scripts/compare_gradient_boosting.py
-```
-
+Shared data preparation and feature details follow below. Model-specific
+commands and environments are in [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md)
+and [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md). To compare existing frozen
+predictions without retraining, run `python scripts/compare_gradient_boosting.py`
+with its dependencies installed. It regenerates comparison tables/figures;
+use a clean scratch checkout if you want to preserve published artifacts.
 
 ## Shared chronological split
 
@@ -447,7 +263,7 @@ county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
 
 The initial Linear and Ridge runs on the primary cohort are complete;
-secondary coverage regression runs are also complete; other team models are still planned. Larger sample size does not by itself guarantee better results.
+secondary coverage regression runs are also complete. Gradient Boosting is complete on the primary cohort; Random Forest and Neural Network results are pending. Larger sample size does not by itself guarantee better results.
 See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
 separate future experiment for predicting eligible missing-year yields.
 
@@ -593,8 +409,8 @@ features; April-to-cutoff contributes six cumulative features.
 
 Start with the weather-only variant as the shared core comparison. Evaluate
 weather-plus-trend as a named secondary variant consistently across models.
-Use training/validation data for all feature and model choices; the final
-2021-2025 test remains untouched. Report the feature variant with every score.
+Use training/validation data for all feature and model choices; 2021-2025 was the designated final test. Its results have now been inspected;
+further changes must be reported as follow-up experiments, not a fresh holdout. Report the feature variant with every score.
 Only use the manifest's explicit predictor list. Do not pass target, county ID,
 raw year, cutoff month, or partition metadata into a model. Train a separate
 model for each cutoff. All models must use identical evaluation rows within a
@@ -620,4 +436,5 @@ validation and test examples. The initial exploratory definitions and results ar
 Daily heat-day counts, growing-degree days, and prior yields are future
 feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
 for the primary cohort. Shared-row comparisons across broader coverage sets are complete for Linear
-and Ridge; the other team models remain to implement.
+and Ridge. Gradient Boosting is implemented on the primary cohort;
+Random Forest and Neural Network comparisons remain pending.
