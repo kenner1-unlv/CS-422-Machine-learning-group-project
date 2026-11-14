@@ -5,6 +5,37 @@ before the season ends, and compare reliability across forecast dates and
 weather conditions. This README is the shared results hub; detailed model
 methods and findings live in the linked reports.
 
+## Project overview
+
+This project investigates how accurately machine learning can forecast annual
+county-level corn yields (bushels per acre) before the growing season ends. We
+will focus on forecasts made at multiple points during the season and ask how
+prediction accuracy changes as more weather information becomes available,
+particularly in unusually hot, dry, or wet seasons.
+
+The intended users include farmers and agricultural producers, crop insurers,
+agricultural researchers, and government agencies. Forecasts and uncertainty
+estimates could inform planning and risk assessment; this project evaluates
+predictive reliability and does not claim that weather alone causes yield
+changes.
+
+## Questions and objectives
+
+- How does forecast error change across growing-season cutoffs, such as the end
+  of May, June, July, and August?
+- How well do models perform in normal seasons compared with unusually hot,
+  dry, or wet seasons?
+- How reliably can we estimate forecast uncertainty, including calibrated
+  prediction intervals if feasible?
+
+We will compare models using a shared target, preprocessing rules, chronological
+evaluation design, and metrics. Primary metrics are mean absolute error (MAE)
+and root mean squared error (RMSE).
+
+See [PROJECT_SPEC.md](./PROJECT_SPEC.md) for the agreed project requirements
+and open decisions, and [ROADMAP.md](./ROADMAP.md) for the phased implementation
+plan.
+
 ## Model reports and completion status
 
 | Contribution | Owner | Report | Current scope |
@@ -173,40 +204,6 @@ RMSE both overall and by harvest year, with sample counts. Compare broader
 sets on both their own test rows and the primary cohort's shared test rows.
 Fit anomaly thresholds and other learned transformations on training years
 only. Missing-year reconstruction remains a separate future experiment.
-
-
-CS 422 machine learning group project, Fall 2026
-
-## Project overview
-
-This project investigates how accurately machine learning can forecast annual
-county-level corn yields (bushels per acre) before the growing season ends. We
-will focus on forecasts made at multiple points during the season and ask how
-prediction accuracy changes as more weather information becomes available,
-particularly in unusually hot, dry, or wet seasons.
-
-The intended users include farmers and agricultural producers, crop insurers,
-agricultural researchers, and government agencies. Forecasts and uncertainty
-estimates could inform planning and risk assessment; this project evaluates
-predictive reliability and does not claim that weather alone causes yield
-changes.
-
-## Questions and objectives
-
-- How does forecast error change across growing-season cutoffs, such as the end
-  of May, June, July, and August?
-- How well do models perform in normal seasons compared with unusually hot,
-  dry, or wet seasons?
-- How reliably can we estimate forecast uncertainty, including calibrated
-  prediction intervals if feasible?
-
-We will compare models using a shared target, preprocessing rules, chronological
-evaluation design, and metrics. Primary metrics are mean absolute error (MAE)
-and root mean squared error (RMSE).
-
-See [PROJECT_SPEC.md](./PROJECT_SPEC.md) for the agreed project requirements
-and open decisions, and [ROADMAP.md](./ROADMAP.md) for the phased implementation
-plan.
 
 ## Staged coverage experiments: team data setup
 
