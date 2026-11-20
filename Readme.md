@@ -5,21 +5,27 @@ before the season ends, and compare reliability across forecast dates and
 weather conditions. This README is the shared results hub; detailed model
 methods and findings live in the linked reports.
 
+The [final model comparison](FINAL_REPORT.md) summarizes all five standard
+methods, the fixed chronological evaluation and its limits.
+The [supplemental analysis](SUPPLEMENTAL_ANALYSES.md) adds a trend-only baseline,
+a fixed four-family average, an NN stopping study, and an expanded_90 training
+check while preserving the original comparison.
+
 ## Model reports and completion status
 
 | Contribution | Owner | Report | Current scope |
 |---|---|---|---|
 | Linear and Ridge Regression | Russell Kennedy | [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md) | Primary + three broader coverage sets; weather-group evaluation |
 | Gradient Boosting Regression | Alexander Aquiningoc | [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md) | Primary cohort; shared variants + separate exploratory trend-residual variant |
-| Random Forest Regression | Tylie Anderson | [Submission slot below](#random-forest-regression-pending) | Results pending; not included in a ranking |
-| Neural Network Regression | Lester Iwuajoku | [Submission slot below](#neural-network-regression-pending) | Results pending; not included in a ranking |
+| Random Forest Regression | Tylie Anderson | [RANDOM_FOREST.md](RANDOM_FOREST.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
+| Neural Network Regression | Lester Iwuajoku | [NEURAL_NETWORK.md](NEURAL_NETWORK.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 
-## Shared comparison: Linear/Ridge versus Gradient Boosting
+## Shared comparison: five standard models
 
 **Same evaluation population:** 393 complete counties, train 2000-2016
 (6,681 county-years), validation 2017-2020 (1,572), test 2021-2025 (1,965 per
 cutoff). Models share cutoff feature values and observed targets. Learned
-preprocessing is fitted on training data only; Ridge and Gradient Boosting
+preprocessing is fitted on training data only; tuned model
 settings are selected by validation MAE, with no refit on validation years.
 Gradient Boosting here means Alex's validation-tuned `gbr_tuned`, not the
 default model. MAE and RMSE are in bushels per acre; lower is better.
@@ -27,25 +33,46 @@ default model. MAE and RMSE are in bushels per acre; lower is better.
 ### Core comparison: weather-only test MAE
 
 | Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
-|---|---:|---:|---:|---|---|
-| May | 40.28 | 40.28 | 37.75 | Pending | Pending |
-| June | 40.02 | 40.01 | 36.31 | Pending | Pending |
-| July | 37.04 | 37.19 | 33.87 | Pending | Pending |
-| August | 37.40 | 37.53 | 33.69 | Pending | Pending |
+|---|---:|---:|---:|---:|---:|
+| May | 40.28 | 40.28 | 37.75 | 36.96 | 37.49 |
+| June | 40.02 | 40.01 | 36.31 | 35.77 | 39.49 |
+| July | 37.04 | 37.19 | 33.87 | 34.37 | 38.46 |
+| August | 37.40 | 37.53 | 33.69 | 34.67 | 37.13 |
 
 ### Shared secondary comparison: weather plus year-trend test MAE
 
 | Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
-|---|---:|---:|---:|---|---|
-| May | 27.00 | 26.99 | 25.90 | Pending | Pending |
-| June | 26.05 | 26.18 | 25.46 | Pending | Pending |
-| July | 24.75 | 24.77 | 25.26 | Pending | Pending |
-| August | 24.82 | 25.01 | 25.26 | Pending | Pending |
+|---|---:|---:|---:|---:|---:|
+| May | 27.00 | 26.99 | 25.90 | 26.09 | 27.35 |
+| June | 26.05 | 26.18 | 25.46 | 25.47 | 27.03 |
+| July | 24.75 | 24.77 | 25.26 | 26.01 | 26.43 |
+| August | 24.82 | 25.01 | 25.26 | 25.89 | 25.99 |
+
+### Exploratory equal-weight ensemble
+
+The fixed mean of Linear, Gradient Boosting, Random Forest and Neural Network
+predictions gives each model family weight 0.25. It uses the same held-out rows
+and no fitted stacking weights. The weather-plus-trend results are shown
+separately from the four-family standard comparison:
+
+| Cutoff | Validation MAE | Test MAE | Test RMSE | Test rows |
+|---|---:|---:|---:|---:|
+| May | 22.72 | 24.10 | 29.96 | 1,965 |
+| June | 20.08 | 23.14 | 29.18 | 1,965 |
+| July | 20.00 | 23.06 | 29.54 | 1,965 |
+| August | 20.10 | 23.26 | 29.47 | 1,965 |
+
+This blend has lower test MAE than each individual standard model at these
+cutoffs, but its validation MAE does not beat the best individual in July or
+August. It was added after the original comparison and needs independent
+confirmation. See the [supplemental methods and full results](SUPPLEMENTAL_ANALYSES.md).
 
 The training-mean reference is **42.29 MAE / 48.02 RMSE** at every cutoff.
-Full validation/test MAE, RMSE, yearly and subgroup results:
-[comparison report](results/gradient_boosting_comparison/README.md),
-[full-precision comparison CSV](results/gradient_boosting_comparison/comparison.csv).
+Full validation/test MAE, RMSE, yearly and subgroup results for all five
+standard models: [comparison report](results/team_model_comparison/README.md),
+[full-precision comparison CSV](results/team_model_comparison/comparison.csv).
+The earlier [Gradient Boosting comparison](results/gradient_boosting_comparison/README.md)
+retains its separate exploratory hybrid analysis.
 
 ### What the comparison actually shows
 
@@ -53,6 +80,12 @@ Full validation/test MAE, RMSE, yearly and subgroup results:
   July improves from 37.04 to 33.87 (8.6% lower MAE). Trees can represent
   nonlinear thresholds and interactions that the additive baseline cannot;
   the observed gain does not isolate which mechanism caused it.
+- **Random Forest and Neural Network:** Random Forest has the lowest standard
+  weather-only test MAE in May (36.96) and June (35.77), while Gradient Boosting
+  leads July and August. The Neural Network does not have a consistent test
+  advantage; its original fixed 250-iteration training reached the cap by
+  design. The [supplemental stopping study](SUPPLEMENTAL_ANALYSES.md) tests
+  training-only stopping rules and finds mixed later-year effects.
 - **With the year trend:** neither method wins every cutoff. Gradient Boosting
   has lower MAE in May/June; Linear has lower MAE in July/August. July RMSE is
   **31.20 Linear versus 32.69 GB**. Even the metric matters: in June GB has
@@ -60,8 +93,9 @@ Full validation/test MAE, RMSE, yearly and subgroup results:
 - **Trend handling matters more than the small Linear/Ridge difference.**
   Linear's July MAE drops from 37.04 to 24.75 with the year term. Linear can
   extrapolate that term; tree year splits cannot continue a trend beyond the
-  training range. This does not establish a causal climate effect. A common
-  trend-only comparator is still needed to isolate weather's added value.
+  training range. This does not establish a causal climate effect. The
+  [supplemental trend-only comparator](SUPPLEMENTAL_ANALYSES.md) shows that
+  weather lowers July Linear test MAE by 2.22 beyond the year term.
 - **Dry-group performance reverses the overall impression.** For July with
   trend, normal-group MAE is **24.37 Linear / 23.30 GB** (1,261 rows), while
   dry-group MAE is **28.16 / 36.02** (380 rows). Of those dry rows, 246 are
@@ -81,66 +115,66 @@ the two shared tables; do not call it the confirmed best team model.
 
 ### Evidence and limitations
 
-For this documentation comparison, all **132 model/variant/cutoff/partition
+For the earlier Linear/Ridge/GB documentation comparison, all **132 model/variant/cutoff/partition
 metric groups** were recomputed from the frozen prediction CSVs: counts, MAE
 and RMSE match their published metrics; there are no duplicate county-year
 keys per group, and all models/variants have identical county-year keys and
 observed targets within each cutoff and partition. The existing comparison
 script also ran successfully, including its baseline and weather-group checks.
 This checks saved-result consistency, not an independent retraining or proof
-that the original run was leakage-free. No saved predictions or models changed.
+that the original run was leakage-free. The new Random Forest and Neural Network
+scripts were executed locally, and the expanded comparison verifies matching
+held-out rows, targets and recomputed metrics for all five standard models.
 
 Only five test years are available, and counties within a year are correlated.
-No confidence intervals or significance tests establish a winner. The test
-results are already visible; subsequent design changes are exploratory. The
+No confidence intervals or significance tests establish a winner. The planned
+Random Forest and Neural Network additions followed the same fixed protocol;
+any later test-informed design changes should be reported separately. The
 complete-county cohort is retrospectively selected, not a national sample.
 Historical input revisions, missing soil/management predictors and correlated
 weather features also limit interpretation. See the method reports for details.
 
-The original environments are recorded in each `selection.json`; GB records
-scikit-learn 1.9.0 whereas the shared requirements pin 1.9.1. Do not assume a
-fresh fit or loading a saved estimator under different versions is identical.
-The comparison above uses saved predictions, not deserialized estimators.
+The original environments are recorded in each `selection.json`.
+[requirements-modeling.txt](requirements-modeling.txt) and
+[requirements-remaining-models.txt](requirements-remaining-models.txt) describe
+different recorded environments and have conflicting NumPy and scikit-learn
+pins; use separate virtual environments rather than installing both together.
+GB records scikit-learn 1.9.0 whereas the earlier shared requirements pin
+1.9.1. Do not assume a fresh fit or loading a saved estimator under different
+versions is identical. The comparison above uses saved predictions, not
+deserialized estimators.
 
-## Remaining model submission slots
+## Completed model acceptance checks
 
-### Random Forest Regression (pending)
-
-**Owner: Tylie Anderson.** Add `RANDOM_FOREST.md` following the method-report
-structure used by Linear and Gradient Boosting: model rationale, features,
-training/validation selection, reproduction, results and limitations. Link the
-report here and fill both shared tables only once its held-out rows and metrics
-have been verified. No scores are currently claimed.
-
-### Neural Network Regression (pending)
-
-**Owner: Lester Iwuajoku.** Add `NEURAL_NETWORK.md` with the same structure,
-including training-only scaling, architecture, seed and stopping/selection
-rule. Link the report here and fill both shared tables only after verification.
-No scores are currently claimed.
-
-### Common acceptance checklist for both remaining models
-
-- [ ] Use the shared primary cohort, chronological split, feature allowlists
+- [x] Use the shared primary cohort, chronological split, feature allowlists
   and a separate model for each cutoff; label weather-only and trend variants.
-- [ ] Record training-only preprocessing, validation-only model selection,
+- [x] Record training-only preprocessing, validation-only model selection,
   seed, input hashes and package versions; declare any protocol deviation.
-- [ ] Save row-level predictions and MAE/RMSE/counts by partition and cutoff;
+- [x] Save row-level predictions and MAE/RMSE/counts by partition and cutoff;
   check exact county/year keys and observed targets against the baselines.
-- [ ] Report yearly and shared weather-group results with sample counts.
-- [ ] Keep exploratory variants separate; do not choose or tune from test
-  results and call the same years an untouched holdout.
-- [ ] Add the method report, reproducible commands and verified summary scores
-  to this README. Formal uncertainty analysis and final synthesis remain open.
+- [x] Report yearly and shared weather-group results with sample counts.
+- [x] Keep exploratory variants separate and do not choose or tune model
+  settings from test results.
+- [x] Add the method reports, reproducible commands and verified summary scores
+  to this README. Formal uncertainty analysis remains open.
 
 ## Reproducing the completed contributions
 
-Shared data preparation and feature details follow below. Model-specific
-commands and environments are in [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md)
-and [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md). To compare existing frozen
-predictions without retraining, run `python scripts/compare_gradient_boosting.py`
-with its dependencies installed. It regenerates comparison tables/figures;
-use a clean scratch checkout if you want to preserve published artifacts.
+Shared data preparation and feature details follow below. Install
+[requirements-remaining-models.txt](requirements-remaining-models.txt) to
+reproduce the local Random Forest, Neural Network and five-model comparison
+environment. Model-specific
+commands and environments are in [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md),
+[GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md), [RANDOM_FOREST.md](RANDOM_FOREST.md)
+and [NEURAL_NETWORK.md](NEURAL_NETWORK.md). After preparing the shared feature
+tables, run `py -3.13 scripts/run_remaining_models.py random_forest`, then
+`py -3.13 scripts/run_remaining_models.py neural_network`, then
+`py -3.13 scripts/compare_remaining_models.py` to regenerate the new model
+results and five-model tables/figures. Run
+`py -3.13 -m unittest tests.test_remaining_models -v` for the new protocol
+checks. Use a clean scratch checkout if you want to preserve published artifacts.
+These `py -3.13` examples select Python 3.13 on Windows; use the corresponding
+`python` command when your activated environment already selects that version.
 
 ## Shared chronological split
 
@@ -263,7 +297,9 @@ county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
 
 The initial Linear and Ridge runs on the primary cohort are complete;
-secondary coverage regression runs are also complete. Gradient Boosting is complete on the primary cohort; Random Forest and Neural Network results are pending. Larger sample size does not by itself guarantee better results.
+secondary coverage regression runs are also complete. Gradient Boosting,
+Random Forest and Neural Network now have primary-cohort results. Larger sample
+size does not by itself guarantee better results.
 See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
 separate future experiment for predicting eligible missing-year yields.
 
@@ -409,8 +445,7 @@ features; April-to-cutoff contributes six cumulative features.
 
 Start with the weather-only variant as the shared core comparison. Evaluate
 weather-plus-trend as a named secondary variant consistently across models.
-Use training/validation data for all feature and model choices; 2021-2025 was the designated final test. Its results have now been inspected;
-further changes must be reported as follow-up experiments, not a fresh holdout. Report the feature variant with every score.
+Use training/validation data for all feature and model choices; 2021-2025 was the designated final test. The planned model contributions used the same fixed protocol. Any future test-informed changes should be reported separately. Report the feature variant with every score.
 Only use the manifest's explicit predictor list. Do not pass target, county ID,
 raw year, cutoff month, or partition metadata into a model. Train a separate
 model for each cutoff. All models must use identical evaluation rows within a
@@ -437,4 +472,5 @@ Daily heat-day counts, growing-degree days, and prior yields are future
 feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
 for the primary cohort. Shared-row comparisons across broader coverage sets are complete for Linear
 and Ridge. Gradient Boosting is implemented on the primary cohort;
-Random Forest and Neural Network comparisons remain pending.
+Random Forest and Neural Network primary-cohort comparisons are complete;
+their method reports and shared-row results are linked above.

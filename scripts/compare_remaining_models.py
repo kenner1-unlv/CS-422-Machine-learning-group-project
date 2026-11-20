@@ -1,0 +1,133 @@
+"""Compare the five standard models on identical saved primary-cohort rows."""
+
+import sys
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.run_remaining_models import score
+
+
+OUT = ROOT / "results/team_model_comparison"
+NAMES = {"linear": "Linear", "ridge": "Ridge", "gradient_boosting": "Gradient Boosting",
+         "random_forest": "Random Forest", "neural_network": "Neural Network"}
+COLORS = {"linear": "#3267ae", "ridge": "#7c5aac", "gradient_boosting": "#dc642f",
+          "random_forest": "#168b78", "neural_network": "#ad3765"}
+
+
+def load_predictions() -> pd.DataFrame:
+    base = pd.read_csv(ROOT / "results/primary_100_baselines/predictions.csv",
+                       dtype={"county_fips": str})
+    base = base[base["model"].isin(["linear", "ridge"]) &
+                base["variant"].isin(["weather_only", "weather_plus_trend"])]
+    gb = pd.read_csv(ROOT / "results/primary_100_gradient_boosting/predictions.csv",
+                     dtype={"county_fips": str})
+    gb = gb[(gb["model"] == "gbr_tuned") &
+            gb["variant"].isin(["weather_only", "weather_plus_trend"])].copy()
+    gb["model"] = "gradient_boosting"
+    others = [pd.read_csv(ROOT / "results" / f"primary_100_{kind}" / "predictions.csv.gz",
+                          dtype={"county_fips": str}) for kind in ("random_forest", "neural_network")]
+    all_predictions = pd.concat([base, gb, *others], ignore_index=True)
+    keys = ["county_fips", "year", "cutoff_month", "partition"]
+    reference = base[(base["model"] == "linear") & (base["variant"] == "weather_only")]
+    expected = reference[keys + ["observed_yield"]].sort_values(keys).reset_index(drop=True)
+    for (model, variant), group in all_predictions.groupby(["model", "variant"]):
+        actual = group[keys + ["observed_yield"]].sort_values(keys).reset_index(drop=True)
+        if not actual.equals(expected):
+            raise ValueError(f"Row or observed target mismatch for {model}/{variant}")
+    if len(all_predictions) != len(expected) * len(NAMES) * 2:
+        raise ValueError("Missing standard model predictions")
+    return all_predictions[all_predictions["partition"].isin(["validation", "test"])].copy()
+
+
+def main() -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    predictions = load_predictions()
+    columns = ["cutoff_month", "variant", "model", "partition"]
+    overall = predictions.groupby(columns).apply(
+        lambda group: pd.Series(score(group["observed_yield"], group["predicted_yield"])),
+        include_groups=False).reset_index()
+    overall.to_csv(OUT / "comparison.csv", index=False)
+    test = predictions[predictions["partition"] == "test"]
+    yearly = test.groupby(columns[:-1] + ["year"]).apply(
+        lambda group: pd.Series(score(group["observed_yield"], group["predicted_yield"])),
+        include_groups=False).reset_index()
+    yearly.to_csv(OUT / "comparison_by_year.csv", index=False)
+
+    # With only five test years, show how the ranking changes when one entire
+    # harvest year is omitted. This is a sensitivity check, not a confidence interval.
+    omitted_year_rows = []
+    for (cutoff, variant), block in test.groupby(["cutoff_month", "variant"]):
+        for omitted_year in sorted(block["year"].unique()):
+            remaining = block[block["year"] != omitted_year]
+            for model, model_rows in remaining.groupby("model"):
+                omitted_year_rows.append({"cutoff_month": cutoff, "variant": variant,
+                                          "omitted_year": omitted_year, "model": model,
+                                          "years_retained": model_rows["year"].nunique(),
+                                          **score(model_rows["observed_yield"],
+                                                  model_rows["predicted_yield"])})
+    pd.DataFrame(omitted_year_rows).to_csv(OUT / "year_omission_sensitivity.csv", index=False)
+
+    labels = pd.read_csv(ROOT / "results/weather_groups/heldout_weather_labels.csv",
+                         dtype={"county_fips": str})
+    labels = labels[labels["coverage_set"] == "primary_100"].copy()
+    labels["group"] = labels["groups"].str.split("|")
+    labels = labels.explode("group")[["county_fips", "year", "cutoff_month", "partition", "group"]]
+    joined = predictions.merge(labels, on=["county_fips", "year", "cutoff_month", "partition"],
+                               validate="many_to_many")
+    if len(joined[joined["group"] == "all"]) != len(predictions):
+        raise ValueError("Not all predictions received a weather-group label")
+    subgroups = joined.groupby(columns + ["group"]).apply(
+        lambda group: pd.Series({"years": group["year"].nunique(),
+                                 **score(group["observed_yield"], group["predicted_yield"])}),
+        include_groups=False).reset_index()
+    subgroups["small_sample"] = (subgroups["n"] < 30) | (subgroups["years"] < 3)
+    subgroups.to_csv(OUT / "subgroup_comparison.csv", index=False)
+
+    months = {5: "May", 6: "June", 7: "July", 8: "August"}
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
+    for ax, variant, title in zip(axes, ("weather_only", "weather_plus_trend"),
+                                  ("Weather only", "Weather plus year trend")):
+        for model in NAMES:
+            rows = overall[(overall["partition"] == "test") &
+                           (overall["variant"] == variant) &
+                           (overall["model"] == model)].sort_values("cutoff_month")
+            ax.plot([months[c] for c in rows["cutoff_month"]], rows["mae"],
+                    marker="o", label=NAMES[model], color=COLORS[model])
+        ax.set(title=title, xlabel="Forecast cutoff")
+        ax.grid(alpha=0.25)
+    axes[0].set_ylabel("2021-2025 test MAE (bu/acre)")
+    axes[1].legend(loc="best", fontsize=8)
+    fig.suptitle("Primary 393 counties: standard model comparison")
+    fig.tight_layout()
+    fig.savefig(OUT / "test_mae_by_cutoff.png", dpi=160)
+    plt.close(fig)
+
+    july = yearly[(yearly["cutoff_month"] == 7) &
+                  (yearly["variant"] == "weather_plus_trend")]
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    for model in NAMES:
+        rows = july[july["model"] == model].sort_values("year")
+        ax.plot(rows["year"], rows["mae"], marker="o", label=NAMES[model],
+                color=COLORS[model])
+    ax.set(xlabel="Test year", ylabel="MAE (bu/acre)",
+           title="July weather plus trend: annual error")
+    ax.set_xticks(sorted(july["year"].unique()))
+    ax.grid(alpha=0.25)
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    fig.savefig(OUT / "july_test_mae_by_year.png", dpi=160)
+    plt.close(fig)
+    print(overall[overall["partition"] == "test"].to_string(index=False))
+    print(f"Saved aligned comparison to {OUT}")
+
+
+if __name__ == "__main__":
+    main()
