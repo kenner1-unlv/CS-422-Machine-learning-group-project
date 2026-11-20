@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import warnings
 from pathlib import Path
 
@@ -21,8 +22,10 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from run_remaining_models import (ROOT, SEED, VARIANTS, add_weather_groups,
-                                  load_inputs, score, validate_against_baseline)
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.run_remaining_models import (SEED, VARIANTS, add_weather_groups,
+                                          load_inputs, score, validate_against_baseline)
 
 
 OUT = ROOT / "results/primary_100_neural_network_stopping_study"

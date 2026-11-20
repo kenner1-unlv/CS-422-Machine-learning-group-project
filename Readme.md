@@ -134,10 +134,15 @@ complete-county cohort is retrospectively selected, not a national sample.
 Historical input revisions, missing soil/management predictors and correlated
 weather features also limit interpretation. See the method reports for details.
 
-The original environments are recorded in each `selection.json`; GB records
-scikit-learn 1.9.0 whereas the shared requirements pin 1.9.1. Do not assume a
-fresh fit or loading a saved estimator under different versions is identical.
-The comparison above uses saved predictions, not deserialized estimators.
+The original environments are recorded in each `selection.json`.
+[requirements-modeling.txt](requirements-modeling.txt) and
+[requirements-remaining-models.txt](requirements-remaining-models.txt) describe
+different recorded environments and have conflicting NumPy and scikit-learn
+pins; use separate virtual environments rather than installing both together.
+GB records scikit-learn 1.9.0 whereas the earlier shared requirements pin
+1.9.1. Do not assume a fresh fit or loading a saved estimator under different
+versions is identical. The comparison above uses saved predictions, not
+deserialized estimators.
 
 ## Completed model acceptance checks
 
@@ -168,6 +173,8 @@ tables, run `py -3.13 scripts/run_remaining_models.py random_forest`, then
 results and five-model tables/figures. Run
 `py -3.13 -m unittest tests.test_remaining_models -v` for the new protocol
 checks. Use a clean scratch checkout if you want to preserve published artifacts.
+These `py -3.13` examples select Python 3.13 on Windows; use the corresponding
+`python` command when your activated environment already selects that version.
 
 ## Shared chronological split
 

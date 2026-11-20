@@ -58,7 +58,7 @@ The [supplemental analysis](SUPPLEMENTAL_ANALYSES.md) keeps this standard-model 
 
 ## Reproduce and verify
 
-From this project folder, install the new run's pinned [requirements-remaining-models.txt](requirements-remaining-models.txt), then rebuild ignored derived inputs from the tracked processed data and run the remaining models:
+From this project folder, install the new run's pinned [requirements-remaining-models.txt](requirements-remaining-models.txt) in its own environment (separate from the earlier [requirements-modeling.txt](requirements-modeling.txt) environment), then rebuild ignored derived inputs from the tracked processed data and run the remaining models. The `py -3.13` launcher selects Python 3.13 on Windows; an activated Python 3.13 environment can use `python` instead:
 
 ```powershell
 py -3.13 scripts/build_study_sets.py
