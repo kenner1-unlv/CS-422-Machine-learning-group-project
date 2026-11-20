@@ -25,7 +25,7 @@ class SupplementalChecks(unittest.TestCase):
         self.assertEqual(set(coefficients["training_n"]), {6681})
         self.assertEqual(coefficients["intercept"].nunique(), 1)
         self.assertEqual(coefficients["slope_bu_per_acre_per_year"].nunique(), 1)
-        predictions = pd.read_csv(out / "trend_only_predictions.csv",
+        predictions = pd.read_csv(out / "trend_only_predictions.csv.gz",
                                   dtype={"county_fips": str})
         for cutoff in (5, 6, 7, 8):
             frame = pd.read_csv(ROOT / "data/features/primary_100" /
@@ -53,11 +53,11 @@ class SupplementalChecks(unittest.TestCase):
         for source in ("original", "stopping_study"):
             design = json.loads((out / f"design_{source}.json").read_text())
             self.assertTrue(design["no_test_selection"])
-            predictions = pd.read_csv(out / f"four_model_mean_{source}_predictions.csv",
+            predictions = pd.read_csv(out / f"four_model_mean_{source}_predictions.csv.gz",
                                       dtype={"county_fips": str})
             if source == "stopping_study":
                 revised = pd.read_csv(
-                    ROOT / "results/primary_100_neural_network_stopping_study/predictions.csv",
+                    ROOT / "results/primary_100_neural_network_stopping_study/predictions.csv.gz",
                     dtype={"county_fips": str})
                 revised = revised[revised["partition"].isin(["validation", "test"])].copy()
                 revised["model"] = "neural_network"

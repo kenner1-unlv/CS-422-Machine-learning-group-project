@@ -30,7 +30,8 @@ KEYS = ["county_fips", "year", "cutoff_month", "partition", "variant"]
 
 
 def summarize(predictions: pd.DataFrame, stem: str) -> pd.DataFrame:
-    predictions.to_csv(OUT / f"{stem}_predictions.csv", index=False)
+    predictions.to_csv(OUT / f"{stem}_predictions.csv.gz", index=False,
+                       compression="gzip")
     metrics = []
     annual = []
     for (cutoff, variant, partition), rows in predictions.groupby(
@@ -80,7 +81,7 @@ def four_model_mean(neural_source: str) -> pd.DataFrame:
     original = load_predictions()
     if neural_source == "stopping_study":
         replacement = pd.read_csv(
-            ROOT / "results/primary_100_neural_network_stopping_study/predictions.csv",
+            ROOT / "results/primary_100_neural_network_stopping_study/predictions.csv.gz",
             dtype={"county_fips": str},
         )
         replacement = replacement[replacement["partition"].isin(["validation", "test"])].copy()

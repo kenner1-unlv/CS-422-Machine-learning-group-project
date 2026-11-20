@@ -231,7 +231,7 @@ def run(model_kind: str) -> None:
                                         **score(annual["observed_yield"], annual["predicted_yield"])})
     predictions = pd.concat(prediction_frames, ignore_index=True)
     validate_against_baseline(predictions)
-    predictions.to_csv(out / "predictions.csv", index=False)
+    predictions.to_csv(out / "predictions.csv.gz", index=False, compression="gzip")
     pd.DataFrame(metrics_rows).to_csv(out / "metrics.csv", index=False)
     pd.DataFrame(yearly_rows).to_csv(out / "metrics_by_year.csv", index=False)
     add_weather_groups(predictions, out)

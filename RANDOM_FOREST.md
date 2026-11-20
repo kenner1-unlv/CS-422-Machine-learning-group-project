@@ -12,7 +12,7 @@ Run from this folder after generating the shared feature tables:
 py -3.13 scripts/run_remaining_models.py random_forest
 ```
 
-The [tuning table](results/primary_100_random_forest/tuning.csv), [row predictions](results/primary_100_random_forest/predictions.csv), [overall metrics](results/primary_100_random_forest/metrics.csv), [yearly metrics](results/primary_100_random_forest/metrics_by_year.csv), [weather-group metrics](results/primary_100_random_forest/subgroup_metrics.csv), and fitted models are reproducible outputs. Scikit-learn 1.9.0, NumPy 2.2.6 and pandas 3.1.0 were used in this run; see the selection file for the full environment. MAE and RMSE are bushels per acre.
+The [tuning table](results/primary_100_random_forest/tuning.csv), [compressed row predictions](results/primary_100_random_forest/predictions.csv.gz), [overall metrics](results/primary_100_random_forest/metrics.csv), [yearly metrics](results/primary_100_random_forest/metrics_by_year.csv), [weather-group metrics](results/primary_100_random_forest/subgroup_metrics.csv), and fitted models are reproducible outputs. Scikit-learn 1.9.0, NumPy 2.2.6 and pandas 3.1.0 were used in this run; see the selection file for the full environment. MAE and RMSE are bushels per acre.
 
 ## Results
 

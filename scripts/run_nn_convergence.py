@@ -97,7 +97,8 @@ def select() -> None:
                     pd.DataFrame({"iteration": np.arange(1, len(network.loss_curve_) + 1),
                                   "scaled_training_loss": network.loss_curve_}).to_csv(
                         OUT / "loss_curves" /
-                        f"{variant}_{cutoff:02}_{source}_{width}.csv", index=False)
+                        f"{variant}_{cutoff:02}_{source}_{width}.csv.gz",
+                        index=False, compression="gzip")
                     rows.append({"cutoff_month": cutoff, "variant": variant,
                                  "source": source, "hidden_units": width,
                                  "iterations": network.n_iter_, "met_stopping_rule": stopped,
@@ -171,7 +172,7 @@ def evaluate() -> None:
                                            year_rows["predicted_yield"])})
     all_rows = pd.concat(predictions, ignore_index=True)
     validate_against_baseline(all_rows)
-    all_rows.to_csv(OUT / "predictions.csv", index=False)
+    all_rows.to_csv(OUT / "predictions.csv.gz", index=False, compression="gzip")
     pd.DataFrame(metrics).to_csv(OUT / "metrics.csv", index=False)
     pd.DataFrame(annual).to_csv(OUT / "metrics_by_year.csv", index=False)
     add_weather_groups(all_rows, OUT)

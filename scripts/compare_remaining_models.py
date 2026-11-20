@@ -32,7 +32,7 @@ def load_predictions() -> pd.DataFrame:
     gb = gb[(gb["model"] == "gbr_tuned") &
             gb["variant"].isin(["weather_only", "weather_plus_trend"])].copy()
     gb["model"] = "gradient_boosting"
-    others = [pd.read_csv(ROOT / "results" / f"primary_100_{kind}" / "predictions.csv",
+    others = [pd.read_csv(ROOT / "results" / f"primary_100_{kind}" / "predictions.csv.gz",
                           dtype={"county_fips": str}) for kind in ("random_forest", "neural_network")]
     all_predictions = pd.concat([base, gb, *others], ignore_index=True)
     keys = ["county_fips", "year", "cutoff_month", "partition"]

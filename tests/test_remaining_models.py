@@ -62,7 +62,7 @@ class RemainingModelChecks(unittest.TestCase):
         reference = reference[columns].sort_values(keys).reset_index(drop=True)
         for kind in ("random_forest", "neural_network"):
             out = ROOT / "results" / f"primary_100_{kind}"
-            predictions = pd.read_csv(out / "predictions.csv", dtype={"county_fips": str})
+            predictions = pd.read_csv(out / "predictions.csv.gz", dtype={"county_fips": str})
             metrics = pd.read_csv(out / "metrics.csv")
             yearly = pd.read_csv(out / "metrics_by_year.csv")
             groups = pd.read_csv(out / "subgroup_metrics.csv")
