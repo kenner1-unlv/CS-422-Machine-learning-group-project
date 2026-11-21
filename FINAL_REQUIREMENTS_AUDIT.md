@@ -1,0 +1,25 @@
+# CS 422 final project requirement audit
+
+This audit checks the four-page `C:\Users\russe\Downloads\Project Final.pdf` against the submitted `../crop-yield-setup/proposal.pdf` and project artifacts. The proposal records all four members as CS 422 students, so the PDF's conditional CS 622 research-paper method requirement does not apply on the available enrollment evidence. “Complete” below means the cited artifact was checked locally, not that the instructor has accepted it.
+
+| Requirement | Existing evidence checked | Status and remaining action |
+|---|---|---|
+| Approved objective and real-world application | `../crop-yield-setup/proposal.pdf`; `PROJECT_SPEC.md`; `FINAL_REPORT.md` §§1, 6; instructor PDF pp. 1, 3 | Complete: report title matches the submitted topic; no substantial topic change found. |
+| Dataset source, quality, and selection | `data/processed/data_quality_report.json`; `scripts/prepare_data.py`; `data/study_sets/primary_100/counties.csv`; report §2 | In Progress: source provenance and complete-county selection documented; original USDA/NOAA downloads are not bundled. |
+| Exploratory data analysis | `scripts/final_eda.py`; `results/final_eda/README.md`; existing Gradient Boosting figures | Complete for reproducible descriptive diagnostics; the report uses a focused figure subset. |
+| Shared chronological protocol | `config/splits.json`; `data/study_sets/primary_100/split_assignments.csv`; `scripts/compare_remaining_models.py` | Complete: 2000–2016 train, 2017–2020 validation, 2021–2025 test, identical county-year rows checked by comparison code. |
+| Leakage and cutoff integrity | `config/features.json`; `data/features/feature_manifest.json`; `scripts/build_features.py`; model scripts | Needs Review: code/tests support training-only learned scaling and calendar cutoffs; retrospectively revised NOAA inputs prevent a true as-of-date claim. |
+| Baseline comparison | `results/primary_100_baselines/`; `results/primary_100_diagnostic_additions/trend_only_metrics.csv`; report §§3–4 | Complete as saved-result evidence; trend-only is a later diagnostic. |
+| Member models and hyperparameter selection | Four model reports; four `selection.json` records; tuning CSVs; `scripts/verify_final_results.py` | Complete for validation-selection checks; member attribution and non-code work still require team sign-off. |
+| Common metrics and model comparison | `results/team_model_comparison/comparison.csv`; `comparison_by_year.csv`; report Tables 3–4 | Complete as frozen-prediction comparison; no new standard-model fits were made for this audit. |
+| Variability and failure cases | `comparison_by_year.csv`; `subgroup_comparison.csv`; `results/final_eda/july_high_error_examples.csv`; report §4.3 | Complete as descriptive, test-informed diagnostics; no cluster-aware significance claim. |
+| Team discussion | Report §5; submitted proposal; team-confirmed model split and EDA expansion; GitHub commit `43178e6`; `scripts/final_eda.py`; instructor PDF p. 2 | Blocked for final submission: add one specific post-results model-review discussion with date, participants, evidence, decision, action, and effect on interpretation or recommendation. A short authentic record suffices. |
+| Individual contributions | Submitted proposal; Git commit history; model reports; report Table 5 | Needs Review: Russell's and Alexander's documented work is described separately from proposal assignments. Additional individual and non-code work by Tylie and Lester should be confirmed; commits do not measure all effort. |
+| Application, limitations, and AI disclosure | Report §§4.5–6 and References; instructor PDF pp. 3–4 | Needs Review: application and limits are drafted; team must verify member-specific AI use and verification wording. |
+| Reproduction and WebCampus format | Instructor PDF pp. 3–4; requirements files; `submission/` | In Progress: `.py.txt` copies, configurations, result tables, and separate-file instructions are packaged; a clean Python 3.13 reproduction and team-name filenames remain. |
+| Presentation readiness | Instructor PDF p. 4; `PRESENTATION_BRIEF.md`; `submission/PRESENTATION_OUTLINE.md` | Blocked: all four must speak; a unified slide deck and rehearsal remain. |
+| Conditional CS 622 paper-based method | Submitted proposal p. 2 lists all four in CS 422; instructor PDF pp. 1, 3 | Not applicable on current enrollment evidence; reconfirm if any member's enrollment differs. |
+
+## Verification boundary
+
+The local test suite passed 31 tests under Python 3.14.7 and scikit-learn 1.9.1. Some saved estimators report that they were serialized under scikit-learn 1.9.0; the comparison from frozen row predictions does not require reloading these model files. The full source-download and historical as-of-date forecast cannot be reproduced from this repository alone. The new EDA is descriptive and did not alter the primary cohort, splits, features, or frozen standard-model predictions. The instructor asks for team-name filenames and separately uploaded materials; the submitted proposal's team-name field says “Not Applicable,” so the team must confirm the filename convention before upload.
