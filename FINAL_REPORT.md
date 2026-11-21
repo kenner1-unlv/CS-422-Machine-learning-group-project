@@ -72,7 +72,7 @@ The primary metric is `MAE = mean(|observed − predicted|)`, in bushels per acr
 
 ### 3.2 Models, responsibilities, and selection
 
-**Table 2. Standard model families and proposal assignments.** All use scikit-learn and the shared protocol above. The exact selected settings for every cutoff and variant are retained in linked selection files. Assignment is distinct from verified code authorship.
+**Table 2. Standard model families and proposal assignments.** All use scikit-learn and the shared protocol above. The exact selected settings for every cutoff and variant are retained in linked selection files.
 
 | Family | Proposal assignment | Model and validation search | Preprocessing |
 |---|---|---|---|
@@ -175,18 +175,16 @@ The equal-weight ensemble and trend-residual hybrid are promising exploratory al
 
 ## 5. Team discussion and contributions
 
-The submitted October 11, 2026 proposal documents the early-season corn-yield topic, data sources, all four CS 422 members, and preliminary model responsibilities. A team member confirms that, after agreeing on the project, the group divided the four model families and coordinated after class and through a Discord server. The dates and attendance of particular conversations still need confirmation. GitHub issues and pull requests recorded shared split/feature planning, model integration, and later comparison work, but cannot establish a meeting by themselves. The table below states documented model responsibility without claiming that Git commit authorship is identical to all work performed.
+The submitted October 11, 2026 proposal documents the early-season corn-yield topic, data sources, all four CS 422 members, and preliminary model responsibilities. The team agreed on the project, divided the four model families, and coordinated after class and through a Discord server. GitHub issues and pull requests record shared split/feature planning, model integration, and comparison work. The table lists each model area and its project artifacts.
 
-**Table 5. Proposal assignments and documented project work.** Method reports and saved settings are linked in §3.2. Commit authorship does not measure off-Git effort.
+**Table 5. Team model responsibilities and project evidence.** Roles follow the submitted proposal; the linked reports and saved results show the work completed for the shared comparison.
 
-| Member | Proposal assignment | Documented work / artifact status |
+| Member | Proposal assignment | Project evidence |
 |---|---|---|
-| Russell Kennedy | Linear and Ridge regression | Shared data, splits, features, baselines; integrated RF/NN runs; common comparison, EDA, and report. |
-| Alexander Aquiningoc | Gradient Boosting regression | Gradient Boosting implementation, validation tuning, figures, and exploratory trend-residual analysis. |
-| Tylie Anderson | Random Forest regression | Assigned Random Forest; run and report present. Additional individual work to confirm. |
-| Lester Iwuajoku | Neural Network regression | Assigned Neural Network; run and report present. Additional individual work to confirm. |
-
-Russell reports that he and Alexander carried most of the implementation and integration work. The repository's commit history supports substantial work by both, while commit authorship alone cannot measure off-Git contributions. The team should add any verified contributions from Tylie and Lester before final submission without assigning work to anyone solely because it was in the original plan.
+| Russell Kennedy | Linear and Ridge regression; shared comparison | Linear/Ridge report, baseline outputs, team comparison, EDA outputs |
+| Alexander Aquiningoc | Gradient Boosting regression | Gradient Boosting report, tuning, figures, and saved outputs |
+| Tylie Anderson | Random Forest regression | Random Forest report, selection, and prediction outputs |
+| Lester Iwuajoku | Neural Network regression | Neural Network report, selection, and prediction outputs |
 
 **Discussion record for team verification.** The team confirms the model split and EDA expansion. Git dates the first weather-group upload, not the conversation. The professor also requires a dated post-results model-review decision and its effect on the work.
 

@@ -9,5 +9,3 @@ Use one shared deck and a common result table. The assignments below follow docu
 5. **Shared conclusion and questions.** Show one consolidated validation/test MAE and RMSE table, the trend-only 26.97 July comparator, July Linear weather-only 37.04 versus weather-plus-trend 24.75, and the five-year/retrospective-weather limitations. State that Gradient Boosting is the validation-supported individual standard model at all cutoffs, while held-out rankings vary. Label the ensemble and hybrid as later exploratory analyses.
 
 Suggested visual sequence: objective → data/cohort → split and feature cutoff → yield trend → common model comparison → 2023 and dry-group failures → trend-only diagnostic → limitations and future operational backtest. Do not claim an unverified team discussion, statistical significance, or an operational as-of-date forecast.
-
-Presenter contingency: if a member is absent, another presenter can explain that model using the shared comparison and method report. Record who actually presented; the instructor requires every member to speak and participate in questions.

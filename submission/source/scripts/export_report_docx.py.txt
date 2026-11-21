@@ -90,7 +90,9 @@ def export(destination: Path) -> None:
         elif line.startswith("* ") or line.startswith("- "):
             doc.add_paragraph(plain(line[2:]), style="List Bullet")
         else:
-            doc.add_paragraph(plain(line))
+            paragraph = doc.add_paragraph(plain(line))
+            if line.startswith("**Discussion record for team verification.**"):
+                paragraph.paragraph_format.page_break_before = True
         i += 1
     destination.parent.mkdir(parents=True, exist_ok=True)
     doc.save(destination)

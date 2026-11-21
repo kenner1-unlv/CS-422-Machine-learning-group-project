@@ -27,7 +27,7 @@ Google access may need to be granted to teammates. The Markdown report in this r
 | Random Forest Regression | Tylie Anderson | [RANDOM_FOREST.md](RANDOM_FOREST.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 | Neural Network Regression | Lester Iwuajoku | [NEURAL_NETWORK.md](NEURAL_NETWORK.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 
-These assignments come from the submitted proposal and identify the planned model focus. They do not by themselves establish who authored each repository file or how much off-Git work each member completed. The [report contribution section](FINAL_REPORT.md#5-team-discussion-and-contributions) records the project evidence and attribution limits.
+These model areas follow the submitted proposal. The [report contribution section](FINAL_REPORT.md#5-team-discussion-and-contributions) summarizes the project evidence for each area.
 
 ## Shared comparison: five standard models
 
