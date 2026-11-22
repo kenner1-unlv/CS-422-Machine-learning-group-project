@@ -18,16 +18,20 @@ check while preserving the original comparison.
 
 Google access may need to be granted to teammates. The Markdown report in this repository remains the source of record for results and revisions.
 
-## Model reports and completion status
+## Model reports and completed work
 
-| Contribution | Proposal assignment | Report | Current scope |
+| Model | Team member | Report | Completed scope |
 |---|---|---|---|
 | Linear and Ridge Regression | Russell Kennedy | [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md) | Primary + three broader coverage sets; weather-group evaluation |
 | Gradient Boosting Regression | Alexander Aquiningoc | [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md) | Primary cohort; shared variants + separate exploratory trend-residual variant |
 | Random Forest Regression | Tylie Anderson | [RANDOM_FOREST.md](RANDOM_FOREST.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 | Neural Network Regression | Lester Iwuajoku | [NEURAL_NETWORK.md](NEURAL_NETWORK.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 
-These model areas follow the submitted proposal. The [report contribution section](FINAL_REPORT.md#5-team-discussion-and-contributions) summarizes the project evidence for each area.
+The four model areas follow the team's agreed assignments. The reports, saved settings, predictions, and common comparison document the completed work.
+
+## AI assistance and team validation
+
+OpenAI Codex assisted with implementation, debugging, tests, and documentation. The team directed the experiments, reviewed the code and saved outputs, ran the [test suite](tests/) and [read-only result verifier](scripts/verify_final_results.py), and performed the analysis and interpretation. The verifier checks validation-selected settings and feature lists, identical held-out county-year keys and targets, and MAE, RMSE, and bias recomputed from saved predictions. The team is responsible for the methods, conclusions, and final report wording; exploratory analyses remain labeled separately from the original validation-selected models.
 
 ## Shared comparison: five standard models
 
@@ -169,7 +173,7 @@ deserialized estimators.
 - [x] Add the method reports, reproducible commands and verified summary scores
   to this README. Formal uncertainty analysis remains open.
 
-## Reproducing the completed contributions
+## Reproducing the model results
 
 Shared data preparation and feature details follow below. Install
 [requirements-remaining-models.txt](requirements-remaining-models.txt) to
@@ -407,17 +411,12 @@ We will report errors by forecast cutoff and examine results across weather
 conditions. Extreme-weather cases may be uncommon, so subgroup results should
 be interpreted with their sample sizes and uncertainty in mind.
 
-## Preliminary model assignments
+## Team model work
 
-These assignments are preliminary and subject to team confirmation:
-
-- **Russell Kennedy**: Linear and Ridge Regression baselines
-- **Tylie Anderson**: Random Forest Regression
-- **Alexander Aquiningoc**: Gradient Boosting Regression
-- **Lester Iwuajoku**: Neural Network Regression
-
-The team will jointly develop the dataset, preprocessing rules, chronological
-splits, and evaluation protocol.
+The original proposal divided Linear/Ridge, Random Forest, Gradient Boosting,
+and Neural Network work among the four members listed in the completed model
+table above. The shared dataset, feature lists, chronological split, and metrics
+keep those results comparable.
 
 ## Anticipated challenges and limitations
 
