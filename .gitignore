@@ -2,6 +2,8 @@
 data/raw/
 __pycache__/
 *.py[cod]
+tmp/
+~$*.docx
 
 # Rebuilt locally from tracked processed inputs
 data/study_sets/

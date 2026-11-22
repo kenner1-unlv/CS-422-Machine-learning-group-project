@@ -1,0 +1,10 @@
+{
+  "ensemble": "Unweighted mean of Linear, tuned GB, RF and Lester's NN saved predictions",
+  "neural_source_commit": "4ac9f596901f9b93a0e1f23b7464cddf90d33ce8",
+  "partition": "test",
+  "validation_ensemble_available": false,
+  "validation_reason": "No Lester per-row validation predictions in PR #16.",
+  "post_test_exploratory": true,
+  "weights_fit_using_test": false,
+  "other_diagnostics": "Trend-only uses existing frozen artifacts, not refit here."
+}

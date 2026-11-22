@@ -41,7 +41,7 @@ Secondary experiments use the nested 90%, 80%, and largest-available sets under
 the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
 and the README for counts and reproduction commands. This decision supersedes
 references below to geographic scope and modeling period being undecided.
-Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); Linear/Ridge results and exploratory weather-group definitions/results are complete; other team models, formal uncertainty and final reporting remain pending. Coverage experiments must report both their own evaluation populations
+Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md). Linear/Ridge, Gradient Boosting, Random Forest and Neural Network primary-cohort results and the exploratory weather-group comparison are complete. A final model synthesis is in [FINAL_REPORT.md](FINAL_REPORT.md), with trend-only, ensemble, NN-stopping and expanded_90 checks in [SUPPLEMENTAL_ANALYSES.md](SUPPLEMENTAL_ANALYSES.md); formal cluster-aware uncertainty analysis remains open. Coverage experiments must report both their own evaluation populations
 and comparable shared held-out county-years.
 
 
