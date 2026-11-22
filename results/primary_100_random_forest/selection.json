@@ -1,0 +1,444 @@
+{
+  "model": "random_forest",
+  "coverage_set": "primary_100",
+  "variants": [
+    "weather_only",
+    "weather_plus_trend"
+  ],
+  "seed": 42,
+  "selection_metric": "validation MAE, then RMSE, then candidate order",
+  "refit_on_validation": false,
+  "candidates": [
+    {
+      "n_estimators": 150,
+      "max_depth": 12,
+      "min_samples_leaf": 5,
+      "max_features": 0.7,
+      "bootstrap": true
+    },
+    {
+      "n_estimators": 150,
+      "max_depth": 12,
+      "min_samples_leaf": 20,
+      "max_features": 0.7,
+      "bootstrap": true
+    },
+    {
+      "n_estimators": 150,
+      "max_depth": null,
+      "min_samples_leaf": 5,
+      "max_features": 0.7,
+      "bootstrap": true
+    },
+    {
+      "n_estimators": 150,
+      "max_depth": null,
+      "min_samples_leaf": 20,
+      "max_features": 0.7,
+      "bootstrap": true
+    }
+  ],
+  "choices": {
+    "5": {
+      "weather_only": {
+        "candidate": 1,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": 12,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 32.90662447855772,
+          "rmse": 38.15207118721708
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c"
+        ]
+      },
+      "weather_plus_trend": {
+        "candidate": 3,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": null,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 24.328899617233915,
+          "rmse": 29.900218520296697
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c",
+          "year_since_2000"
+        ]
+      }
+    },
+    "6": {
+      "weather_only": {
+        "candidate": 1,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": 12,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 28.56497009549838,
+          "rmse": 33.65936708257408
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c"
+        ]
+      },
+      "weather_plus_trend": {
+        "candidate": 1,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": 12,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 20.786201626252623,
+          "rmse": 25.977103241432115
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c",
+          "year_since_2000"
+        ]
+      }
+    },
+    "7": {
+      "weather_only": {
+        "candidate": 2,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": null,
+          "min_samples_leaf": 5,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 27.344761933156892,
+          "rmse": 32.3395091150207
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "m07_precipitation_total_mm",
+          "m07_tavg_mean_c",
+          "m07_tmax_mean_c",
+          "m07_tmin_mean_c",
+          "m07_tmax_max_c",
+          "m07_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c"
+        ]
+      },
+      "weather_plus_trend": {
+        "candidate": 1,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": 12,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 20.60432738059325,
+          "rmse": 25.24451093579928
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "m07_precipitation_total_mm",
+          "m07_tavg_mean_c",
+          "m07_tmax_mean_c",
+          "m07_tmin_mean_c",
+          "m07_tmax_max_c",
+          "m07_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c",
+          "year_since_2000"
+        ]
+      }
+    },
+    "8": {
+      "weather_only": {
+        "candidate": 2,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": null,
+          "min_samples_leaf": 5,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 26.840762504033457,
+          "rmse": 31.7425684504671
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "m07_precipitation_total_mm",
+          "m07_tavg_mean_c",
+          "m07_tmax_mean_c",
+          "m07_tmin_mean_c",
+          "m07_tmax_max_c",
+          "m07_tmin_min_c",
+          "m08_precipitation_total_mm",
+          "m08_tavg_mean_c",
+          "m08_tmax_mean_c",
+          "m08_tmin_mean_c",
+          "m08_tmax_max_c",
+          "m08_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c"
+        ]
+      },
+      "weather_plus_trend": {
+        "candidate": 1,
+        "setting": {
+          "n_estimators": 150,
+          "max_depth": 12,
+          "min_samples_leaf": 20,
+          "max_features": 0.7,
+          "bootstrap": true
+        },
+        "validation": {
+          "n": 1572,
+          "mae": 20.88952851183599,
+          "rmse": 25.58463021597217
+        },
+        "predictors": [
+          "preseason_precipitation_total_mm",
+          "preseason_tavg_mean_c",
+          "preseason_tmin_min_c",
+          "m04_precipitation_total_mm",
+          "m04_tavg_mean_c",
+          "m04_tmax_mean_c",
+          "m04_tmin_mean_c",
+          "m04_tmax_max_c",
+          "m04_tmin_min_c",
+          "m05_precipitation_total_mm",
+          "m05_tavg_mean_c",
+          "m05_tmax_mean_c",
+          "m05_tmin_mean_c",
+          "m05_tmax_max_c",
+          "m05_tmin_min_c",
+          "m06_precipitation_total_mm",
+          "m06_tavg_mean_c",
+          "m06_tmax_mean_c",
+          "m06_tmin_mean_c",
+          "m06_tmax_max_c",
+          "m06_tmin_min_c",
+          "m07_precipitation_total_mm",
+          "m07_tavg_mean_c",
+          "m07_tmax_mean_c",
+          "m07_tmin_mean_c",
+          "m07_tmax_max_c",
+          "m07_tmin_min_c",
+          "m08_precipitation_total_mm",
+          "m08_tavg_mean_c",
+          "m08_tmax_mean_c",
+          "m08_tmin_mean_c",
+          "m08_tmax_max_c",
+          "m08_tmin_min_c",
+          "season_precipitation_total_mm",
+          "season_tavg_mean_c",
+          "season_tmax_mean_c",
+          "season_tmin_mean_c",
+          "season_tmax_max_c",
+          "season_tmin_min_c",
+          "year_since_2000"
+        ]
+      }
+    }
+  },
+  "input_sha256": {
+    "cutoff_05.csv": "fa4b31375eeb3a6ef8f8faa30688fc9579f86e29baa208bef000bfe3ecf2248b",
+    "cutoff_06.csv": "f7389b2c6489356c93853a3e6e50c4eba984b060364a4ddd0181a79b7a5c3a75",
+    "cutoff_07.csv": "94fdec3b2294a489ba19f322cbba0ec137f5a83ce14e53a93d85c67f1bce6600",
+    "cutoff_08.csv": "4844de6694a921b972f06d5babd42064ce1b578a446023993bc133e7d0ccca31"
+  },
+  "split_config_sha256": "57791d3aebfbfceafeac7a79a90c2ed719725e84b0e8ef56100b048d9448f07d",
+  "feature_manifest_sha256": "83ff82c0c4392a66ef560665423e5e5e6f17bbf8ee166389f33121f13549a2da",
+  "python": "3.13.5",
+  "numpy": "2.2.6",
+  "pandas": "3.1.0",
+  "sklearn": "1.9.0",
+  "test_note": "Test outcomes did not enter fitting or validation-based setting selection."
+}

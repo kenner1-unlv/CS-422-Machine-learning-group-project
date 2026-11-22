@@ -1,12 +1,12 @@
 # Project Roadmap
 
-## Status as of November 11, 2026
+## Status as of November 20, 2026
 
-- Completed: validated sources, coverage audit, four staged datasets, fixed splits, cutoff features, Linear/Ridge and training-mean runs, shared-population comparisons, exploratory hot/dry/wet evaluation, and primary-cohort Gradient Boosting with Linear comparison and weather groups.
-- Results: [regression coverage comparison](results/coverage_comparison/README.md), [weather groups](results/weather_groups/README.md), and [Gradient Boosting vs Linear](results/gradient_boosting_comparison/README.md).
-- Remaining core work: Random Forest and Neural Network, their shared-protocol comparisons and subgroup evaluation, uncertainty discussion/analysis, final figures and report.
+- Completed: validated sources, coverage audit, four staged datasets, fixed splits, cutoff features, Linear/Ridge and training-mean runs, shared-population comparisons, exploratory hot/dry/wet evaluation, and primary-cohort Gradient Boosting, Random Forest and Neural Network with a verified five-model comparison. Supplemental trend-only, fixed-ensemble, NN-stopping, expanded_90 training and year-omission checks are also complete.
+- Results: [regression coverage comparison](results/coverage_comparison/README.md), [weather groups](results/weather_groups/README.md), [five-model comparison](results/team_model_comparison/README.md), [final synthesis](FINAL_REPORT.md), and [supplemental checks](SUPPLEMENTAL_ANALYSES.md).
+- Remaining: group review and formal cluster-aware uncertainty analysis.
 - Optional extensions: daily heat metrics, prior-yield predictors, calibrated prediction intervals and missing-year reconstruction.
-- Overall test results are already visible. Preserve the baseline and label subsequent changes transparently. No inference of statistical significance has been completed.
+- Planned model additions follow the shared validation-only selection rule. Label any future test-informed design change separately. No inference of statistical significance has been completed.
 
 
 ## Shared chronological split
@@ -50,7 +50,7 @@ Secondary experiments use the nested 90%, 80%, and largest-available sets under
 the same per-record completeness rules. See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md)
 and the README for counts and reproduction commands. This decision supersedes
 references below to geographic scope and modeling period being undecided.
-Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md); Linear/Ridge results and exploratory weather-group definitions/results are complete; other team models, formal uncertainty and final reporting remain pending. Coverage experiments must report both their own evaluation populations
+Chronological split boundaries are fixed below; the initial feature recipe is fixed in [FEATURE_PLAN.md](FEATURE_PLAN.md). All five standard primary-cohort models and the exploratory weather-group comparison are complete; [FINAL_REPORT.md](FINAL_REPORT.md) synthesizes them. Formal cluster-aware uncertainty analysis remains open. Coverage experiments must report both their own evaluation populations
 and comparable shared held-out county-years.
 
 
@@ -98,7 +98,7 @@ and target leakage risks.
 
 - [x] Implement chronological train/validation/test selection.
 - [x] Fit Linear/Ridge scaling on training data only; no imputation is needed for this feature version.
-- [ ] Verify training-only preprocessing in the remaining team model pipelines.
+- [x] Verify training-only preprocessing in the remaining team model pipelines.
 - [x] Save feature/split configuration and baseline input hashes with results.
 
 **Acceptance:** The process reruns deterministically and validation/test data
@@ -119,11 +119,11 @@ models where applicable.
 ### Train and compare assigned models
 
 - [x] Linear and Ridge Regression — Russell Kennedy: all four coverage sets, both feature variants, all cutoffs.
-- [ ] Random Forest Regression — Tylie Anderson.
+- [x] Random Forest Regression — Tylie Anderson; primary-cohort implementation and results complete.
 - [x] Gradient Boosting Regression — Alexander Aquiningoc: primary cohort, both shared variants plus an exploratory trend-residual variant, all cutoffs.
-- [ ] Neural Network Regression — Lester Iwuajoku.
+- [x] Neural Network Regression — Lester Iwuajoku; primary-cohort implementation and results complete.
 - [x] Select Ridge alpha using validation MAE; preserve training-only fits.
-- [ ] Apply the same no-test-tuning rule to the remaining team algorithms.
+- [x] Apply the same no-test-tuning rule to the remaining team algorithms.
 
 **Acceptance:** All feasible models are evaluated on identical test examples
 for each cutoff, with model settings and random seeds recorded.
@@ -134,12 +134,12 @@ for each cutoff, with model settings and random seeds recorded.
 
 - [x] Report Linear/Ridge MAE and RMSE by cutoff and year, with sample counts.
 - [x] Compare Linear/Ridge cutoffs and coverage sets, including shared-primary test rows.
-- [ ] Integrate other model results and develop final explanations.
+- [x] Integrate other model results and develop final explanations.
 - [x] Define training-only county hot/dry/wet thresholds before computing subgroup errors.
 - [x] Evaluate frozen Linear/Ridge predictions for every cutoff and coverage set; report sample sizes, bias, MAE/RMSE and yearly errors.
 - [x] Label the analysis exploratory: overall test scores were already visible when subgroup definitions were chosen.
 - [ ] Develop formal uncertainty estimates that account for correlated county/year observations; no significance claims yet.
-- [ ] Evaluate the other team models using the same saved weather labels.
+- [x] Evaluate the other team models using the same saved weather labels.
 - [ ] Add calibrated prediction intervals only if time permits after the core
   comparison.
 
@@ -148,12 +148,12 @@ results, and sample sizes; small-sample limitations are explicit.
 
 ### Finalize report and reproducibility
 
-- [ ] Summarize data sources, scope, preprocessing, split years, and models.
-- [ ] Discuss limitations, including non-weather influences and county-level
+- [x] Summarize data sources, scope, preprocessing, split years, and models.
+- [x] Discuss limitations, including non-weather influences and county-level
   averages.
 - [x] Include commands and dependencies for the completed data and regression analyses.
-- [ ] Include reproduction instructions for the remaining team algorithms and final report.
-- [ ] Confirm README and final report agree with the executed pipeline.
+- [x] Include reproduction instructions for the remaining team algorithms and final report.
+- [x] Confirm README and final report agree with the executed pipeline.
 
 **Acceptance:** Another team member can follow the documented steps and
 reproduce the reported test metrics.
