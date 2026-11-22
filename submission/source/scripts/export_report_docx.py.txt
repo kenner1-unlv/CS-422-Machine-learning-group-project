@@ -8,6 +8,8 @@ import re
 import sys
 
 from docx import Document
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,11 +29,16 @@ def export(destination: Path) -> None:
     styles = doc.styles
     styles["Normal"].font.name = "Times New Roman"
     styles["Normal"].font.size = Pt(10.5)
-    styles["Normal"].paragraph_format.space_after = Pt(5)
+    styles["Normal"].paragraph_format.space_after = Pt(4)
+    styles["Normal"].paragraph_format.line_spacing = 1.06
     for style, size in [("Title", 18), ("Heading 1", 14), ("Heading 2", 12)]:
         styles[style].font.name = "Times New Roman"
         styles[style].font.size = Pt(size)
         styles[style].font.color.rgb = None
+    title_props = styles["Title"].element.get_or_add_pPr()
+    existing_border = title_props.find(qn("w:pBdr"))
+    if existing_border is not None:
+        title_props.remove(existing_border)
     lines = SOURCE.read_text(encoding="utf-8").splitlines()
     i = 0
     while i < len(lines):
@@ -58,8 +65,13 @@ def export(destination: Path) -> None:
             rows = [row for row in rows if not all(re.fullmatch(r":?-+:?", x) for x in row)]
             table = doc.add_table(rows=0, cols=len(rows[0]))
             table.style = "Light Shading Accent 1"
-            for row in rows:
-                cells = table.add_row().cells
+            for row_index, row in enumerate(rows):
+                table_row = table.add_row()
+                props = table_row._tr.get_or_add_trPr()
+                props.append(OxmlElement("w:cantSplit"))
+                if row_index == 0:
+                    props.append(OxmlElement("w:tblHeader"))
+                cells = table_row.cells
                 for cell, value in zip(cells, row):
                     cell.text = value
                     for para in cell.paragraphs:

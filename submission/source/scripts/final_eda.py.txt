@@ -4,6 +4,8 @@ Run from the Project root: python scripts/final_eda.py
 All weather/yield associations and feature correlations use training years only.
 Held-out residual examples are explicitly post-test descriptive diagnostics.
 """
+import argparse
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -15,6 +17,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results" / "final_eda"
 OUT.mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(ROOT))
+from scripts.compare_remaining_models import load_predictions
 
 
 def save(name: str) -> None:
@@ -23,10 +27,13 @@ def save(name: str) -> None:
     plt.close()
 
 
-def main() -> None:
+def main(predictions_only: bool = False) -> None:
     yields = pd.read_csv(ROOT / "data/study_sets/primary_100/observed_yields.csv", dtype={"county_fips": str})
     counties = pd.read_csv(ROOT / "data/study_sets/primary_100/counties.csv", dtype={"county_fips": str})
     features = pd.read_csv(ROOT / "data/features/primary_100/cutoff_07.csv", dtype={"county_fips": str})
+    if predictions_only:
+        plot_predictions(yields, features)
+        return
     split = np.select([yields.year <= 2016, yields.year <= 2020], ["Train", "Validation"], default="Test")
     yields["partition"] = split
     summary = yields.groupby("partition").yield_bu_per_acre.agg(["count", "mean", "median", "std", "min", "max", lambda x: x.quantile(.25), lambda x: x.quantile(.75)])
@@ -99,26 +106,16 @@ def main() -> None:
     ax.set_title("Training-only July feature correlations")
     save("training_feature_correlations.png")
 
-    # The saved standard-model predictions are read only; no model is fitted here.
-    paths = {
-        "linear": ROOT / "results/primary_100_baselines/predictions.csv",
-        "gradient_boosting": ROOT / "results/primary_100_gradient_boosting/predictions.csv",
-        "random_forest": ROOT / "results/primary_100_random_forest/predictions.csv.gz",
-        "neural_network": ROOT / "results/primary_100_neural_network/predictions.csv.gz",
-    }
-    rows = []
-    for family, path in paths.items():
-        if not path.exists():
-            continue
-        p = pd.read_csv(path, dtype={"county_fips": str})
-        p = p[(p.partition == "test") & (p.cutoff_month == 7) & (p.variant == "weather_plus_trend")]
-        if family == "gradient_boosting":
-            p = p[p.model == "gbr_tuned"]
-        elif family == "linear":
-            p = p[p.model == "linear"]
-        p = p.assign(family=family)
-        rows.append(p)
-    preds = pd.concat(rows, ignore_index=True)
+    plot_predictions(yields, features)
+
+
+def plot_predictions(yields: pd.DataFrame, features: pd.DataFrame) -> None:
+    # Consolidated loader validates the shared rows and uses Lester's test
+    # predictions; there is no fit or fallback in this diagnostic.
+    p = load_predictions()
+    preds = p[(p.partition == "test") & (p.cutoff_month == 7) &
+              (p.variant == "weather_plus_trend") & (p.model != "ridge")].copy()
+    preds["family"] = preds["model"]
     preds["error"] = preds.predicted_yield - preds.observed_yield
     worst = preds.assign(abs_error=lambda x: x.error.abs()).sort_values("abs_error", ascending=False).groupby("family").head(10)
     county_context = yields[["county_fips", "year", "state_alpha", "county_name", "cv_pct"]]
@@ -143,4 +140,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--predictions-only", action="store_true")
+    main(parser.parse_args().predictions_only)

@@ -17,15 +17,14 @@ py -3.13 -m pip install -r requirements-remaining-models.txt
 py -3.13 scripts/build_study_sets.py
 py -3.13 scripts/build_splits.py
 py -3.13 scripts/build_features.py
-py -3.13 scripts/run_remaining_models.py random_forest
-py -3.13 scripts/run_remaining_models.py neural_network
+py -3.13 scripts/import_lester_neural_network.py
 py -3.13 scripts/compare_remaining_models.py
 py -3.13 scripts/verify_final_results.py
 py -3.13 scripts/final_eda.py
 py -3.13 -m unittest discover -s tests -v
 ```
 
-The standard-model results can also be audited **without retraining** with `py -3.13 scripts/verify_final_results.py`. It checks validation-selected settings and feature lists, common row keys and targets, and recomputes MAE, RMSE, and bias for 80 saved metric groups. The submitted comparison tables are in `results/team_model_comparison/`; selection records are in `results/selections/`. Linear/Ridge and Gradient Boosting fit commands and their earlier pinned requirements are documented in `LINEAR_REGRESSION.md` and `GRADIENT_BOOSTING.md` in the development repository. The random seed is 42 in the model configurations. Validation MAE selects tunable settings; the frozen 2021–2025 test rows are scored once per saved run. Do not use test labels to change the feature lists or tuning grid.
+The standard-model results can also be audited **without retraining** with `py -3.13 scripts/verify_final_results.py`. It checks validation-selected settings and feature lists, common row keys and targets, and recomputes MAE, RMSE, and bias where row predictions are available. Lester’s NN validation scores are reported as supplied, without a row-level audit. The submitted comparison tables are in `results/team_model_comparison/`; selection records are in `results/selections/`. Linear/Ridge and Gradient Boosting fit commands and their earlier pinned requirements are documented in `LINEAR_REGRESSION.md` and `GRADIENT_BOOSTING.md` in the development repository. The random seed is 42 in the model configurations. Lester’s original software versions were not recorded; the submitted NN outputs are audited without a refit. Validation MAE selects tunable settings; the frozen 2021–2025 test rows are scored once per saved run. Do not use test labels to change the feature lists or tuning grid.
 
 The `.py.txt` copies in this submission are readable source for WebCampus. To run a copy outside the development checkout, restore its `.py` extension and the relative `scripts/`, `tests/`, `config/`, and `data/processed/` layout first. The submitted copies do not include the large processed datasets or full saved row predictions; those are tracked or retained in the development repository. Another person needs access to those inputs to execute the main comparison.
 

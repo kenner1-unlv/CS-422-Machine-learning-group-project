@@ -1,9 +1,10 @@
-"""Train the four model families on expanded_90, score fixed held-out rows.
+"""Train Linear, Gradient Boosting and Random Forest on expanded_90.
 
 The settings selected on the primary cohort are reused unchanged. This tests
 the effect of adding training counties, not a new hyperparameter search.
 Scores are reported on both the common 393-county rows and the larger set's
-own held-out population.
+own held-out population. The neural network is not included because its
+current artifacts cover the primary cohort only.
 """
 
 from __future__ import annotations
@@ -25,8 +26,8 @@ from scripts.run_baselines import make_pipeline as make_linear
 from scripts.run_remaining_models import make_model as make_other, score
 
 
-OUT = ROOT / "results/expanded_90_four_model_check"
-MODELS = ("linear", "gradient_boosting", "random_forest", "neural_network")
+OUT = ROOT / "results/expanded_90_three_model_check"
+MODELS = ("linear", "gradient_boosting", "random_forest")
 VARIANTS = ("weather_only", "weather_plus_trend")
 KEYS = ["county_fips", "year"]
 
@@ -40,7 +41,9 @@ def get_model(kind: str, cutoff: int, variant: str, settings: dict):
                   ("n_estimators", "learning_rate", "max_depth", "subsample",
                    "min_samples_leaf")}
         return make_gb(variant, params, 42, "squared_error")
-    return make_other(kind, settings[kind]["choices"][str(cutoff)][variant]["setting"])
+    if kind == "random_forest":
+        return make_other(kind, settings[kind]["choices"][str(cutoff)][variant]["setting"])
+    raise ValueError(f"Unexpected expanded training model: {kind}")
 
 
 def validate_common_rows(primary: pd.DataFrame, expanded: pd.DataFrame, names: list[str]) -> None:
@@ -65,7 +68,6 @@ def main() -> None:
     settings = {
         "gradient_boosting": json.loads((ROOT / "results/primary_100_gradient_boosting/selection.json").read_text()),
         "random_forest": json.loads((ROOT / "results/primary_100_random_forest/selection.json").read_text()),
-        "neural_network": json.loads((ROOT / "results/primary_100_neural_network/selection.json").read_text()),
     }
     original = load_predictions()
     original = original[original["model"].isin(MODELS)]

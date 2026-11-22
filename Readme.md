@@ -8,8 +8,8 @@ methods and findings live in the linked reports.
 The [final model comparison](FINAL_REPORT.md) summarizes all five standard
 methods, the fixed chronological evaluation and its limits.
 The [supplemental analysis](SUPPLEMENTAL_ANALYSES.md) adds a trend-only baseline,
-a fixed four-family average, an NN stopping study, and an expanded_90 training
-check while preserving the original comparison.
+a fixed four-family test average and an expanded_90 training check, separate
+from the primary comparison.
 
 ## Working review copies
 
@@ -47,19 +47,19 @@ default model. MAE and RMSE are in bushels per acre; lower is better.
 
 | Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
 |---|---:|---:|---:|---:|---:|
-| May | 40.28 | 40.28 | 37.75 | 36.96 | 37.49 |
-| June | 40.02 | 40.01 | 36.31 | 35.77 | 39.49 |
-| July | 37.04 | 37.19 | 33.87 | 34.37 | 38.46 |
-| August | 37.40 | 37.53 | 33.69 | 34.67 | 37.13 |
+| May | 40.28 | 40.28 | 37.75 | 36.96 | 38.59 |
+| June | 40.02 | 40.01 | 36.31 | 35.77 | 38.78 |
+| July | 37.04 | 37.19 | 33.87 | 34.37 | 32.19 |
+| August | 37.40 | 37.53 | 33.69 | 34.67 | 31.92 |
 
 ### Shared secondary comparison: weather plus year-trend test MAE
 
 | Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
 |---|---:|---:|---:|---:|---:|
-| May | 27.00 | 26.99 | 25.90 | 26.09 | 27.35 |
-| June | 26.05 | 26.18 | 25.46 | 25.47 | 27.03 |
-| July | 24.75 | 24.77 | 25.26 | 26.01 | 26.43 |
-| August | 24.82 | 25.01 | 25.26 | 25.89 | 25.99 |
+| May | 27.00 | 26.99 | 25.90 | 26.09 | 28.91 |
+| June | 26.05 | 26.18 | 25.46 | 25.47 | 29.58 |
+| July | 24.75 | 24.77 | 25.26 | 26.01 | 23.73 |
+| August | 24.82 | 25.01 | 25.26 | 25.89 | 22.95 |
 
 ### Exploratory equal-weight ensemble
 
@@ -68,17 +68,18 @@ predictions gives each model family weight 0.25. It uses the same held-out rows
 and no fitted stacking weights. The weather-plus-trend results are shown
 separately from the four-family standard comparison:
 
-| Cutoff | Validation MAE | Test MAE | Test RMSE | Test rows |
-|---|---:|---:|---:|---:|
-| May | 22.72 | 24.10 | 29.96 | 1,965 |
-| June | 20.08 | 23.14 | 29.18 | 1,965 |
-| July | 20.00 | 23.06 | 29.54 | 1,965 |
-| August | 20.10 | 23.26 | 29.47 | 1,965 |
+| Cutoff | Test MAE | Test RMSE | Test rows |
+|---|---:|---:|---:|
+| May | 22.83 | 28.87 | 1,965 |
+| June | 22.73 | 28.89 | 1,965 |
+| July | 22.02 | 28.45 | 1,965 |
+| August | 22.60 | 28.66 | 1,965 |
 
-This blend has lower test MAE than each individual standard model at these
-cutoffs, but its validation MAE does not beat the best individual in July or
-August. It was added after the original comparison and needs independent
-confirmation. See the [supplemental methods and full results](SUPPLEMENTAL_ANALYSES.md).
+This blend has lower test MAE than each standard individual model with trend
+at these cutoffs. Lester’s branch does not supply validation predictions, so
+a validation ensemble score is not available. The blend was added after the
+initial comparison and needs independent confirmation. See the
+[supplemental methods and full results](SUPPLEMENTAL_ANALYSES.md).
 
 The training-mean reference is **42.29 MAE / 48.02 RMSE** at every cutoff.
 Full validation/test MAE, RMSE, yearly and subgroup results for all five
@@ -94,13 +95,12 @@ retains its separate exploratory hybrid analysis.
   nonlinear thresholds and interactions that the additive baseline cannot;
   the observed gain does not isolate which mechanism caused it.
 - **Random Forest and Neural Network:** Random Forest has the lowest standard
-  weather-only test MAE in May (36.96) and June (35.77), while Gradient Boosting
-  leads July and August. The Neural Network does not have a consistent test
-  advantage; its original fixed 250-iteration training reached the cap by
-  design. The [supplemental stopping study](SUPPLEMENTAL_ANALYSES.md) tests
-  training-only stopping rules and finds mixed later-year effects.
+  weather-only test MAE in May (36.96) and June (35.77), while Lester’s Neural Network
+  leads July and August. It replaces the temporary team backup because it is
+  the intended contribution. The fixed 32-unit model hit its 500-iteration
+  cap in all eight runs; this is not evidence of convergence.
 - **With the year trend:** neither method wins every cutoff. Gradient Boosting
-  has lower MAE in May/June; Linear has lower MAE in July/August. July RMSE is
+  has the lowest standard test MAE in May/June; Neural Network leads July/August. July RMSE is
   **31.20 Linear versus 32.69 GB**. Even the metric matters: in June GB has
   lower MAE but higher RMSE (**32.10 versus 31.74 Linear**).
 - **Trend handling matters more than the small Linear/Ridge difference.**
@@ -116,7 +116,7 @@ retains its separate exploratory hybrid analysis.
   drought performance or statistical significance.
 - **Coverage is a separate experiment.** In the later expanded_90 check,
   broader training worsened Linear, Gradient Boosting, and Random Forest on
-  the fixed primary test rows; Neural Network changes were mixed. Primary
+  the fixed primary test rows. Lester’s Neural Network was not included. Primary
   settings were reused, so this does not establish full broader-cohort parity
   or show that more data is generally harmful.
 
@@ -137,9 +137,9 @@ keys per group, and all models/variants have identical county-year keys and
 observed targets within each cutoff and partition. The existing comparison
 script also ran successfully, including its baseline and weather-group checks.
 This checks saved-result consistency, not an independent retraining or proof
-that the original run was leakage-free. The new Random Forest and Neural Network
-scripts were executed locally, and the expanded comparison verifies matching
-held-out rows, targets and recomputed metrics for all five standard models.
+that the original run was leakage-free. The integrated comparison verifies matching
+held-out rows, targets and test metrics for all five standard models. Lester’s
+validation MAE and RMSE are reported summaries, not independently recomputed.
 
 Only five test years are available, and counties within a year are correlated.
 No confidence intervals or significance tests establish a winner. The planned
@@ -149,7 +149,8 @@ complete-county cohort is retrospectively selected, not a national sample.
 Historical input revisions, missing soil/management predictors and correlated
 weather features also limit interpretation. See the method reports for details.
 
-The original environments are recorded in each `selection.json`.
+The original environments for the tuned methods are recorded in their
+`selection.json` files. Lester’s original NN package versions were not recorded.
 [requirements-modeling.txt](requirements-modeling.txt) and
 [requirements-remaining-models.txt](requirements-remaining-models.txt) describe
 different recorded environments and have conflicting NumPy and scikit-learn
@@ -164,9 +165,11 @@ deserialized estimators.
 - [x] Use the shared primary cohort, chronological split, feature allowlists
   and a separate model for each cutoff; label weather-only and trend variants.
 - [x] Record training-only preprocessing, validation-only model selection,
-  seed, input hashes and package versions; declare any protocol deviation.
-- [x] Save row-level predictions and MAE/RMSE/counts by partition and cutoff;
-  check exact county/year keys and observed targets against the baselines.
+  seed and available input hashes and versions. Lester’s NN uses fixed settings;
+  source artifact hashes are recorded, but its original environment is unknown.
+- [x] Save row-level test predictions and MAE/RMSE/counts by cutoff;
+  check exact county/year keys and observed targets against the baselines. NN
+  validation is limited to reported pooled MAE/RMSE.
 - [x] Report yearly and shared weather-group results with sample counts.
 - [x] Keep exploratory variants separate and do not choose or tune model
   settings from test results.
@@ -177,15 +180,14 @@ deserialized estimators.
 
 Shared data preparation and feature details follow below. Install
 [requirements-remaining-models.txt](requirements-remaining-models.txt) to
-reproduce the local Random Forest, Neural Network and five-model comparison
-environment. Model-specific
+reproduce the local Random Forest and five-model comparison environment. Model-specific
 commands and environments are in [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md),
 [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md), [RANDOM_FOREST.md](RANDOM_FOREST.md)
 and [NEURAL_NETWORK.md](NEURAL_NETWORK.md). After preparing the shared feature
-tables, run `py -3.13 scripts/run_remaining_models.py random_forest`, then
-`py -3.13 scripts/run_remaining_models.py neural_network`, then
-`py -3.13 scripts/compare_remaining_models.py` to regenerate the new model
-results and five-model tables/figures. Run
+tables, run `py -3.13 scripts/import_lester_neural_network.py` and
+`py -3.13 scripts/compare_remaining_models.py` to rebuild the five-model
+tables and figures from tracked predictions. No fresh fits are needed. The
+Random Forest training command is `py -3.13 scripts/run_remaining_models.py random_forest`. Run
 `py -3.13 -m unittest tests.test_remaining_models -v` for the new protocol
 checks. Use a clean scratch checkout if you want to preserve published artifacts.
 These `py -3.13` examples select Python 3.13 on Windows; use the corresponding

@@ -1,4 +1,4 @@
-"""Fit Random Forest or Neural Network on the project's shared primary cohort.
+"""Fit Random Forest on the project's shared primary cohort.
 
 Each cutoff and feature variant gets an independent training-only fit. Candidate
 settings are compared on 2017-2020; selections are saved before 2021-2025 is
@@ -19,12 +19,8 @@ import joblib
 import numpy as np
 import pandas as pd
 import sklearn
-from sklearn.compose import TransformedTargetRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from sklearn.neural_network import MLPRegressor
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,32 +37,12 @@ def candidate_settings(model_kind: str) -> list[dict]:
              "max_features": 0.7, "bootstrap": True}
             for depth, leaf in itertools.product((12, None), (5, 20))
         ]
-    if model_kind == "neural_network":
-        return [{"hidden_layer_sizes": [width], "alpha": 0.001,
-                 "max_iter": 250, "batch_size": 256, "learning_rate_init": 0.001}
-                for width in (32, 64)]
     raise ValueError(f"Unknown model: {model_kind}")
 
 
 def make_model(model_kind: str, setting: dict):
     if model_kind == "random_forest":
         return RandomForestRegressor(**setting, random_state=SEED, n_jobs=4)
-    if model_kind == "neural_network":
-        network = MLPRegressor(
-            hidden_layer_sizes=tuple(setting["hidden_layer_sizes"]),
-            alpha=setting["alpha"], max_iter=setting["max_iter"],
-            batch_size=setting["batch_size"],
-            learning_rate_init=setting["learning_rate_init"],
-            activation="relu", solver="adam", random_state=SEED,
-            early_stopping=False, tol=0.0,
-            n_iter_no_change=setting["max_iter"],
-        )
-        # Weather features have different units; both input and target scaling
-        # are learned only inside the training fit, then inverted for scoring.
-        return TransformedTargetRegressor(
-            regressor=make_pipeline(StandardScaler(), network),
-            transformer=StandardScaler(),
-        )
     raise ValueError(model_kind)
 
 
@@ -210,7 +186,7 @@ def run(model_kind: str) -> None:
             names = manifest["features_by_cutoff"][str(cutoff)][variant]
             model = fitted[(cutoff, variant)]
             joblib.dump(model, out / "models" / f"{variant}_{cutoff:02}.joblib",
-                        compress=3 if model_kind == "random_forest" else 0)
+                        compress=3)
             predicted = model.predict(frame[names].to_numpy(dtype=float))
             if not np.isfinite(predicted).all():
                 raise ValueError("Nonfinite model prediction")
@@ -241,7 +217,7 @@ def run(model_kind: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("model", choices=("random_forest", "neural_network"))
+    parser.add_argument("model", choices=("random_forest",))
     run(parser.parse_args().model)
 
 

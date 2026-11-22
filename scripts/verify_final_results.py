@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from compare_remaining_models import load_predictions
+from import_lester_neural_network import provenance, RECOMPUTED, VALIDATION_SUMMARY
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -45,7 +46,7 @@ def verify_tuning() -> None:
             assert choice["predictors"] == MANIFEST["features_by_cutoff"][str(cutoff)][variant]
     assert gb["config"]["refit_on_validation"] is False
 
-    for family in ("random_forest", "neural_network"):
+    for family in ("random_forest",):
         saved = selection(family)
         tuning = pd.read_csv(RESULTS / f"primary_100_{family}/tuning.csv")
         assert saved["refit_on_validation"] is False
@@ -60,10 +61,24 @@ def verify_tuning() -> None:
 
 
 def verify_predictions() -> None:
-    # The existing loader asserts identical county-year-cutoff-partition keys and
-    # observed targets for all five families and both fixed feature variants.
+    # Row-level scores are recomputed from saved forecasts. The eight Lester
+    # validation summaries are checked against the source, but not recomputed.
     predictions = load_predictions()
     saved = pd.read_csv(RESULTS / "team_model_comparison/comparison.csv")
+    assert set(saved.metric_source) == {RECOMPUTED, VALIDATION_SUMMARY}
+    row_metrics = saved[saved.metric_source == RECOMPUTED]
+    reported = saved[saved.metric_source == VALIDATION_SUMMARY]
+    source = pd.read_csv(RESULTS / "neural_network/model_comparison.csv")
+    summaries = reported.merge(source, left_on=["cutoff_month", "variant"],
+                               right_on=["cutoff", "feature_type"], validate="one_to_one")
+    assert len(reported) == len(summaries) == 8
+    assert (reported.model == "neural_network").all()
+    assert (reported.partition == "validation").all()
+    assert (reported.n == 1572).all()
+    assert reported.bias_predicted_minus_observed.isna().all()
+    for metric in ("mae", "rmse"):
+        assert np.allclose(summaries[metric], summaries[f"validation_{metric}"], atol=1e-9, rtol=0)
+    assert selection("neural_network") == provenance()
     group = ["cutoff_month", "variant", "model", "partition"]
     calculated = predictions.groupby(group).apply(
         lambda x: pd.Series({
@@ -72,13 +87,13 @@ def verify_predictions() -> None:
             "rmse": np.sqrt(np.mean((x.predicted_yield - x.observed_yield) ** 2)),
             "bias_predicted_minus_observed": np.mean(x.predicted_yield - x.observed_yield),
         }), include_groups=False).reset_index()
-    merged = calculated.merge(saved, on=group, suffixes=("_recomputed", "_saved"), validate="one_to_one")
-    assert len(merged) == 80
+    merged = calculated.merge(row_metrics, on=group, suffixes=("_recomputed", "_saved"), validate="one_to_one")
+    assert len(calculated) == len(row_metrics) == len(merged) == 72
     for metric in ("n", "mae", "rmse", "bias_predicted_minus_observed"):
-        assert np.allclose(merged[f"{metric}_recomputed"], merged[f"{metric}_saved"], atol=1e-9)
+        assert np.allclose(merged[f"{metric}_recomputed"], merged[f"{metric}_saved"], atol=1e-9, rtol=0)
 
 
 if __name__ == "__main__":
     verify_tuning()
     verify_predictions()
-    print("PASS: validation selections, feature lists, shared rows and targets, 80 saved metric groups")
+    print("PASS: validation selections, feature lists, shared rows and targets, 72 recomputed metric groups and 8 author-reported summaries")

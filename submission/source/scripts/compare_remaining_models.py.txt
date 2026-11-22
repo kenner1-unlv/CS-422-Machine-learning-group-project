@@ -13,11 +13,12 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.run_remaining_models import score
+from scripts.import_lester_neural_network import RECOMPUTED, VALIDATION_SUMMARY, load_lester
 
 
 OUT = ROOT / "results/team_model_comparison"
 NAMES = {"linear": "Linear", "ridge": "Ridge", "gradient_boosting": "Gradient Boosting",
-         "random_forest": "Random Forest", "neural_network": "Neural Network"}
+         "random_forest": "Random Forest", "neural_network": "Neural Network (Lester)"}
 COLORS = {"linear": "#3267ae", "ridge": "#7c5aac", "gradient_boosting": "#dc642f",
           "random_forest": "#168b78", "neural_network": "#ad3765"}
 
@@ -32,9 +33,9 @@ def load_predictions() -> pd.DataFrame:
     gb = gb[(gb["model"] == "gbr_tuned") &
             gb["variant"].isin(["weather_only", "weather_plus_trend"])].copy()
     gb["model"] = "gradient_boosting"
-    others = [pd.read_csv(ROOT / "results" / f"primary_100_{kind}" / "predictions.csv.gz",
-                          dtype={"county_fips": str}) for kind in ("random_forest", "neural_network")]
-    all_predictions = pd.concat([base, gb, *others], ignore_index=True)
+    forest = pd.read_csv(ROOT / "results/primary_100_random_forest/predictions.csv.gz",
+                         dtype={"county_fips": str})
+    all_predictions = pd.concat([base, gb, forest], ignore_index=True)
     keys = ["county_fips", "year", "cutoff_month", "partition"]
     reference = base[(base["model"] == "linear") & (base["variant"] == "weather_only")]
     expected = reference[keys + ["observed_yield"]].sort_values(keys).reset_index(drop=True)
@@ -42,18 +43,34 @@ def load_predictions() -> pd.DataFrame:
         actual = group[keys + ["observed_yield"]].sort_values(keys).reset_index(drop=True)
         if not actual.equals(expected):
             raise ValueError(f"Row or observed target mismatch for {model}/{variant}")
-    if len(all_predictions) != len(expected) * len(NAMES) * 2:
-        raise ValueError("Missing standard model predictions")
-    return all_predictions[all_predictions["partition"].isin(["validation", "test"])].copy()
+    if len(all_predictions) != len(expected) * (len(NAMES) - 1) * 2:
+        raise ValueError("Missing standard non-NN model predictions")
+    neural, _ = load_lester(reference)
+    heldout = all_predictions[all_predictions["partition"].isin(["validation", "test"])]
+    return pd.concat([heldout, neural], ignore_index=True)
+
+
+def pooled_scores(predictions: pd.DataFrame) -> pd.DataFrame:
+    columns = ["cutoff_month", "variant", "model", "partition"]
+    overall = predictions.groupby(columns).apply(
+        lambda group: pd.Series(score(group["observed_yield"], group["predicted_yield"])),
+        include_groups=False,
+    ).reset_index()
+    overall["metric_source"] = RECOMPUTED
+    reference = predictions[(predictions["model"] == "linear") &
+                            (predictions["variant"] == "weather_only")]
+    _, neural_metrics = load_lester(reference)
+    summary = neural_metrics[neural_metrics["metric_source"] == VALIDATION_SUMMARY].copy()
+    summary["model"] = "neural_network"
+    overall = pd.concat([overall, summary[overall.columns]], ignore_index=True)
+    return overall.sort_values(columns).reset_index(drop=True)
 
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     predictions = load_predictions()
     columns = ["cutoff_month", "variant", "model", "partition"]
-    overall = predictions.groupby(columns).apply(
-        lambda group: pd.Series(score(group["observed_yield"], group["predicted_yield"])),
-        include_groups=False).reset_index()
+    overall = pooled_scores(predictions)
     overall.to_csv(OUT / "comparison.csv", index=False)
     test = predictions[predictions["partition"] == "test"]
     yearly = test.groupby(columns[:-1] + ["year"]).apply(
@@ -90,6 +107,8 @@ def main() -> None:
         include_groups=False).reset_index()
     subgroups["small_sample"] = (subgroups["n"] < 30) | (subgroups["years"] < 3)
     subgroups.to_csv(OUT / "subgroup_comparison.csv", index=False)
+    nn = subgroups[subgroups["model"] == "neural_network"].drop(columns="model")
+    nn.to_csv(ROOT / "results/primary_100_neural_network/subgroup_metrics.csv", index=False)
 
     months = {5: "May", 6: "June", 7: "July", 8: "August"}
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)

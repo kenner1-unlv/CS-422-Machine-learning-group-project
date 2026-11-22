@@ -8,7 +8,7 @@
 
 ## Abstract
 
-We evaluate whether annual county-level U.S. corn-grain yield can be forecast by the end of May, June, July, or August using weather observed through each cutoff. USDA National Agricultural Statistics Service (NASS) county yields are paired with NOAA nClimGrid-Daily county-area weather. The primary comparison uses 393 counties with complete observed yields and January–August weather in every year from 2000 through 2025. Models fit 2000–2016, select settings on 2017–2020, and are evaluated on the same 1,965 county-years from 2021–2025 at each cutoff. We compare Linear and Ridge regression, Gradient Boosting, Random Forest, and a single-hidden-layer Neural Network under weather-only and weather-plus-year-trend predictor lists. Mean absolute error (MAE, bushels per acre) is primary; root mean squared error (RMSE), bias, yearly errors, and exploratory weather-group errors support interpretation. The training-mean reference has 42.29 test MAE. On the July test, adding the declared year feature reduces Linear MAE from 37.04 to 24.75; a trend-only Linear comparator reaches 26.97. Validation favors Gradient Boosting among individual standard models at all four cutoffs, while the held-out test ranking changes by cutoff and year. A later fixed, equal-weight four-family average obtains July test MAE 23.06, but is exploratory because it was added after initial test results were visible. The strong time signal, selective cohort, revised historical weather, omitted farm variables, and only five test years limit claims about future operational forecasts.
+We evaluate whether annual county-level U.S. corn-grain yield can be forecast by the end of May, June, July, or August using weather observed through each cutoff. USDA National Agricultural Statistics Service (NASS) county yields are paired with NOAA nClimGrid-Daily county-area weather. The primary comparison uses 393 counties with complete observed yields and January–August weather in every year from 2000 through 2025. Models fit 2000–2016, use 2017–2020 for validation, and are evaluated on the same 1,965 county-years from 2021–2025 at each cutoff. We compare Linear and Ridge regression, Gradient Boosting, Random Forest, and a single-hidden-layer Neural Network under weather-only and weather-plus-year-trend predictor lists. Mean absolute error (MAE, bushels per acre) is primary; root mean squared error (RMSE), bias, yearly errors, and exploratory weather-group errors support interpretation. The training-mean reference has 42.29 test MAE. On the July test, adding the declared year feature reduces Linear MAE from 37.04 to 24.75; a trend-only Linear comparator reaches 26.97. Weather-plus-trend validation favors Gradient Boosting among individual standard models at all four cutoffs, while the held-out test ranking changes by cutoff and year. A later fixed, equal-weight four-family average obtains July test MAE 22.02, but is exploratory because it was added after initial test results were visible. The strong time signal, selective cohort, revised historical weather, omitted farm variables, and only five test years limit claims about future operational forecasts.
 
 **Keywords:** corn yield; early-season forecasting; county-level regression; chronological holdout; weather; model comparison.
 
@@ -79,21 +79,21 @@ The primary metric is `MAE = mean(|observed − predicted|)`, in bushels per acr
 | Linear and Ridge | Russell Kennedy | Ordinary least squares; Ridge `alpha` grid 0.001 through 100,000 (nine declared values) | Training-fitted feature StandardScaler |
 | Gradient Boosting | Alexander Aquiningoc | Default reference and validation-tuned gradient-boosted trees: 24 combinations of learning rate, depth, subsample, and minimum leaf; staged search over 1–600 trees | Original feature units |
 | Random Forest | Tylie Anderson | 150 bootstrap trees, `max_features=0.7`; four combinations of depth 12/unrestricted and minimum leaf 5/20 | Original feature units |
-| Neural Network | Lester Iwuajoku | One ReLU hidden layer with 32 or 64 units; Adam, learning rate 0.001, L2 0.001, batch 256, fixed 250 iterations | Training-fitted feature and target StandardScalers |
+| Neural Network | Lester Iwuajoku | One 32-unit ReLU hidden layer; fixed seed 42, 500-iteration cap, other MLP settings left at library defaults | Training-fitted feature StandardScaler; unscaled yield target |
 
-Linear's interpretability provides a useful reference, although its additive form does not learn thresholds without feature engineering. Ridge tests whether regularization helps with overlapping monthly and cumulative weather inputs. Boosted and bagged trees can express nonlinear thresholds and interactions. The Neural Network offers a different nonlinear function class. The original network deliberately used `tol=0` and a 250-iteration budget, so its cap warning does not alone prove a training failure; a separately labeled longer-training study tests stopping rules.
+Linear's interpretability provides a useful reference, although its additive form does not learn thresholds without feature engineering. Ridge tests whether regularization helps with overlapping monthly and cumulative weather inputs. Boosted and bagged trees can express nonlinear thresholds and interactions. The Neural Network offers a different nonlinear function class. Lester Iwuajoku’s assigned NN implementation uses fixed settings and reached its 500-iteration cap in all eight runs. The team used an interim backup while his run was pending, then replaced it with [his independently produced artifacts](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/pull/16) for authorship and project scope, not based on test ranking. No models were refitted for that integration.
 
-The [Linear/Ridge](LINEAR_REGRESSION.md), [Gradient Boosting](GRADIENT_BOOSTING.md), [Random Forest](RANDOM_FOREST.md), and [Neural Network](NEURAL_NETWORK.md) method reports give the complete grids, tie-breaks, selected parameters, run commands, and limitations. The [baseline configuration](config/baselines.json), [Gradient Boosting configuration](config/gradient_boosting.json), and saved `selection.json` files contain the execution details. No claim is made that these bounded searches locate globally optimal settings.
+The [Linear/Ridge](LINEAR_REGRESSION.md), [Gradient Boosting](GRADIENT_BOOSTING.md), [Random Forest](RANDOM_FOREST.md), and [Neural Network](NEURAL_NETWORK.md) method reports document settings, run commands, and limitations. The [baseline configuration](config/baselines.json), [Gradient Boosting configuration](config/gradient_boosting.json), and saved `selection.json` files contain the execution details. No claim is made that these bounded searches locate globally optimal settings.
 
 ### 3.3 Reproducibility checks
 
-The repository records the split and feature configurations, random seed, source and feature SHA-256 hashes, saved settings, package versions, row predictions, and per-partition metrics. Tests verify that model scores recompute from row predictions, that shared held-out keys and targets match, and that Neural Network scaling reflects training rows. The later comparison reads frozen predictions rather than silently refitting original models under a new package version. The [CI workflow](.github/workflows/tests.yml) rebuilds derived study sets and features from tracked processed inputs, then runs the test suite. See Appendix A for the exact commands and version caveat.
+The repository records the split and feature configurations, random seed, source and feature SHA-256 hashes, saved settings, package versions, row predictions, and per-partition metrics. The read-only verifier recomputes available scores from row predictions and checks identical held-out keys and observed yields. Lester’s branch contains file-level test predictions but reports validation as aggregate MAE and RMSE only. The later comparison reads frozen predictions rather than silently refitting original models under a new package version. The [CI workflow](.github/workflows/tests.yml) rebuilds derived study sets and features from tracked processed inputs, then runs the test suite. See Appendix A for the exact commands and version caveat.
 
 ## 4. Results
 
 ### 4.1 Standard model comparison
 
-**Table 3. Consolidated weather-plus-trend results on the primary cohort.** MAE and RMSE are bushels per acre; lower is better. Each row represents one model/cutoff on the same 1,572 validation and 1,965 held-out test county-years. The training-mean baseline is cutoff-independent. Settings were selected on validation, so test rankings are descriptive rather than a new selection rule.
+**Table 3. Consolidated weather-plus-trend results on the primary cohort.** MAE and RMSE are bushels per acre; lower is better. Each row represents one model/cutoff on the same 1,572 validation and 1,965 held-out test county-years. The training-mean baseline is cutoff-independent. Where settings were tuned, tuning used validation only. The NN configuration is fixed; its validation summaries are author-reported. Test rankings are descriptive.
 
 | Cutoff | Model (proposal assignment) | Validation MAE | Test MAE | Test RMSE |
 |---|---|---:|---:|---:|
@@ -102,33 +102,33 @@ The repository records the split and feature configurations, random seed, source
 | May | Ridge (Kennedy) | 24.30 | 26.99 | 32.98 |
 | May | Gradient Boosting (Aquiningoc) | **22.93** | **25.90** | 31.77 |
 | May | Random Forest (Anderson) | 24.33 | 26.09 | **31.56** |
-| May | Neural Network (Iwuajoku) | 26.23 | 27.35 | 34.18 |
+| May | Neural Network (Iwuajoku) | 27.05 | 28.91 | 37.34 |
 | June | Linear (Kennedy) | 23.89 | 26.05 | **31.74** |
 | June | Ridge (Kennedy) | 23.84 | 26.18 | 31.85 |
 | June | Gradient Boosting (Aquiningoc) | **20.21** | **25.46** | 32.10 |
 | June | Random Forest (Anderson) | 20.79 | 25.47 | 31.84 |
-| June | Neural Network (Iwuajoku) | 26.50 | 27.03 | 34.71 |
-| July | Linear (Kennedy) | 23.89 | **24.75** | **31.20** |
+| June | Neural Network (Iwuajoku) | 24.49 | 29.58 | 37.49 |
+| July | Linear (Kennedy) | 23.89 | 24.75 | 31.20 |
 | July | Ridge (Kennedy) | 23.90 | 24.77 | 31.22 |
 | July | Gradient Boosting (Aquiningoc) | **19.44** | 25.26 | 32.69 |
 | July | Random Forest (Anderson) | 20.60 | 26.01 | 32.56 |
-| July | Neural Network (Iwuajoku) | 23.63 | 26.43 | 33.28 |
-| August | Linear (Kennedy) | 23.90 | **24.82** | **31.28** |
+| July | Neural Network (Iwuajoku) | 22.82 | **23.73** | **30.96** |
+| August | Linear (Kennedy) | 23.90 | 24.82 | 31.28 |
 | August | Ridge (Kennedy) | 23.86 | 25.01 | 31.37 |
 | August | Gradient Boosting (Aquiningoc) | **19.75** | 25.26 | 31.80 |
 | August | Random Forest (Anderson) | 20.89 | 25.89 | 31.89 |
-| August | Neural Network (Iwuajoku) | 23.29 | 25.99 | 32.53 |
+| August | Neural Network (Iwuajoku) | 21.16 | **22.95** | **29.84** |
 
-The exact values and bias are in the [comparison table](results/team_model_comparison/comparison.csv). Gradient Boosting has the lowest trend-variant **validation MAE** among the five standard methods at every cutoff, making it the validation-supported individual model under that criterion. On the later test years it has the lowest standard-model MAE in May and June, whereas Linear has the lowest in July and August. These small differences do not establish a universal winner. June Gradient Boosting and Random Forest test MAE differ by only 0.01 after rounding; June Linear has a slightly lower RMSE than Gradient Boosting despite its higher MAE.
+The exact values and bias are in the [comparison table](results/team_model_comparison/comparison.csv). Gradient Boosting has the lowest trend-variant **validation MAE** among the five standard methods at every cutoff, making it the validation-supported individual model under that criterion. On the later test years it has the lowest standard-model MAE in May and June, whereas Neural Network has the lowest in July and August. These small differences do not establish a universal winner. June Gradient Boosting and Random Forest test MAE differ by only 0.01 after rounding; June Linear has a slightly lower RMSE than Gradient Boosting despite its higher MAE.
 
 **Table 4. Weather-only test MAE ablation.** Same primary test rows and target as Table 3; no year predictor.
 
 | Cutoff | Linear | Ridge | Gradient Boosting | Random Forest | Neural Network |
 |---|---:|---:|---:|---:|---:|
-| May | 40.28 | 40.28 | 37.75 | **36.96** | 37.49 |
-| June | 40.02 | 40.01 | 36.31 | **35.77** | 39.49 |
-| July | 37.04 | 37.19 | **33.87** | 34.37 | 38.46 |
-| August | 37.40 | 37.53 | **33.69** | 34.67 | 37.13 |
+| May | 40.28 | 40.28 | 37.75 | **36.96** | 38.59 |
+| June | 40.02 | 40.01 | 36.31 | **35.77** | 38.78 |
+| July | 37.04 | 37.19 | 33.87 | 34.37 | **32.19** |
+| August | 37.40 | 37.53 | 33.69 | 34.67 | **31.92** |
 
 ![Two-panel line chart of held-out test MAE by month for weather-only and weather-plus-trend variants.](results/team_model_comparison/test_mae_by_cutoff.png)
 
@@ -144,20 +144,19 @@ The separate Linear trend-only comparator fits the single `year_since_2000` feat
 
 **Figure 2.** July weather-plus-trend MAE by held-out harvest year. Each plotted year has 393 county rows. The 2023 tree-model errors rise sharply, whereas the Neural Network is worse in 2024. This variation is hidden by the pooled five-year table. [Underlying annual scores](results/team_model_comparison/comparison_by_year.csv).
 
-For July 2023, MAE is 40.36 for Gradient Boosting, 35.74 for Random Forest, 29.08 for Linear, and 28.18 for Neural Network. In July 2024, the Neural Network's MAE is 32.88 while Gradient Boosting's is 22.59. The July trend-variant mean test biases are −14.42 bu/acre for Gradient Boosting, −15.08 for Random Forest, and −5.60 for Linear. Tree splits on year cannot continue a numerical trend beyond the training range, which is consistent with some underprediction, although other shifts may contribute.
+For July 2023, MAE is 40.36 for Gradient Boosting, 35.74 for Random Forest, 29.08 for Linear, and 22.18 for Neural Network. In July 2024, the Neural Network's MAE is 28.03 while Gradient Boosting's is 22.59. The July trend-variant mean test biases are −14.42 bu/acre for Gradient Boosting, −15.08 for Random Forest, and −5.60 for Linear. Tree splits on year cannot continue a numerical trend beyond the training range, which is consistent with some underprediction, although other shifts may contribute.
 
-The exploratory weather groups label county-years as hot, dry, wet, normal, or unclassified using county-specific thresholds estimated from training-period weather. Labels can overlap, and the subgroup definitions were finalized after earlier overall test results were already visible. In the July trend-variant **dry** slice (380 rows), MAE is 28.16 Linear, 36.02 Gradient Boosting, 31.54 Random Forest, and 30.41 Neural Network. The **normal** slice (1,261 rows) gives 24.37, 23.30, 25.30, and 25.96, respectively. Of the 380 dry rows, 246 come from 2023. These are descriptive failure-case checks, not independent drought events or proof that one model is generally more drought-robust. The [weather-group method](results/weather_groups/README.md) and [same-row subgroup table](results/team_model_comparison/subgroup_comparison.csv) give definitions and full counts.
+The exploratory weather groups label county-years as hot, dry, wet, normal, or unclassified using county-specific thresholds estimated from training-period weather. Labels can overlap, and the subgroup definitions were finalized after earlier overall test results were already visible. In the July trend-variant **dry** slice (380 rows), MAE is 28.16 Linear, 36.02 Gradient Boosting, 31.54 Random Forest, and 23.31 Neural Network. The **normal** slice (1,261 rows) gives 24.37, 23.30, 25.30, and 23.12, respectively. Of the 380 dry rows, 246 come from 2023. These are descriptive failure-case checks, not independent drought events or proof that one model is generally more drought-robust. The [weather-group method](results/weather_groups/README.md) and [same-row subgroup table](results/team_model_comparison/subgroup_comparison.csv) give definitions and full counts.
 
-The [July test prediction and residual figure](results/final_eda/july_test_residuals.png) shows post-test scatter and error distributions on frozen standard-model predictions. A representative large miss is Pitt County, North Carolina, in 2024: observed yield was 48.3 bu/acre, while the July trend-variant Linear and Neural Network predictions were 174.44 and 205.44. Its April–July precipitation total was 514.28 mm and mean temperature 22.82°C in the retrospective feature table. Those aggregate fields do not establish why yield was low; unmeasured local conditions or source uncertainty may matter. The [high-error row table](results/final_eda/july_high_error_examples.csv) records other examples. Identifying this case after examining test errors is exploratory and was not used to select a model.
+The [July test prediction and residual figure](results/final_eda/july_test_residuals.png) shows post-test scatter and error distributions on frozen standard-model predictions. One illustrative miss is Pitt County, North Carolina, in 2024: observed yield was 48.3 bu/acre, while the July trend-variant Linear and Neural Network predictions were 174.44 and 172.07. Its April–July precipitation total was 514.28 mm and mean temperature 22.82°C in the retrospective feature table. Those aggregate fields do not establish why yield was low; unmeasured local conditions or source uncertainty may matter. The [high-error row table](results/final_eda/july_high_error_examples.csv) records other examples. Identifying this case after examining test errors is exploratory and was not used to select a model.
 
 ### 4.4 Separately labeled follow-up analyses
 
 The analyses in this subsection were added **after initial test results were visible**. Their formulas or settings did not use test labels for selection, but the follow-up questions themselves were test-informed. They are useful diagnostics and should receive independent future-year confirmation.
 
-* **Fixed equal-weight ensemble.** The arithmetic mean of Linear, validation-tuned Gradient Boosting, Random Forest, and the original Neural Network assigns each prediction weight 0.25, with no fitted stacking weights. Weather-plus-trend test MAE is 24.10, 23.14, 23.06, and 23.26 from May through August. It is lower than every standard individual method on this particular test, but its validation MAE does not beat the best individual in July or August. It is **not** the selected standard-model winner.
-* **Longer Neural Network training.** A bounded stopping study compares the original fixed 250-iteration model with 32- and 64-unit networks under training-loss patience or an internal random 15% slice of training rows. Outer 2017–2020 validation selects candidates. New fits met their declared stopping rules, and a new candidate won validation in five of eight cutoff/variant combinations; later-year test effects were mixed. This does not identify an optimal architecture.
-* **More training counties.** Training all four families on the expanded_90 cohort (883 counties) while evaluating the unchanged primary test rows raises MAE for Linear, Gradient Boosting, and Random Forest in all eight cutoff/variant comparisons; Neural Network changes are mixed. Scores on the expanded cohort's own test population are reported separately because that population differs.
-* **Sensitivity to a single year.** Leaving one test year out at a time changes the descriptive July trend-variant leader when 2023 is omitted. This is sensitivity analysis, not a confidence interval or a significance test.
+* **Fixed equal-weight ensemble.** The arithmetic mean of Linear, validation-tuned Gradient Boosting, Random Forest, and Lester’s Neural Network assigns each prediction weight 0.25, with no fitted stacking weights. Weather-plus-trend test MAE is 22.83, 22.73, 22.02, and 22.60 from May through August, below each individual standard method on this test. Validation ensemble scores are unavailable because per-row NN validation predictions were not supplied. It is **not** the selected standard-model winner.
+* **More training counties.** Training Linear, Gradient Boosting, and Random Forest on the expanded_90 cohort (883 counties) raises MAE in all eight cutoff/variant comparisons on the unchanged primary test rows. Lester’s NN was not part of this check. Scores on the expanded cohort's own test population are reported separately because that population differs.
+* **Sensitivity to a single year.** Leaving one test year out at a time changes the descriptive July trend-variant leader from Neural Network to Gradient Boosting when 2023 is omitted. This is sensitivity analysis, not a confidence interval or a significance test.
 
 ![Line chart comparing four individual models, the fixed equal-weight ensemble, and a trend-only baseline by cutoff.](results/supplemental_figures/ensemble_and_trend_test_mae.png)
 
@@ -169,9 +168,9 @@ The earlier Gradient Boosting report also contains a **trend-residual hybrid**: 
 
 The most robust finding is methodological: **feature definition and forecast-time information matter at least as much as the choice among these algorithms**. Adding the allowed year signal changes July Linear test MAE by 12.29 bu/acre; many pairwise model differences within the same trend-variant table are under 1 bu/acre. Yet the trend-only result shows that much of the apparent improvement is associated with calendar time rather than weather. This is a predictive association, not evidence that climate or one farming practice caused yield growth.
 
-For a single standard individual model selected without consulting final-test rankings, the **weather-plus-trend Gradient Boosting model** has the strongest validation MAE at all four cutoffs. We recommend presenting it alongside **Linear weather plus trend** as an interpretable reference. Linear is slightly better on the July and August test MAE/RMSE, but this was learned from only five held-out years and should not be used to retroactively change the original selection rule. Ridge adds little over Linear in this setup. Random Forest improves weather-only MAE over Linear but cannot extrapolate the year term; the original Neural Network has no stable pooled advantage despite an interesting 2023 result. A complex model need not win for its evaluation to be informative.
+For a single standard individual model selected without consulting final-test rankings, the **weather-plus-trend Gradient Boosting model** has the strongest validation MAE at all four cutoffs. We recommend presenting it alongside **Linear weather plus trend** as an interpretable reference. Lester’s NN leads July and August test MAE and RMSE with the trend, but these rankings come from only five held-out years and do not replace the validation-based recommendation. Ridge adds little over Linear in this setup. Random Forest improves weather-only MAE over Linear but cannot extrapolate the year term. A complex model need not win for its evaluation to be informative.
 
-The equal-weight ensemble and trend-residual hybrid are promising exploratory alternatives, not independently confirmed replacements. No cluster-aware uncertainty interval or hypothesis test shows that the small standard-model gaps are significant. The effective number of independent future seasons is much closer to five than to 1,965 because counties in a year share weather and agricultural conditions. Results also depend on one seed, modest searches for Random Forest and Neural Network, one cohort rule, and retrospectively revised weather. The model lacks soil, irrigation, seed, pests, management, and planting dates. A true operational study would require as-of-date weather archives, later untouched years, wider geographic validation, and monitoring for drift.
+The equal-weight ensemble and trend-residual hybrid are promising exploratory alternatives, not independently confirmed replacements. No cluster-aware uncertainty interval or hypothesis test shows that the small standard-model gaps are significant. The effective number of independent future seasons is much closer to five than to 1,965 because counties in a year share weather and agricultural conditions. Results also depend on one seed, a modest Random Forest search and one fixed Neural Network configuration, one cohort rule, and retrospectively revised weather. The model lacks soil, irrigation, seed, pests, management, and planting dates. A true operational study would require as-of-date weather archives, later untouched years, wider geographic validation, and monitoring for drift.
 
 ## 5. Team discussion and contributions
 
@@ -184,7 +183,7 @@ The submitted October 11, 2026 proposal documents the early-season corn-yield to
 | Russell Kennedy | Linear and Ridge regression; shared comparison | Linear/Ridge report, baseline outputs, team comparison, EDA outputs |
 | Alexander Aquiningoc | Gradient Boosting regression | Gradient Boosting report, tuning, figures, and saved outputs |
 | Tylie Anderson | Random Forest regression | Random Forest report, selection, and prediction outputs |
-| Lester Iwuajoku | Neural Network regression | Neural Network report, selection, and prediction outputs |
+| Lester Iwuajoku | Neural Network regression | Neural Network script, validation summary and test predictions from PR #16 |
 
 **Discussion record for team verification.** The team confirms the model split and EDA expansion. Git dates the first weather-group upload, not the conversation. The professor also requires a dated post-results model-review decision and its effect on the work.
 
@@ -203,7 +202,7 @@ The service should reject missing or unmatched inputs rather than silently imput
 
 ## 7. Conclusion
 
-On a fixed later-year test of 393 complete counties, early-season corn-yield forecasts improve substantially when the shared weather predictors are supplemented by a known calendar-year feature. The July Linear example falls from 37.04 to 24.75 MAE, while the trend-only score of 26.97 shows that the year signal explains much of the gain and July weather adds a smaller increment. Gradient Boosting is the validation-supported individual standard model at every cutoff, although the held-out test ranking changes by cutoff and year. A later fixed ensemble is promising but exploratory. These results support a reproducible comparison of algorithms and features on one retrospective population; they do not establish an operationally reliable forecast for all counties or future seasons. The next research steps are an as-of-data backtest, additional independent test years, broader geographic validation, and uncertainty estimates that account for year-level dependence.
+On a fixed later-year test of 393 complete counties, early-season corn-yield forecasts improve substantially when the shared weather predictors are supplemented by a known calendar-year feature. The July Linear example falls from 37.04 to 24.75 MAE, while the trend-only score of 26.97 shows that the year signal explains much of the gain and July weather adds a smaller increment. Gradient Boosting is the validation-supported individual standard model with trend at every cutoff, although the held-out test ranking changes by cutoff and year. A later fixed ensemble is promising but exploratory. These results support a reproducible comparison of algorithms and features on one retrospective population; they do not establish an operationally reliable forecast for all counties or future seasons. The next research steps are an as-of-data backtest, additional independent test years, broader geographic validation, and uncertainty estimates that account for year-level dependence.
 
 ## References
 
@@ -211,7 +210,7 @@ On a fixed later-year test of 393 complete counties, early-season corn-yield for
 2. USDA National Agricultural Statistics Service. *Quick Stats* county agricultural statistics and bulk data. [Data portal](https://www.nass.usda.gov/Quick_Stats/).
 3. Durre, I., Squires, M. F., Vose, R. S., et al. (2022). *NOAA's nClimGrid-Daily Version 1: Daily gridded temperature and precipitation for the contiguous United States since 1951*. NOAA National Centers for Environmental Information. [Dataset and citation](https://www.ncei.noaa.gov/products/land-based-station/nclimgrid-daily), [DOI](https://doi.org/10.25921/c4gt-r169).
 4. Kennedy, R., Anderson, T., Aquiningoc, A., & Iwuajoku, L. (2026). *Evaluating the Reliability of Early-Season Corn Yield Predictions Under Extreme Weather Using Machine Learning*. CS 422 submitted topic proposal, October 11, 2026.
-5. Project implementation uses Python, NumPy, pandas, scikit-learn, SciPy, joblib, and Matplotlib. Exact package versions for each run are in the linked requirements files and saved selection records. See [NumPy](https://numpy.org/), [pandas](https://pandas.pydata.org/), [scikit-learn](https://scikit-learn.org/stable/), [SciPy](https://scipy.org/), [joblib](https://joblib.readthedocs.io/), and [Matplotlib](https://matplotlib.org/).
+5. Project implementation uses Python, NumPy, pandas, scikit-learn, SciPy, joblib, and Matplotlib. Recorded package versions are in the linked requirements files and saved selection records; Lester’s original Python and library versions were not recorded in the PR. See [NumPy](https://numpy.org/), [pandas](https://pandas.pydata.org/), [scikit-learn](https://scikit-learn.org/stable/), [SciPy](https://scipy.org/), [joblib](https://joblib.readthedocs.io/), and [Matplotlib](https://matplotlib.org/).
 
 ## Appendix A. Reproduce and audit the comparison
 
@@ -224,8 +223,7 @@ py -3.13 -m pip install -r requirements-remaining-models.txt
 py -3.13 scripts/build_study_sets.py
 py -3.13 scripts/build_splits.py
 py -3.13 scripts/build_features.py
-py -3.13 scripts/run_remaining_models.py random_forest
-py -3.13 scripts/run_remaining_models.py neural_network
+py -3.13 scripts/import_lester_neural_network.py
 py -3.13 scripts/compare_remaining_models.py
 py -3.13 scripts/verify_final_results.py
 py -3.13 scripts/final_eda.py
