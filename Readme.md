@@ -11,14 +11,23 @@ The [supplemental analysis](SUPPLEMENTAL_ANALYSES.md) adds a trend-only baseline
 a fixed four-family average, an NN stopping study, and an expanded_90 training
 check while preserving the original comparison.
 
+## Working review copies
+
+- [Final Project Tracker](https://docs.google.com/spreadsheets/d/1lhPMqn3DQDZXlgQLka2vUtC4NYIjcRMNtwSHZQVWptc) — requirements, EDA evidence, model metrics, and submission status.
+- [Final Report Working Draft](https://docs.google.com/document/d/1rhiyQEPAe8Fl0yfx5vZGnuwbZ5Hy9eUiblYE1nVUedE) — collaboration copy of the canonical [FINAL_REPORT.md](FINAL_REPORT.md).
+
+Google access may need to be granted to teammates. The Markdown report in this repository remains the source of record for results and revisions.
+
 ## Model reports and completion status
 
-| Contribution | Owner | Report | Current scope |
+| Contribution | Proposal assignment | Report | Current scope |
 |---|---|---|---|
 | Linear and Ridge Regression | Russell Kennedy | [LINEAR_REGRESSION.md](LINEAR_REGRESSION.md) | Primary + three broader coverage sets; weather-group evaluation |
 | Gradient Boosting Regression | Alexander Aquiningoc | [GRADIENT_BOOSTING.md](GRADIENT_BOOSTING.md) | Primary cohort; shared variants + separate exploratory trend-residual variant |
 | Random Forest Regression | Tylie Anderson | [RANDOM_FOREST.md](RANDOM_FOREST.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 | Neural Network Regression | Lester Iwuajoku | [NEURAL_NETWORK.md](NEURAL_NETWORK.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
+
+These model areas follow the submitted proposal. The [report contribution section](FINAL_REPORT.md#5-team-discussion-and-contributions) summarizes the project evidence for each area.
 
 ## Shared comparison: five standard models
 
@@ -101,9 +110,11 @@ retains its separate exploratory hybrid analysis.
   dry-group MAE is **28.16 / 36.02** (380 rows). Of those dry rows, 246 are
   from 2023. These overlapping, exploratory groups do not establish general
   drought performance or statistical significance.
-- **Coverage is a separate experiment.** Broader regression training did not
-  improve error on the fixed primary test rows. GB has not run those broader
-  cohorts, so this is not a cross-model coverage conclusion.
+- **Coverage is a separate experiment.** In the later expanded_90 check,
+  broader training worsened Linear, Gradient Boosting, and Random Forest on
+  the fixed primary test rows; Neural Network changes were mixed. Primary
+  settings were reused, so this does not establish full broader-cohort parity
+  or show that more data is generally harmful.
 
 ### Exploratory result, outside the shared model ranking
 
@@ -296,10 +307,11 @@ Report each set's sample sizes and results, plus a comparison on shared held-out
 county-years. A lower error on a different set alone does not establish a better
 model. Fit learned preprocessing on training data only.
 
-The initial Linear and Ridge runs on the primary cohort are complete;
-secondary coverage regression runs are also complete. Gradient Boosting,
-Random Forest and Neural Network now have primary-cohort results. Larger sample
-size does not by itself guarantee better results.
+The initial Linear and Ridge runs on the primary cohort and secondary coverage
+sets are complete. Gradient Boosting, Random Forest, and Neural Network have
+primary-cohort results plus a separately labeled expanded_90 training check
+with reused primary settings. Larger sample size does not by itself guarantee
+better results.
 See [STUDY_DATA_PLAN.md](STUDY_DATA_PLAN.md) for the selection rules and the
 separate future experiment for predicting eligible missing-year yields.
 
@@ -471,6 +483,6 @@ validation and test examples. The initial exploratory definitions and results ar
 Daily heat-day counts, growing-degree days, and prior yields are future
 feature extensions, not prerequisites for the first baseline. Linear, Ridge, and training-mean baseline training and metrics are implemented
 for the primary cohort. Shared-row comparisons across broader coverage sets are complete for Linear
-and Ridge. Gradient Boosting is implemented on the primary cohort;
-Random Forest and Neural Network primary-cohort comparisons are complete;
+and Ridge. Gradient Boosting, Random Forest, and Neural Network primary-cohort
+comparisons are complete, with a later expanded_90 training check;
 their method reports and shared-row results are linked above.

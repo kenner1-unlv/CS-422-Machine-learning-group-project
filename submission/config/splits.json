@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "split_unit": "harvest_year",
+  "partitions": {
+    "train": [2000, 2016],
+    "validation": [2017, 2020],
+    "test": [2021, 2025]
+  },
+  "forecast_cutoff_months": [5, 6, 7, 8],
+  "coverage_sets": ["primary_100", "expanded_90", "expanded_80", "largest_available"]
+}
