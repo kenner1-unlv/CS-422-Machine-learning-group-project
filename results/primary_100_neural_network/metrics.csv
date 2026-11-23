@@ -1,0 +1,17 @@
+cutoff_month,variant,partition,n,mae,rmse,bias_predicted_minus_observed,metric_source
+5,weather_only,test,1965,38.58764185365069,44.57343960493931,-32.65868017944182,saved_predictions_recomputed
+5,weather_only,validation,1572,33.25715345789379,40.36604120502853,,lester_reported_pooled_validation
+5,weather_plus_trend,test,1965,28.907604945132626,37.335566714476364,20.559464947580057,saved_predictions_recomputed
+5,weather_plus_trend,validation,1572,27.0499511337618,34.21536726004241,,lester_reported_pooled_validation
+6,weather_only,test,1965,38.7845177125282,45.40467617623448,-31.8126992568917,saved_predictions_recomputed
+6,weather_only,validation,1572,27.783895572783063,34.22235384754221,,lester_reported_pooled_validation
+6,weather_plus_trend,test,1965,29.584397271640633,37.489296083159,17.149617416249864,saved_predictions_recomputed
+6,weather_plus_trend,validation,1572,24.48840333954092,30.890963572312184,,lester_reported_pooled_validation
+7,weather_only,test,1965,32.187574839091496,39.232693874842184,-24.610207413992537,saved_predictions_recomputed
+7,weather_only,validation,1572,25.426028366598562,31.893753444052297,,lester_reported_pooled_validation
+7,weather_plus_trend,test,1965,23.726939541863146,30.96181275768017,12.536753668591142,saved_predictions_recomputed
+7,weather_plus_trend,validation,1572,22.821611944982994,29.250909768039932,,lester_reported_pooled_validation
+8,weather_only,test,1965,31.923628641684367,39.66595486024783,-24.99368793979034,saved_predictions_recomputed
+8,weather_only,validation,1572,23.494711129500324,29.197462921255486,,lester_reported_pooled_validation
+8,weather_plus_trend,test,1965,22.948050671815185,29.83745631586729,5.009177242309567,saved_predictions_recomputed
+8,weather_plus_trend,validation,1572,21.157354760621416,27.10270419168148,,lester_reported_pooled_validation

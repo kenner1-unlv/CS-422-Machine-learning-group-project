@@ -1,0 +1,10 @@
+# Standalone environment used for the local Random Forest, Neural Network and
+# comparison runs. Do not install alongside requirements-modeling.txt in one
+# environment: that earlier run records different NumPy/scikit-learn versions.
+numpy==2.2.6
+pandas==3.1.0
+scipy==1.16.3
+scikit-learn==1.9.0
+matplotlib==3.10.3
+joblib==1.6.0
+threadpoolctl==3.6.0
