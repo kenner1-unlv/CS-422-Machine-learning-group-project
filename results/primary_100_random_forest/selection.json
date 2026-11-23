@@ -89,8 +89,8 @@
         },
         "validation": {
           "n": 1572,
-          "mae": 24.328899617233915,
-          "rmse": 29.900218520296697
+          "mae": 24.32889961723392,
+          "rmse": 29.9002185202967
         },
         "predictors": [
           "preseason_precipitation_total_mm",
@@ -174,8 +174,8 @@
         },
         "validation": {
           "n": 1572,
-          "mae": 20.786201626252623,
-          "rmse": 25.977103241432115
+          "mae": 20.78620162625262,
+          "rmse": 25.97710324143211
         },
         "predictors": [
           "preseason_precipitation_total_mm",
@@ -325,7 +325,7 @@
         "validation": {
           "n": 1572,
           "mae": 26.840762504033457,
-          "rmse": 31.7425684504671
+          "rmse": 31.742568450467104
         },
         "predictors": [
           "preseason_precipitation_total_mm",
@@ -434,9 +434,9 @@
     "cutoff_07.csv": "94fdec3b2294a489ba19f322cbba0ec137f5a83ce14e53a93d85c67f1bce6600",
     "cutoff_08.csv": "4844de6694a921b972f06d5babd42064ce1b578a446023993bc133e7d0ccca31"
   },
-  "split_config_sha256": "57791d3aebfbfceafeac7a79a90c2ed719725e84b0e8ef56100b048d9448f07d",
-  "feature_manifest_sha256": "83ff82c0c4392a66ef560665423e5e5e6f17bbf8ee166389f33121f13549a2da",
-  "python": "3.13.5",
+  "split_config_sha256": "381f9ffa9e7d622245cbfb92af724ec83d3bfc94a3e006135f3c51defa9e05bc",
+  "feature_manifest_sha256": "160aa4adc1e62c83bd9bde523bd272a4cb9f16da494787c7a8910eded580878a",
+  "python": "3.13.0",
   "numpy": "2.2.6",
   "pandas": "3.1.0",
   "sklearn": "1.9.0",
