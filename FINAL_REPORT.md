@@ -1,10 +1,10 @@
 # Evaluating the Reliability of Early-Season Corn Yield Predictions Under Extreme Weather Using Machine Learning
 
-**CS 422 group project · Fall 2026 · Technical report draft**
+**CS 422 group project · Fall 2026 · Technical report**
+
+**Team: not applicable (Group 2)**
 
 **Russell Kennedy, Tylie Anderson, Alexander Aquiningoc, and Lester Iwuajoku**
-
-> **Submission status.** The modeling results and sources in this draft have been checked against saved experiment outputs. The team must confirm the discussion record, individual contribution wording, and final presentation materials before submission. No new model was fitted to write this report.
 
 ## Abstract
 
@@ -176,23 +176,40 @@ The equal-weight ensemble and trend-residual hybrid are promising exploratory al
 
 The submitted October 11, 2026 proposal documents the early-season corn-yield topic, data sources, all four CS 422 members, and preliminary model responsibilities. The team agreed on the project, divided the four model families, and coordinated after class and through a Discord server. GitHub issues and pull requests record shared split/feature planning, model integration, and comparison work. The table lists each model area and its project artifacts.
 
-**Table 5. Team model responsibilities and project evidence.** Roles follow the submitted proposal; the linked reports and saved results show the work completed for the shared comparison.
+**Table 5. Individual model experiments and contributions.** Each member completed work in the model area assigned in the proposal. Shared implementation and integration are credited separately from individual experiment execution.
 
-| Member | Proposal assignment | Project evidence |
+| Member | Model and experiment | Verified contribution |
 |---|---|---|
-| Russell Kennedy | Linear and Ridge regression; shared comparison | Linear/Ridge report, baseline outputs, team comparison, EDA outputs |
-| Alexander Aquiningoc | Gradient Boosting regression | Gradient Boosting report, tuning, figures, and saved outputs |
-| Tylie Anderson | Random Forest regression | Random Forest report, selection, and prediction outputs |
-| Lester Iwuajoku | Neural Network regression | Neural Network script, validation summary and test predictions from PR #16 |
+| Russell Kennedy | Linear and Ridge regression | Implemented and evaluated the baselines; prepared shared data, chronological splits, features, comparison, EDA, and submission integration. |
+| Alexander Aquiningoc | Gradient Boosting regression | Implemented and evaluated Gradient Boosting, its validation search, method report, and saved results. The trend-residual follow-up remains exploratory. |
+| Tylie Anderson | Random Forest regression | Reproduced the assigned Random Forest experiment on Mac using the shared runner; supplied eight fitted pipelines, 81,744 prediction rows, selection/tuning records, and overall, yearly, and subgroup metrics. |
+| Lester Iwuajoku | Neural Network regression | Implemented and evaluated the fixed 32-unit network; supplied eight test-prediction files and validation/test summaries, and wrote the Neural Network method report. |
 
-**Discussion record for team verification.** The team confirms the model split and EDA expansion. Git dates the first weather-group upload, not the conversation. The professor also requires a dated post-results model-review decision and its effect on the work.
+The [contribution matrix](review/CONTRIBUTION_MATRIX.md) links each member to authored commits and artifacts. Tylie's Mac rerun reproduces the existing Random Forest predictions within 8.53e-14 bu/acre and leaves all reported metrics unchanged after rounding. This is cross-platform reproduction of the same seed and settings, not an independent seed experiment. The shared RF implementation is credited to Russell; Tylie's work covers experiment execution and reproduced outputs. Lester's original NN implementation and later method documentation retain his authorship. Importing and checking those outputs are separate integration work.
+
+**Discussion record.** Russell recalls a post-results conversation with Alexander about which results to prepare and how to acknowledge weaknesses and oversights. Their main interpretation was that no single model clearly won in every setting. Tylie contributed a proposal to verify the Random Forest numbers through a Mac run; that follow-up is supported by her retained reproduction artifacts. Russell also recalls Lester comparing his NN with Russell's earlier trial implementation and obtaining similar numbers. The trial is not retained in this submission, so that recollection is not presented as a reproducible comparison or evidence that one implementation was better. These were a conversation and related follow-ups, not a claim that all four attended one meeting. Russell recalls discussion dates of November 11, 16 and 18, 2026, mainly in person after class. Individual topics and participants are not assigned to particular dates within that series. The reporting takeaway was to acknowledge mixed results, weaknesses and oversights without declaring a universal model winner. Git timestamps identify artifact uploads, not conversation dates.
 
 | Date | Participants | Question and evidence | Decision and resulting action |
 |---|---|---|---|
 | Early planning; date unrecorded | Team; attendance to confirm | A team member recalls dividing four model families after agreeing on the project; the submitted proposal lists the preliminary assignments. | One primary family per member established the four-family comparison shown in Table 5 and the saved model reports. |
 | October 20, 2026 upload; discussion date unrecorded | Russell Kennedy, Tylie Anderson, Alexander Aquiningoc, Lester Iwuajoku (team decision) | The initial broad “weather” question did not characterize yield, coverage, or reliability sufficiently. The [first weather-group analysis upload](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/commit/43178e691366726a87f6a2f1d0e69c8bbc9fac91) and tracker figure plan provide project evidence, not a meeting timestamp. | The team agreed to add focused EDA. `scripts/final_eda.py`, `results/final_eda/`, and §2.4 now cover distributions, time trend, geography, weather relationships, feature redundancy, and prediction errors. |
+| November 11, 16 and 18, 2026; discussion series recalled by Russell | Russell Kennedy and Alexander Aquiningoc | Which results should be prepared, and how should weaknesses and oversights be presented? Russell recalls that no single model was a clear winner in every setting. | Agreed to acknowledge mixed results and limitations without claiming a universal winner. This interpretation is reflected in the report: validation-supported recommendations remain distinct from cutoff/year-specific test rankings. |
+| Proposal during the November 11/16/18 discussion series; rerun artifact dated November 22 | Tylie Anderson; coordination reported by Russell Kennedy | Tylie proposed checking the RF numbers with a Mac reproduction. Her retained [rerun commit](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/commit/bd9225064552899174a278a658eaceef7568a489) supplies the resulting artifacts. | The Mac reproduction was completed. All 81,744 prediction rows retain the same keys/targets and all rounded RF scores are unchanged; this adds cross-platform reproduction evidence without changing the model ranking. |
+| Follow-up associated with the November 11/16/18 discussion series; exact comparison date not recalled | Lester Iwuajoku; comparison recalled by Russell Kennedy | Russell reports that Lester ran his NN against Russell's earlier trial version and obtained similar numbers. The trial and paired comparison outputs are not included here. | Lester's authored NN is the primary retained NN. No quantified trial comparison or claim of implementation superiority is made from the unavailable trial evidence. |
 
-**Generative-AI disclosure.** The team used OpenAI Codex to assist with code implementation, debugging, tests, and drafting or editing project documentation in response to team instructions. Team members defined the project question and model responsibilities, examined the data and results, and remain responsible for the scientific choices, accuracy, and final wording. AI-assisted outputs were checked by rebuilding features from tracked inputs, running the project test suite, comparing held-out county-year keys and observed targets across methods, and recomputing metrics from saved row predictions. This disclosure does not imply that the tools independently established the conclusions or that generated text was accepted without review. The team should confirm the exact tool use by each member before submission.
+**Generative-AI disclosure.** Russell used Codex CLI, GitHub integrations, and Figma extensively throughout the project for planning, implementation, organization, and presentation design. He configured tool access to inspect repository state, run tests, compare hashes, reconcile artifacts, and challenge assumptions through adversarial checks. His workflow emphasized detailed verification of code, results, documentation, and submission files, with responsibility for final decisions and review remaining with him. Project verification included rebuilding features from tracked inputs, checking shared county-year keys and observed targets, and recomputing metrics from retained row predictions; the verification record distinguishes executed checks from unavailable evidence.
+
+Alexander's statement, relayed verbatim by Russell, is: “i use gemini ai overview to help explain methods and fix broken code”. Russell also reports Alexander's manual checks, presentation edits, requirements auditing and team-comparison analysis as contributions; those activities are distinct from the scope of Alexander's AI-use statement. His disclosed scope is method explanation and code repair; the retained Gradient Boosting implementation and method report identify his model work.
+
+Lester supplied the following disclosure:
+
+The neural network was implemented using Python and scikit-learn. ChatGPT assisted with understanding and configuring MLPRegressor, StandardScaler, Pipeline, model.fit, and model.predict. It also helped explain how to calculate evaluation metrics using mean_absolute_error and mean_squared_error. I reviewed the AI-assisted suggestions and tested the implementation by running the model and examining MAE and RMSE.
+
+I did not accept the suggestion that the absence of convergence warnings meant the models had converged. The code suppressed ConvergenceWarning, and all eight models reached the 500-iteration limit. I reported the MAE and RMSE results without claiming convergence.
+
+Russell confirms that Tylie did not use AI for her contribution. She executed the Random Forest reproduction through terminal commands using the existing shared runner; its source authorship is credited separately.
+
+**Reproducibility limitation.** The original Python and library versions for Lester's retained NN fits were not recorded and are unavailable. We retain that limitation rather than infer versions from another run. His eight validation summaries remain author-reported; the test metrics are recomputed from retained rows. The verified current environment and CI results do not establish identity with the original fit environment. No additional run is substituted for his official eight 500-iteration fits.
 
 ## 6. Application scenario and limitations
 

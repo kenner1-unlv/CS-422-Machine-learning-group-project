@@ -1,0 +1,28 @@
+{
+  "model": "neural_network",
+  "coverage_set": "primary_100",
+  "author": "Lester Iwuajoku",
+  "source_commit": "4ac9f596901f9b93a0e1f23b7464cddf90d33ce8",
+  "source_pull_request": 16,
+  "historical_fallback_commit": "a92ed69ac8e66e175294949881d87e49b30a0d7e",
+  "training": "Fixed width 32, ReLU, training-only StandardScaler for X, raw yield, max_iter=500, seed=42; other MLP parameters use library defaults.",
+  "selection_rule": "Fixed configuration; no tuning in the source script. Substituted as the primary NN by author attribution after holdout inspection.",
+  "refit_on_validation": false,
+  "fit_environment": null,
+  "convergence_verified": false,
+  "test_metrics": "Recomputed from saved predictions on verified common county-year/target rows.",
+  "validation_metrics": "Lester's pooled MAE/RMSE as supplied, with expected design n=1572. No prediction rows, bias, by-year metrics, or weather-group scores supplied.",
+  "ignored_duplicate": "august_test_predictions.csv duplicates August weather plus trend and drops leading FIPS zeros.",
+  "source_hashes_sha256_normalized_lf": {
+    "results/neural_network/model_comparison.csv": "591c7e4b9c2829b3b8fd76dcc43de383274582bfb00fcd0be8e624cd8186c292",
+    "scripts/neural_network_model.py": "75a48db30216d8c3a5036622858bc968669ad460cdc402762b6c5158c38802b7",
+    "results/neural_network/cutoff_05_weather_only_predictions.csv": "a9036888f67661f45af3e2e2621aa70aa2e3fd39af79e5265e80b59d6dac76d2",
+    "results/neural_network/cutoff_05_weather_plus_trend_predictions.csv": "d270d7c7e94dbaea781c9eebf0907039ab3acdc3317bbd7195ba121ee6657aee",
+    "results/neural_network/cutoff_06_weather_only_predictions.csv": "74f2809693a47cfb59f28659d0292b56d0aa89a0d48d6dc8a9b52b02b3994351",
+    "results/neural_network/cutoff_06_weather_plus_trend_predictions.csv": "319eeb34bccdd250100d972bb1fa02b070926cc8d9348071802ff467cabb78e2",
+    "results/neural_network/cutoff_07_weather_only_predictions.csv": "3385a1088b697b8e4455aff85d701b928dbcd8b0a3ffa9ded16b4f46b5b17e0f",
+    "results/neural_network/cutoff_07_weather_plus_trend_predictions.csv": "f25bcdae26e69d9b3c6f3591b8323bd805eb82a6fc95ebe1db4f6c4cb8592160",
+    "results/neural_network/cutoff_08_weather_only_predictions.csv": "82dc9a40ffa626ddff6094bdc7e79c504bc8912c09d857ef4389469388f23fe1",
+    "results/neural_network/cutoff_08_weather_plus_trend_predictions.csv": "dfe3362ab660918976b8b1149c8a2af23b7e516e03f492b5a496dea0977bfd52"
+  }
+}

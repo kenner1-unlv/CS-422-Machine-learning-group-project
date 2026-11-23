@@ -1,0 +1,8 @@
+{
+  "results/final_eda/annual_yield.csv": "313cedfdb7ed2bcc336a5eb6dfab486b248c46a2abc5572a12be3fce66c63ada",
+  "data/features/primary_100/cutoff_07.csv": "94fdec3b2294a489ba19f322cbba0ec137f5a83ce14e53a93d85c67f1bce6600",
+  "results/team_model_comparison/comparison.csv": "bf051c3b739c14dbbd946eb357bff0f114deb2fa5291a67887ccd84ef34d3768",
+  "results/team_model_comparison/comparison_by_year.csv": "16b979f4d022661bf78af9965ad046f88a49fc4d57debf75a9edbe90f3dee751",
+  "results/primary_100_diagnostic_additions/four_model_mean_lester_metrics.csv": "67240b03eddc88bf31a6860fd6037a278a35a5ac43ffe88571963b0573abdd84",
+  "results/primary_100_diagnostic_additions/trend_only_metrics.csv": "9b878098fd8c5e33ee8423d9217ee36e3d280f7a13284841b7d79edc349d0057"
+}

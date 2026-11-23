@@ -1,0 +1,96 @@
+"""Checks for the trend, test-only ensemble, and broader-training studies."""
+
+import json
+import sys
+import unittest
+from pathlib import Path
+
+import joblib
+import numpy as np
+import pandas as pd
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.compare_remaining_models import load_predictions
+from scripts.run_remaining_models import score
+
+
+class SupplementalChecks(unittest.TestCase):
+    def test_trend_only_is_training_fitted_and_reports_original_scale(self):
+        out = ROOT / "results/primary_100_diagnostic_additions"
+        metrics = pd.read_csv(out / "trend_only_metrics.csv")
+        coefficients = pd.read_csv(out / "trend_only_coefficients.csv")
+        self.assertEqual(len(coefficients), 4)
+        self.assertEqual(set(coefficients["training_n"]), {6681})
+        self.assertEqual(coefficients["intercept"].nunique(), 1)
+        self.assertEqual(coefficients["slope_bu_per_acre_per_year"].nunique(), 1)
+        predictions = pd.read_csv(out / "trend_only_predictions.csv.gz",
+                                  dtype={"county_fips": str})
+        for cutoff in (5, 6, 7, 8):
+            frame = pd.read_csv(ROOT / "data/features/primary_100" /
+                                f"cutoff_{cutoff:02}.csv", dtype={"county_fips": str})
+            training = frame["partition"].eq("train")
+            model = joblib.load(out / "models" / f"trend_only_{cutoff:02}.joblib")
+            self.assertEqual(model.n_features_in_, 1)
+            np.testing.assert_allclose(model.coef_, coefficients[
+                coefficients["cutoff_month"] == cutoff
+            ]["slope_bu_per_acre_per_year"].to_numpy())
+            # A fresh training-only fit must agree with the saved coefficient.
+            x = frame.loc[training, "year_since_2000"].to_numpy()
+            y = frame.loc[training, "yield_bu_per_acre"].to_numpy()
+            self.assertAlmostEqual(model.coef_[0], np.cov(x, y, bias=True)[0, 1] / np.var(x))
+        for row in metrics.itertuples():
+            section = predictions[(predictions["cutoff_month"] == row.cutoff_month) &
+                                  (predictions["variant"] == row.variant) &
+                                  (predictions["partition"] == row.partition)]
+            self.assertAlmostEqual(row.mae,
+                                   score(section["observed_yield"], section["predicted_yield"])["mae"])
+
+    def test_four_model_mean_uses_lester_test_predictions_only(self):
+        out = ROOT / "results/primary_100_diagnostic_additions"
+        design = json.loads((out / "design_lester.json").read_text())
+        self.assertFalse(design["validation_ensemble_available"])
+        self.assertFalse(design["weights_fit_using_test"])
+        self.assertTrue(design["post_test_exploratory"])
+        predictions = pd.read_csv(out / "four_model_mean_lester_predictions.csv.gz",
+                                  dtype={"county_fips": str})
+        members = load_predictions()
+        members = members[(members["partition"] == "test") &
+                          members["model"].isin(
+                              ["linear", "gradient_boosting", "random_forest", "neural_network"])]
+        keys = ["county_fips", "year", "cutoff_month", "partition", "variant"]
+        self.assertTrue(members.groupby(keys)["model"].nunique().eq(4).all())
+        expected = members.groupby(keys)["predicted_yield"].mean().rename("expected")
+        check = predictions.join(expected, on=keys, validate="one_to_one")
+        np.testing.assert_allclose(check["predicted_yield"], check["expected"])
+        self.assertEqual(len(predictions), 4 * 2 * 1965)
+        self.assertEqual(set(predictions["partition"]), {"test"})
+
+    def test_expanded_training_keeps_shared_primary_test_rows(self):
+        out = ROOT / "results/expanded_90_three_model_check"
+        design = json.loads((out / "design.json").read_text())
+        self.assertEqual(design["training_rows_per_cutoff"], 14801)
+        self.assertTrue(design["no_test_tuning"])
+        comparison = pd.read_csv(out / "shared_primary_comparison.csv")
+        expected_models = {"linear", "gradient_boosting", "random_forest"}
+        self.assertEqual(set(design["models"]), expected_models)
+        self.assertEqual(set(comparison["model"]), expected_models)
+        self.assertEqual(len(comparison), 4 * 2 * 3 * 2)
+        self.assertEqual(set(comparison["n_expanded_training"]), {1572, 1965})
+        self.assertEqual(set(comparison["n_primary_training"]), {1572, 1965})
+        np.testing.assert_allclose(comparison["mae_expanded_minus_primary"],
+                                   comparison["mae_expanded_training"] -
+                                   comparison["mae_primary_training"])
+        metrics = pd.read_csv(out / "metrics.csv")
+        self.assertEqual(set(metrics["model"]), expected_models)
+        predictions = pd.read_csv(out / "predictions.csv.gz", dtype={"county_fips": str})
+        self.assertEqual(set(predictions["model"]), expected_models)
+        self.assertEqual(len(predictions), (1965 + 4084) * 4 * 2 * 3)
+        own = metrics[(metrics["population"] == "own_expanded_90") &
+                      (metrics["partition"] == "test")]
+        self.assertEqual(set(own["n"]), {4084})
+
+
+if __name__ == "__main__":
+    unittest.main()
