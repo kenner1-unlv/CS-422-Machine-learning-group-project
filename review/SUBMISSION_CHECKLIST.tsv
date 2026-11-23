@@ -1,0 +1,7 @@
+Material	Evidence	Status	Remaining action
+Final report	submission/FINAL_REPORT.pdf; FINAL_REPORT.md Table 5	Complete	Prepared and checked in final packet; user/team still performs separate WebCampus upload and receipt check.
+Python source	submission/source/; review/SOURCE_MIRRORS.tsv	Complete	Prepared and checked in final packet; user/team still performs separate WebCampus upload and receipt check.
+Reproduction instructions	submission/README.md; review/CONTRIBUTION_VERIFICATION.md	Complete	Original NN fit versions unrecorded/unavailable and disclosed; no collection request. Current main pinned Python 3.13 CI passed all 30 tests; frozen-row verification passes.
+Slides	https://www.figma.com/slides/KwpvYD1aHge2d3QM57WU6U; submission/slides/	Complete	Final native Figma PDF: 17 pages; discussion slide 14 included, editing slide 18 excluded; accepted speaking plan.
+Discussion and contributions	Contribution Matrix tab; FINAL_REPORT.md section 5	Complete	Nov 11/16/18 discussion series recorded from Russell; no invented per-date attendance. Tylie Mac verification is the concrete follow-up.
+Professor rubric and upload format	Project Final.pdf pages 3-4; submission/SUBMISSION_CHECKLIST.md	Complete	Prepared and checked in final packet; user/team still performs separate WebCampus upload and receipt check.

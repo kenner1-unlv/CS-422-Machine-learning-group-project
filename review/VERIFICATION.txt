@@ -1,0 +1,212 @@
+Local verification 2026-11-22
+Base HEAD 85e84a9f3fac1250b19cad362904219559e774aa
+Python 3.14.7; sklearn 1.9.1; no model fitting authorized or performed.
+Preprocessing: scripts/build_study_sets.py, scripts/build_splits.py, scripts/build_features.py
+Verifier: scripts/verify_final_results.py
+PASS: validation selections, feature lists, shared rows and targets, 72 recomputed metric groups and 8 author-reported summaries
+NN test predictions: eight files x 1965 matching county-year/actual rows = 15720.
+Source: 30 byte-identical mirrors; NN source and mirror byte-identical to original committed blob.
+Other mirrors: 18 byte-identical copies.
+Retired backup artifacts: 66 recorded deleted paths absent.
+External URLs were not exhaustively HTTP-tested; GitHub PR and Google tracker access succeeded.
+Original checkout tracked status clean.
+Tests: tmp/audit_submission.py --tests; five synthetic-fit tests skipped dynamically; committed tests unmodified.
+
+test_current_month_and_leap_day_weighting
+
+(test_build_features.FeatureTests.test_current_month_and_leap_day_weighting) ... ok
+
+At line:2 char:1
+
++ & 'C:/Users/russe/repos/Cs 422/Project/.venv/Scripts/python.exe' -X u ...
+
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    + CategoryInfo          : NotSpecified: (test_current_mo...ighting) ... ok:String) [], RemoteException
+
+    + FullyQualifiedErrorId : NativeCommandError
+
+
+
+test_each_cutoff_schema_and_missing_month_rejection
+
+(test_build_features.FeatureTests.test_each_cutoff_schema_and_missing_month_rejection) ... ok
+
+test_future_weather_cannot_change_earlier_forecast
+
+(test_build_features.FeatureTests.test_future_weather_cannot_change_earlier_forecast) ... ok
+
+test_all_years_have_the_agreed_partition (test_build_splits.SplitTests.test_all_years_have_the_agreed_partition) ... ok
+
+test_rejects_overlap_and_gap (test_build_splits.SplitTests.test_rejects_overlap_and_gap) ... ok
+
+test_rejects_years_outside_study (test_build_splits.SplitTests.test_rejects_years_outside_study) ... ok
+
+test_empty_population_rejected (test_coverage_comparison.CoverageComparisonTests.test_empty_population_rejected) ... ok
+
+test_mae_and_rmse_use_selected_population
+
+(test_coverage_comparison.CoverageComparisonTests.test_mae_and_rmse_use_selected_population) ... ok
+
+test_best_tree_count_ties_go_to_fewer_trees
+
+(test_gradient_boosting.GradientBoostingTests.test_best_tree_count_ties_go_to_fewer_trees) ... ok
+
+test_hybrid_trend_uses_only_last_column
+
+(test_gradient_boosting.GradientBoostingTests.test_hybrid_trend_uses_only_last_column) ... skipped 'No fitting
+
+authorized, including synthetic fixtures'
+
+test_refit_with_chosen_trees_matches_staged_score
+
+(test_gradient_boosting.GradientBoostingTests.test_refit_with_chosen_trees_matches_staged_score) ... skipped 'No
+
+fitting authorized, including synthetic fixtures'
+
+test_same_seed_gives_same_predictions
+
+(test_gradient_boosting.GradientBoostingTests.test_same_seed_gives_same_predictions) ... skipped 'No fitting
+
+authorized, including synthetic fixtures'
+
+test_trees_cannot_extrapolate_trend_but_hybrid_can
+
+(test_gradient_boosting.GradientBoostingTests.test_trees_cannot_extrapolate_trend_but_hybrid_can) ... skipped 'No
+
+fitting authorized, including synthetic fixtures'
+
+test_all_missing_month_stays_missing (test_prepare_data.PrepareDataTests.test_all_missing_month_stays_missing) ... ok
+
+test_maps_noaa_missing_sentinels_to_none (test_prepare_data.PrepareDataTests.test_maps_noaa_missing_sentinels_to_none)
+
+... ok
+
+test_normalizes_state_and_county_label_suffixes
+
+(test_prepare_data.PrepareDataTests.test_normalizes_state_and_county_label_suffixes) ... ok
+
+test_summarizes_without_imputing_missing_days
+
+(test_prepare_data.PrepareDataTests.test_summarizes_without_imputing_missing_days) ... ok
+
+test_candidate_design (test_remaining_models.RemainingModelChecks.test_candidate_design) ... ok
+
+test_five_model_comparison_recomputes_frozen_scores
+
+(test_remaining_models.RemainingModelChecks.test_five_model_comparison_recomputes_frozen_scores) ... ok
+
+test_lester_canonical_output_preserves_exact_test_rows
+
+(test_remaining_models.RemainingModelChecks.test_lester_canonical_output_preserves_exact_test_rows) ... ok
+
+test_predictions_match_baseline_rows_and_metrics
+
+(test_remaining_models.RemainingModelChecks.test_predictions_match_baseline_rows_and_metrics) ... ok
+
+test_saved_selections_are_validation_only
+
+(test_remaining_models.RemainingModelChecks.test_saved_selections_are_validation_only) ... ok
+
+test_metrics_keep_yield_units (test_run_baselines.BaselineTests.test_metrics_keep_yield_units) ... ok
+
+test_scaler_stays_fitted_to_training_after_predictions
+
+(test_run_baselines.BaselineTests.test_scaler_stays_fitted_to_training_after_predictions) ... skipped 'No fitting
+
+authorized, including synthetic fixtures'
+
+test_expanded_training_keeps_shared_primary_test_rows
+
+(test_supplemental_additions.SupplementalChecks.test_expanded_training_keeps_shared_primary_test_rows) ... ok
+
+test_four_model_mean_uses_lester_test_predictions_only
+
+(test_supplemental_additions.SupplementalChecks.test_four_model_mean_uses_lester_test_predictions_only) ... ok
+
+test_trend_only_is_training_fitted_and_reports_original_scale
+
+(test_supplemental_additions.SupplementalChecks.test_trend_only_is_training_fitted_and_reports_original_scale) ...
+
+C:\Users\russe\repos\Cs 422\Project\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to
+
+unpickle estimator LinearRegression from version 1.9.0 when using version 1.9.1. This might lead to breaking code or
+
+invalid results. Use at your own risk. For more info please refer to:
+
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+
+  warnings.warn(
+
+C:\Users\russe\repos\Cs 422\Project\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to
+
+unpickle estimator LinearRegression from version 1.9.0 when using version 1.9.1. This might lead to breaking code or
+
+invalid results. Use at your own risk. For more info please refer to:
+
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+
+  warnings.warn(
+
+C:\Users\russe\repos\Cs 422\Project\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to
+
+unpickle estimator LinearRegression from version 1.9.0 when using version 1.9.1. This might lead to breaking code or
+
+invalid results. Use at your own risk. For more info please refer to:
+
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+
+  warnings.warn(
+
+C:\Users\russe\repos\Cs 422\Project\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to
+
+unpickle estimator LinearRegression from version 1.9.0 when using version 1.9.1. This might lead to breaking code or
+
+invalid results. Use at your own risk. For more info please refer to:
+
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+
+  warnings.warn(
+
+ok
+
+test_heldout_weather_does_not_change_thresholds
+
+(test_weather_groups.WeatherGroupTests.test_heldout_weather_does_not_change_thresholds) ... ok
+
+test_overlap_and_normal_are_correct (test_weather_groups.WeatherGroupTests.test_overlap_and_normal_are_correct) ... ok
+
+test_short_history_is_unclassified_not_normal
+
+(test_weather_groups.WeatherGroupTests.test_short_history_is_unclassified_not_normal) ... ok
+
+
+
+----------------------------------------------------------------------
+
+Ran 30 tests in 1.950s
+
+
+
+OK (skipped=5)
+PASS: 253 local Markdown link occurrences, zero broken.
+PASS: packaged report prose/tables equal canonical source after reversing link-only repair.
+
+
+CONTRIBUTION REFRESH, November 22, 2026
+{
+  "markdown_documents_checked": 35,
+  "broken_local_links": [],
+  "report_pages": 11,
+  "slides_total": 18,
+  "slide_pdf_pages": 16,
+  "source_mirrors": 30,
+  "submission_files": 56,
+  "core_and_support_files": 51,
+  "rf_exact_blobs": 14,
+  "unchanged_chart_and_workbook_parts": 18,
+  "report_pdf_sha256": "77468972f5c2e3a1f147d9053afc25ddb7264e39e076ca1c8fea4ff5b3ddf5e3",
+  "pptx_sha256": "8dc0c8aab5a3ac42b85b35d38d8f0f34b1e2c2714a03fceecb692fdb5cac3e56",
+  "native_word_pagination_certified": false
+}
+No-fit suite: 30 discovered, 25 passed, 5 fitting tests skipped. Frozen verifier: PASS (72 row-derived groups, 8 author-reported summaries).

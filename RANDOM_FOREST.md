@@ -34,3 +34,11 @@ The July weather-plus-trend Forest MAE in 2023 is 35.74 versus 29.08 for Linear 
 ## Limits
 
 Only the primary complete-county cohort was modeled. Five test years and correlated counties give much less independent evidence than the row count suggests. Revised retrospective weather inputs, missing management and soil information, and tree trend extrapolation limits constrain real-time or future-year claims. This fixed grid is a compact comparison, not an exhaustive search or a statistical significance study.
+
+## Reproduction and contributor evidence
+
+Tylie Anderson reproduced the assigned Random Forest experiment on Mac in [authored commit bd92250](https://github.com/kenner1-unlv/CS-422-Machine-learning-group-project/commit/bd9225064552899174a278a658eaceef7568a489). The run uses the existing shared implementation introduced by Russell Kennedy, preserving that source attribution. Her artifacts contain eight fitted pipelines, 81,744 row predictions across training/validation/test, the same four-candidate search, and overall, yearly and subgroup summaries.
+
+All row keys and observed targets match the preceding run. The maximum absolute prediction difference is 8.53 × 10⁻¹⁴ bu/acre; the largest pooled metric difference is 7.11 × 10⁻¹⁵. Published two-decimal scores, chosen settings and rankings are unchanged. This reproduces one seed across platforms and does not establish multi-seed variability or performance on new data. No fitted joblib model was loaded during this artifact audit.
+
+Her selection record reports Python 3.13.0, NumPy 2.2.6, pandas 3.1.0 and scikit-learn 1.9.0. The split-config hash matches LF-normalized bytes. Feature-input hashes and predictor lists match the preceding run, but the regenerated local manifest hash differs from her recorded manifest hash; the original manifest bytes were not included in the bundle, so exact manifest-byte reproduction remains unverified. The frozen-row verifier passes with her published result files.

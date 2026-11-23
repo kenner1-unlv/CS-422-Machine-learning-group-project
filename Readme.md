@@ -27,7 +27,7 @@ Google access may need to be granted to teammates. The Markdown report in this r
 | Random Forest Regression | Tylie Anderson | [RANDOM_FOREST.md](RANDOM_FOREST.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 | Neural Network Regression | Lester Iwuajoku | [NEURAL_NETWORK.md](NEURAL_NETWORK.md) | Primary cohort, both shared variants, four cutoffs, yearly and weather-group results |
 
-The four model areas follow the team's agreed assignments. The reports, saved settings, predictions, and common comparison document the completed work.
+The four model areas follow the team's agreed assignments. The reports, saved settings, predictions, and common comparison document the completed work. Lester authored the primary [NN source](scripts/neural_network_model.py) and original saved NN outputs in commit `4ac9f596901f9b93a0e1f23b7464cddf90d33ce8`; Russell's separate integration/evaluation work is recorded in commit `af2602bcb4542f5cf28db9731b864428a6f51def`. The NN validation summaries remain author-reported; test metrics are independently recomputed. See the local [submission audit](SUBMISSION_AUDIT.md) for current checks and outstanding hand-in requirements.
 
 ## AI assistance and team validation
 
@@ -487,3 +487,11 @@ for the primary cohort. Shared-row comparisons across broader coverage sets are 
 and Ridge. Gradient Boosting, Random Forest, and Neural Network primary-cohort
 comparisons are complete, with a later expanded_90 training check;
 their method reports and shared-row results are linked above.
+
+## Final contribution evidence
+
+All four assigned model areas have individual contribution evidence: Russell Kennedy (Linear/Ridge and shared integration), Alexander Aquiningoc (Gradient Boosting), Tylie Anderson (Mac reproduction and evaluation of the shared Random Forest experiment), and Lester Iwuajoku (Neural Network implementation, evaluation and method report). See the [contribution matrix](review/CONTRIBUTION_MATRIX.md). Tylie's 81,744 reproduced prediction rows retain all two-decimal RF scores; no standard-model conclusion changes. Her experiment reuses the shared runner, whose implementation is credited to Russell.
+
+## Final submission packet
+
+Team **not applicable (Group 2)**: [submission guide](submission/README.md), [report PDF](submission/Not_Applicable_Final_Report.pdf), [final native Figma PDF](submission/slides/Not_Applicable_Presentation.pdf), [upload files](submission/upload/) and [path/hash manifest](submission/UPLOAD_MANIFEST.tsv). Upload the required files separately; do not ZIP them. Lester's official NN results and Tylie's reproduced RF outputs are retained. Original NN fit versions were not recorded and are unavailable; validation summaries are author-reported and convergence is not claimed. Actual submission is confirmed only by a WebCampus receipt.

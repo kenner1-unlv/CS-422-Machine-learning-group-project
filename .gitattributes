@@ -1,0 +1,9 @@
+# Keep Lester's authored source and submission mirror byte-identical to his blob.
+scripts/neural_network_model.py text eol=lf
+submission/source/scripts/neural_network_model.py.txt text eol=lf
+
+# Generated report and slide PDFs are binary artifacts, not source text diffs.
+*.pdf binary
+
+# Preserve the exact upload bytes recorded in the SHA-256 manifest.
+submission/upload/** -text whitespace=cr-at-eol
