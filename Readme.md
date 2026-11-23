@@ -494,4 +494,8 @@ All four assigned model areas have individual contribution evidence: Russell Ken
 
 ## Final submission packet
 
-Team **not applicable (Group 2)**: [submission guide](submission/README.md), [report PDF](submission/Not_Applicable_Final_Report.pdf), [final native Figma PDF](submission/slides/Not_Applicable_Presentation.pdf), [upload files](submission/upload/) and [path/hash manifest](submission/UPLOAD_MANIFEST.tsv). Upload the required files separately; do not ZIP them. Lester's official NN results and Tylie's reproduced RF outputs are retained. Original NN fit versions were not recorded and are unavailable; validation summaries are author-reported and convergence is not claimed. Actual submission is confirmed only by a WebCampus receipt.
+Team **not applicable (Group 2)**: [submission guide](submission/README.md), [report PDF](submission/Not_Applicable_Final_Report_v2.pdf), [final native Figma PDF](submission/slides/Not_Applicable_Presentation.pdf), [upload files](submission/upload/) and [path/hash manifest](submission/UPLOAD_MANIFEST.tsv). Upload the required files separately; do not ZIP them. Lester's official NN results and Tylie's reproduced RF outputs are retained. Original NN fit versions were not recorded and are unavailable; validation summaries are author-reported and convergence is not claimed. Actual submission is confirmed only by a WebCampus receipt.
+
+## Reproducing the final submission
+
+Follow the [upload and reproduction guide](submission/UPLOAD_README.md) for the frozen analysis checkout, Windows/macOS commands, `.py.txt` restoration, repository data dependency, and exact-byte versus line-ending-normalized hash checks. The 52-file Canvas packet alone omits processed inputs and saved row predictions; keep this repository public through grading. [Version 1 report](submission/Not_Applicable_Final_Report.pdf) remains a historical copy; version 2 changes presentation and navigation, not the scientific tables.

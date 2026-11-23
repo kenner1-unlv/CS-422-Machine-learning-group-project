@@ -4,13 +4,17 @@
   "support_mirrors": 18,
   "upload_files": 52,
   "substantive_manifest_rows": 51,
-  "report_pages": 12,
+  "report_pages": 19,
   "slide_pages": 17,
   "broken_local_links": [],
   "expected_generated_links": [],
-  "report_sha256": "9140b2c2787cbbc3cae3d7e93c78d1100333ffd4e1b076c088945554dd99929a",
+  "report_sha256": "f9f795e61cf262cb0319167e5b002c504fb92e35a02a4279572bef2952d5243e",
   "presentation_sha256": "621bcc12aecc3c3dc2f7b21c6b366133fbe37eac28e47a87177cbc167956eb5a",
   "status": "READY TO UPLOAD; not submitted",
   "original_nn_versions": "unrecorded/unavailable; disclosed",
-  "webcampus_receipt_observed": false
+  "webcampus_receipt_observed": false,
+  "report_file": "submission/Not_Applicable_Final_Report_v2.pdf",
+  "table_values_unchanged": true,
+  "canvas_selected_attachments": 52,
+  "canvas_server_acceptance": "not confirmed; Submit Assignment not clicked"
 }

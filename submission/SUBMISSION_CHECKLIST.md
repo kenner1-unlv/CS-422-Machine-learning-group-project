@@ -6,7 +6,7 @@ Team name: **not applicable**. Final formats: report PDF and PDF exported from t
 
 Final artifact checks passed. There are no outstanding requests for Lester's original software versions. The only remaining submission actions are the team's WebCampus upload and receipt check.
 
-1. Complete: refreshed and visually inspected the 12-page final report PDF with the discussion and all four disclosure dispositions.
+1. Complete: refreshed and visually inspected the 19-page version 2 report PDF with the discussion and all four disclosure dispositions.
 2. Complete: repaired Figma, included slide 14, kept slide 18 hidden, and exported/inspected the native 17-page presentation PDF.
 3. Complete artifact verification: 30 exact source mirrors, 18 support mirrors, no broken local links, 51 substantive upload files plus one restore/hash manifest. Final publication target is the branch linked below; GitHub publication is separate from WebCampus submission.
 
@@ -26,7 +26,7 @@ Final artifact checks passed. There are no outstanding requests for Lester's ori
 
 ## Required uploads — instructor PDF pages 3–4
 
-1. `Not_Applicable_Final_Report.pdf`: unified problem/data/methods/results/discussion/contributions/application/limitations/conclusion/references and AI disclosure.
+1. `Not_Applicable_Final_Report_v2.pdf`: unified problem/data/methods/results/discussion/contributions/application/limitations/conclusion/references and AI disclosure.
 2. Executable Python source as separate `.py.txt` files, organized by model and shared utilities. Restore the original `.py` paths/names to run them; no notebooks.
 3. README/instructions plus necessary dependency/version lists, seeds, data access, reproduction commands, saved configs and result tables. Use the upload manifest to restore original paths after removing upload prefixes.
 4. `Not_Applicable_Presentation.pdf`: the final Figma export, all four names, discussion slide included and editor checklist excluded. Each member speaks and participates in questions.
@@ -44,8 +44,16 @@ Final package branch: [submission/final-group2](https://github.com/kenner1-unlv/
 The team-discussion dates and individual disclosures are reported by the participant/user, not independently reconstructed meeting attendance. Original NN environment metadata remains a declared limitation. The final report and presentation must not imply confirmed convergence.
 ## Open these final files
 
-- [Final report PDF](Not_Applicable_Final_Report.pdf)
+- [Final report PDF](Not_Applicable_Final_Report_v2.pdf)
 - [Final native Figma PDF](slides/Not_Applicable_Presentation.pdf)
 - [Separate upload files](upload/)
 - [Upload filename / restore path / SHA-256 manifest](UPLOAD_MANIFEST.tsv)
 - [Final verification record](../review/FINAL_PACKET_VERIFICATION.json)
+
+## Alex audit follow-up and version 2
+
+- [x] Documented that standalone uploads omit processed inputs/predictions and require the frozen public repository for reproduction.
+- [x] Documented Windows CRLF/macOS LF differences and exact upload-manifest versus normalized text comparison.
+- [x] Selected the separately named 19-page version 2 report; version 1 is preserved. All scientific table rows and input hashes remain unchanged.
+- [x] Refreshed upload README and byte manifest for the selected report.
+- [x] Selected all 52 attachments in the actual Canvas form, including the 52.9 MiB presentation, with no visible rejection. The Submit Assignment button is available. Selection alone does not confirm server upload acceptance or provide a submission receipt; the submitting member must finish and check the receipt.
